@@ -1,0 +1,93 @@
+{
+  "id": "api-event-retry",
+  "title": {
+    "tr": "Analitik olaylarını yeniden deneme",
+    "en": "Retrying analytics events"
+  },
+  "topic": "api",
+  "difficulty": 4,
+  "language": "ts",
+  "origin": "real",
+  "task": {
+    "tr": "Analitik olaylarını `fetch` ile API'mize gönderen küçük bir istemci yaz. Ağ hatasında ya da sunucu 5xx dönerse olayı sakla ve sonraki sayfa açılışında yeniden dene; diğer yanıtlar tamam sayılır. Bir olaydan toplam 3 denemeden sonra vazgeç. `retryPending`, sayfa açılışında başka olay gönderilmeden önce bir kez çalışır.",
+    "en": "Write a small client that sends analytics events to our API with `fetch`. On a network error or a 5xx response, keep the event and retry it on the next page load; any other response counts as done. Give up on an event after 3 attempts in total. `retryPending` runs once on page load, before anything else is tracked."
+  },
+  "deliveryNote": {
+    "tr": "Gönderilemeyen olaylar saklanıyor ve sonraki açılışta yeniden deneniyor, en çok 3 deneme. Ağ hataları da sunucu hataları da ele alındı.",
+    "en": "Failed events are stored and retried on the next page load, capped at 3 attempts. Both network errors and server errors are handled."
+  },
+  "bugs": [
+    {
+      "id": "server-error-dropped",
+      "lines": [25, 28],
+      "fixedLines": [25, 32],
+      "severity": "critical",
+      "explanation": {
+        "tr": "`fetch` yalnız ağ hatasında hata fırlatır; sunucu 500 dönünce Promise normal biçimde çözülür. `trySend` yanıtın durum koduna bakmadığı için 5xx alan olay gönderilmiş sayılır, kuyruğa girmez ve kalıcı olarak kaybolur. Düzeltme: yanıtı okuyup 5xx'te olayı bekleyenlere eklemek.",
+        "en": "`fetch` only throws on a network error; when the server answers 500 the promise resolves normally. Because `trySend` never looks at the status code, an event that gets a 5xx counts as delivered, is never queued and is lost for good. Fix: read the response and keep the event on a 5xx."
+      }
+    },
+    {
+      "id": "attempt-limit",
+      "lines": [49, 49],
+      "fixedLines": [52, 52],
+      "severity": "minor",
+      "explanation": {
+        "tr": "`attempts` yapılmış deneme sayısıdır. `attempts > MAX_ATTEMPTS` koşulu üçüncü denemeden sonra olayı bir kez daha gönderir; olay 3 yerine 4 kez denenir. Düzeltme: `>=`.",
+        "en": "`attempts` counts the tries already made. With `attempts > MAX_ATTEMPTS` the event goes out once more after the third try, so it is tried 4 times instead of 3. Fix: `>=`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "server-error-dropped",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Sunucu 200 dönünce bekleyen olay kalmaz.",
+          "en": "When the server answers 200, nothing is left pending."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Ağ hatasında olay sonraki açılış için saklanır.",
+          "en": "When the network fails, the event is kept for the next page load."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Sunucu 503 dönünce olay saklanır.",
+          "en": "When the server answers 503, the event is kept."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Bekleyen olay yoksa yeniden deneme hiç istek göndermez.",
+          "en": "With nothing pending, a retry sends no request."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "Yeniden deneme yalnız `send` hata fırlatınca oluyor; ama `fetch` 500'de normal çözülüyor, yani sunucu hatası alan her olay gönderilmiş sayılıp kayboluyor. Bu veri kaybı, Kritik derdim ve 503 dönen sahte bir sunucuyla olayın hâlâ beklediğini kontrol eden bir testle gösterirdim. Ayrıca sınırda bir fazlalık var: `attempts > MAX_ATTEMPTS` olayı üç yerine dört kez gönderiyor.",
+    "en": "The retry only happens when `send` throws, but `fetch` resolves normally on a 500, so every event that hits a server error counts as delivered and is lost. That is data loss, so I'd mark it critical and prove it with a fake server that answers 503 and a check that the event is still pending. There is also an off-by-one in the limit: `attempts > MAX_ATTEMPTS` lets an event go out four times instead of three."
+  },
+  "checklist": [
+    {
+      "tr": "Olayın hangi yanıtta kaybolduğunu söyledim (5xx; `fetch` hata fırlatmaz)",
+      "en": "I named the response that loses the event (a 5xx; `fetch` does not throw)"
+    },
+    {
+      "tr": "Etkisini söyledim: olaylar kaybolur, sayımlar eksik çıkar",
+      "en": "I said the impact: events are lost and counts come out low"
+    },
+    {
+      "tr": "Bunu gösteren bir test önerdim (503 dönen sahte sunucu)",
+      "en": "I proposed a test that shows it (a fake server answering 503)"
+    }
+  ]
+}

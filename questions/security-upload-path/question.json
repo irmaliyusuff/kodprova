@@ -1,0 +1,83 @@
+{
+  "id": "security-upload-path",
+  "title": {
+    "tr": "İndirilecek dosyanın yolunu bulma",
+    "en": "Resolving a download path"
+  },
+  "topic": "security",
+  "difficulty": 2,
+  "language": "python",
+  "origin": "fictional",
+  "task": {
+    "tr": "Dosya indirme uç noktamız için bir yardımcı yaz: istekteki dosya adını alsın ve yüklemeler klasörünün içindeki tam yolu döndürsün; ad boşsa ya da klasörün dışını gösteriyorsa `None` döndürsün.",
+    "en": "Write a helper for our file download endpoint: take the file name from the request and return its full path inside the uploads folder, or `None` if the name is empty or points outside that folder."
+  },
+  "deliveryNote": {
+    "tr": "Dizin aşımı engellendi: yol `realpath` ile çözülüp yüklemeler köküyle karşılaştırılıyor; `../` hileleri, sembolik bağlar ve mutlak yollar reddediliyor.",
+    "en": "Path traversal is blocked: the path is resolved with `realpath` and checked against the uploads root, so `../` tricks, symlinks and absolute paths are rejected."
+  },
+  "bugs": [
+    {
+      "id": "sibling-prefix",
+      "lines": [16, 17],
+      "fixedLines": [16, 16],
+      "severity": "critical",
+      "explanation": {
+        "tr": "`startswith` yolları klasör klasör değil, harf harf karşılaştırır. Adı aynı harflerle başlayan kardeş bir klasör (`uploads-old`) kontrolü geçer; `../uploads-old/a.txt` istenince yükleme klasörünün dışındaki dosya sunulur. Düzeltme: kökü yol ayırıcısıyla birlikte karşılaştırmak (`root + os.sep`).",
+        "en": "`startswith` compares characters, not folders. A sibling folder whose name starts with the same letters (`uploads-old`) passes the check, so a request for `../uploads-old/a.txt` serves a file outside the upload folder. Fix: compare against the root plus the path separator (`root + os.sep`)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "sibling-prefix",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`resolve_upload(\"report.pdf\")` kökün içinde bir yol döndürür.",
+          "en": "`resolve_upload(\"report.pdf\")` returns a path inside the root."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`resolve_upload(\"../uploads-old/a.txt\")` `None` döndürür.",
+          "en": "`resolve_upload(\"../uploads-old/a.txt\")` returns `None`."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`resolve_upload(\"../secret.txt\")` `None` döndürür.",
+          "en": "`resolve_upload(\"../secret.txt\")` returns `None`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "`resolve_upload(\"/etc/passwd\")` `None` döndürür.",
+          "en": "`resolve_upload(\"/etc/passwd\")` returns `None`."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Kapsama kontrolü metin karşılaştırıyor; adı `uploads` ile başlayan kardeş bir klasör, örneğin `uploads-old`, kontrolü geçiyor ve `../uploads-old/a.txt` sunuluyor. Bu bir dizin aşımı; yükleme klasörü dışındaki dosyalar indirilebildiği için Kritik derdim. `root + os.sep` ile karşılaştırarak düzeltir, `../uploads-old/a.txt` isteyip `None` bekleyen bir testle gösterirdim.",
+    "en": "The containment check compares strings, so a sibling folder whose name starts with `uploads`, such as `uploads-old`, passes it and `../uploads-old/a.txt` is served. That is path traversal and I'd mark it critical, because files outside the upload folder can be downloaded. I'd fix it by comparing against `root + os.sep` and prove it with a test that asks for `../uploads-old/a.txt` and expects `None`."
+  },
+  "checklist": [
+    {
+      "tr": "Kontrolü geçen bir ad söyledim (kardeş klasör: `../uploads-old/…`)",
+      "en": "I named an input that passes the check (a sibling folder: `../uploads-old/…`)"
+    },
+    {
+      "tr": "Etkisini söyledim: yükleme klasörü dışındaki dosyalar indirilebilir",
+      "en": "I said the impact: files outside the upload folder can be downloaded"
+    },
+    {
+      "tr": "Bir test önerdim: kardeş klasöre giden ad `None` döndürmeli",
+      "en": "I proposed a test: a name that reaches a sibling folder must return `None`"
+    }
+  ]
+}

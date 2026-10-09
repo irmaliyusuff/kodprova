@@ -1,0 +1,39 @@
+// How the proof gate talks to a language runner. The gate sends a run plan as
+// JSON on stdin; the runner loads the modules, runs the checks and prints one
+// "PROOF_RESULT {json}" line. Runners only report what happened; the gate
+// decides what should have happened. Both runners follow this file:
+// scripts/runners/run-js.ts and scripts/runners/run_python.py.
+
+export const RESULT_MARKER = "PROOF_RESULT ";
+export const CHECK_TIMEOUT_MS = 5_000;
+/** Runners reseed the language's random generator with this before each check. */
+export const RANDOM_SEED = 20261010;
+
+export interface RunPlan {
+  /** Module name -> file path. The proof file is always named "proof". */
+  modules: Record<string, string>;
+  checks: PlannedCheck[];
+}
+
+export type PlannedCheck =
+  /** Calls proofs[key] or options[key] of the proof module with the target module. */
+  | {
+      id: string;
+      kind: "check";
+      group: "proofs" | "options";
+      key: string;
+      target: string;
+    }
+  /** Calls every test function of the suite module with the target module. */
+  | { id: string; kind: "suite"; suite: string; target: string };
+
+export interface CheckResult {
+  id: string;
+  passed: boolean;
+  /** First line of the failure, or null when the check passed. */
+  error: string | null;
+}
+
+export type RunnerOutput =
+  | { loadError: string }
+  | { proofKeys: string[]; optionKeys: string[]; results: CheckResult[] };

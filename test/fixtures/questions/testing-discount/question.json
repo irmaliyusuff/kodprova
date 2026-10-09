@@ -1,0 +1,76 @@
+{
+  "id": "testing-discount",
+  "title": {
+    "tr": "İndirim testleri",
+    "en": "Discount tests"
+  },
+  "topic": "testing",
+  "difficulty": 1,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "`applyDiscount(total, percent)` için birim testleri yaz.",
+    "en": "Write unit tests for `applyDiscount(total, percent)`."
+  },
+  "deliveryNote": {
+    "tr": "Normal indirim, sıfır indirim ve geçersiz yüzde test edildi.",
+    "en": "Tested a normal discount, a zero discount and an invalid percentage."
+  },
+  "bugs": [
+    {
+      "id": "weak-assertion",
+      "lines": [5, 6],
+      "fixedLines": [5, 5],
+      "severity": "major",
+      "explanation": {
+        "tr": "`result <= 200` indirimin uygulandığını kanıtlamaz; hiç indirim yapmayan kod da geçer.",
+        "en": "`result <= 200` does not prove the discount was applied; code that applies no discount passes too."
+      },
+      "flawedImplementation": {
+        "tr": "İndirimi hiç uygulamayan, toplamı aynen döndüren bir uygulama.",
+        "en": "An implementation that never applies the discount and returns the total unchanged."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "weak-assertion",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`applyDiscount(200, 0) === 200`",
+          "en": "`applyDiscount(200, 0) === 200`"
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`applyDiscount(200, 10) === 180`",
+          "en": "`applyDiscount(200, 10) === 180`"
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`applyDiscount(200, 150)` RangeError fırlatır",
+          "en": "`applyDiscount(200, 150)` throws a RangeError"
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "İlk test yalnız sonucun 200'ü aşmadığına bakıyor; indirimi hiç uygulamayan kod da geçiyor. Sonucu tam değerle, 180 ile karşılaştırırdım.",
+    "en": "The first test only checks that the result is not above 200, so code that applies no discount passes. I would compare against the exact value, 180."
+  },
+  "checklist": [
+    {
+      "tr": "Testin hangi hatalı kodu geçirdiğini söyledim",
+      "en": "I said which broken code the test lets through"
+    },
+    {
+      "tr": "Daha sıkı bir doğrulama önerdim",
+      "en": "I proposed a stricter assertion"
+    }
+  ]
+}

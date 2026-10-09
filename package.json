@@ -1,0 +1,26 @@
+{
+  "name": "inceleme-antrenoru",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Practice finding the hidden bugs in AI-written code and explaining them the way an interviewer expects.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:questions": "node scripts/build-questions.ts",
+    "proof": "node scripts/proof-gate.ts",
+    "test": "node --test \"test/*.test.ts\"",
+    "typecheck": "tsc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "scan-names": "node scripts/scan-names.ts",
+    "check": "npm run format:check && npm run typecheck && npm test && npm run proof && npm run build:questions"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "prettier": "3.9.9",
+    "typescript": "7.0.2"
+  }
+}

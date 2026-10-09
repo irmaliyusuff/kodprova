@@ -1,0 +1,93 @@
+{
+  "id": "age-check",
+  "title": {
+    "tr": "Yaş doğrulama",
+    "en": "Age validation"
+  },
+  "topic": "web",
+  "difficulty": 1,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "Kullanıcının formdan gönderdiği yaşı doğrula: 18–65 arası tam sayı olmalı.",
+    "en": "Validate the age a user sends from a form: it must be a whole number from 18 to 65."
+  },
+  "deliveryNote": {
+    "tr": "Sınırları ve geçersiz girdiyi ele aldım.",
+    "en": "I handled the limits and invalid input."
+  },
+  "bugs": [
+    {
+      "id": "partial-parse",
+      "lines": [5, 5],
+      "fixedLines": [5, 9],
+      "severity": "major",
+      "explanation": {
+        "tr": "`parseInt` sayının başını okuyup gerisini atar: \"30abc\" 30, \"18.9\" 18 olur ve geçersiz girdi kabul edilir.",
+        "en": "`parseInt` reads the leading digits and drops the rest: \"30abc\" becomes 30 and \"18.9\" becomes 18, so invalid input is accepted."
+      }
+    },
+    {
+      "id": "upper-bound",
+      "lines": [9, 9],
+      "fixedLines": [10, 10],
+      "severity": "major",
+      "explanation": {
+        "tr": "`age < MAX_AGE` üst sınırı dışarıda bırakır; 65 yaşındaki kullanıcı reddedilir.",
+        "en": "`age < MAX_AGE` leaves the upper limit out, so a 65-year-old user is rejected."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "partial-parse",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`isValidAge(30) === true`",
+          "en": "`isValidAge(30) === true`"
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`isValidAge(\"30abc\") === false`",
+          "en": "`isValidAge(\"30abc\") === false`"
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`isValidAge(-1) === false`",
+          "en": "`isValidAge(-1) === false`"
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "`isValidAge(\"40\") === true`",
+          "en": "`isValidAge(\"40\") === true`"
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Üst sınır dahil edilmemiş, 65 yaşındaki kullanıcı reddediliyor. Ayrıca parseInt sayının başını okuyup gerisini atıyor; '30abc' geçerli sayılıyor. İkisini de sınır ve bozuk girdi testleriyle gösterirdim.",
+    "en": "The upper limit is left out, so a 65-year-old user is rejected. Also parseInt reads the leading digits and drops the rest, so '30abc' counts as valid. I'd show both with a boundary test and a malformed-input test."
+  },
+  "checklist": [
+    {
+      "tr": "Hangi değerin yanlış sonuç verdiğini söyledim",
+      "en": "I said which value gives the wrong result"
+    },
+    {
+      "tr": "Kullanıcıya etkisini söyledim",
+      "en": "I said how it affects the user"
+    },
+    {
+      "tr": "Bir test önerdim",
+      "en": "I proposed a test"
+    }
+  ]
+}
