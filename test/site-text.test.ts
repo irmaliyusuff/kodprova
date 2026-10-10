@@ -7,6 +7,7 @@ import {
   REASON_LIMIT,
   truncateGraphemes,
 } from "../src/lib/graphemes.ts";
+import { splitHyphenatedWords } from "../src/lib/hyphenated-words.ts";
 import { splitInlineCode } from "../src/lib/inline-code.ts";
 import { issueUrl } from "../src/lib/issue-link.ts";
 
@@ -39,6 +40,30 @@ describe("inline code in question texts", () => {
       { text: "<b>", code: false },
       { text: "<script>", code: true },
       { text: "</b>", code: false },
+    ]);
+  });
+});
+
+describe("hyphenated words in question titles", () => {
+  test("a word with an inner hyphen is kept whole; the text is unchanged", () => {
+    const parts = splitHyphenatedWords("Hoş geldin e-postası testleri");
+    assert.deepEqual(parts, [
+      { text: "Hoş geldin ", keepWhole: false },
+      { text: "e-postası", keepWhole: true },
+      { text: " testleri", keepWhole: false },
+    ]);
+    assert.equal(
+      parts.map((part) => part.text).join(""),
+      "Hoş geldin e-postası testleri",
+    );
+  });
+
+  test("a dash between spaces, or a hyphen at a word's edge, is left alone", () => {
+    assert.deepEqual(splitHyphenatedWords("A - B, pre- and -post"), [
+      { text: "A - B, pre- and -post", keepWhole: false },
+    ]);
+    assert.deepEqual(splitHyphenatedWords("E-postayla"), [
+      { text: "E-postayla", keepWhole: true },
     ]);
   });
 });

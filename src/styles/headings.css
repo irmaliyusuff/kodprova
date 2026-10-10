@@ -51,6 +51,11 @@ h1.baslik {
   text-wrap: balance;
 }
 
+/* A hyphenated word in a question title stays on one line (spec v1.2). */
+.kirilmaz {
+  white-space: nowrap;
+}
+
 .etiket {
   display: block;
   color: var(--soluk);

@@ -5,6 +5,7 @@ import {
   OutcomeIcon,
   type Outcome,
 } from "../../components/markers.tsx";
+import { TitleText } from "../../components/text.tsx";
 import type { SiteQuestion } from "../../data/types.ts";
 import { useLanguage } from "../../i18n/language-context.tsx";
 import type { MessageKey } from "../../i18n/messages.ts";
@@ -42,7 +43,8 @@ export function ResultSummary({
     <div className="ozet-blok">
       <p className="kunye">
         <span>
-          {t("liste.kart.no", { no: question.number })} · {question.title[lang]}
+          {t("liste.kart.no", { no: question.number })} ·{" "}
+          <TitleText text={question.title[lang]} />
         </span>
         <OriginLabel origin={question.origin} />
       </p>

@@ -22,7 +22,7 @@ const SERVER_ENTRY = "generated/ssr/entry-server.js";
  */
 const PRELOAD_FONTS = [
   /ibm-plex-sans-latin-400-normal-.*\.woff2$/,
-  /source-serif-4-latin-opsz-normal-.*\.woff2$/,
+  /source-serif-4-latin-wght-normal-.*\.woff2$/,
 ];
 const OG_LOCALE = { tr: "tr_TR", en: "en_US" } as const;
 

@@ -1,8 +1,9 @@
-// Text helpers: question text with inline code, external links and the
-// warning line (B20).
+// Text helpers: question text with inline code, question titles, external
+// links and the warning line (B20).
 
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { useLanguage } from "../i18n/language-context.tsx";
+import { splitHyphenatedWords } from "../lib/hyphenated-words.ts";
 import { splitInlineCode } from "../lib/inline-code.ts";
 
 /** Question text; `backtick` parts become <code>, nothing else is interpreted. */
@@ -11,6 +12,23 @@ export function InlineText({ text }: { text: string }) {
     <>
       {splitInlineCode(text).map((part, index) =>
         part.code ? <code key={index}>{part.text}</code> : part.text,
+      )}
+    </>
+  );
+}
+
+/** Question title; a hyphenated word ("e-postası") is never split (spec v1.2). */
+export function TitleText({ text }: { text: string }) {
+  return (
+    <>
+      {splitHyphenatedWords(text).map((part, index) =>
+        part.keepWhole ? (
+          <span className="kirilmaz" key={index}>
+            {part.text}
+          </span>
+        ) : (
+          part.text
+        ),
       )}
     </>
   );

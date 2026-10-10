@@ -3,8 +3,8 @@
 @media (max-width: 37.49rem) {
   :root {
     --sayfa-pay: 1rem;
-    --t-gosteri: 600 1.875rem / 1.2 var(--f-serif);
-    --t-baslik: 600 1.625rem / 1.23 var(--f-serif);
+    --t-gosteri: 520 1.875rem / 1.2 var(--f-serif);
+    --t-baslik: 550 1.625rem / 1.23 var(--f-serif);
     --t-bolum: 600 1.375rem / 1.27 var(--f-serif);
     --t-ornek: 400 1.1875rem / 1.47 var(--f-serif);
     --t-okuma: 400 1.0625rem / 1.53 var(--f-serif);

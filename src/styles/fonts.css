@@ -1,14 +1,16 @@
 /* Typefaces, served from this site (no third-party requests; spec T20).
    Files come from the Fontsource npm packages; only the Latin subsets are
    declared, which cover Turkish and English. All three families are under the
-   SIL Open Font License 1.1. */
+   SIL Open Font License 1.1. Source Serif 4 uses the wght-only files (no
+   optical-size axis) and IBM Plex Sans has no 500 weight: both keep the
+   Turkish pages light enough for the Lighthouse target (spec v1.2). */
 
 @font-face {
   font-family: "Source Serif 4";
   font-style: normal;
   font-weight: 200 900;
   font-display: swap;
-  src: url("@fontsource-variable/source-serif-4/files/source-serif-4-latin-opsz-normal.woff2")
+  src: url("@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2")
     format("woff2-variations");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -21,7 +23,7 @@
   font-style: normal;
   font-weight: 200 900;
   font-display: swap;
-  src: url("@fontsource-variable/source-serif-4/files/source-serif-4-latin-ext-opsz-normal.woff2")
+  src: url("@fontsource-variable/source-serif-4/files/source-serif-4-latin-ext-wght-normal.woff2")
     format("woff2-variations");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
@@ -48,32 +50,6 @@
   font-weight: 400;
   font-display: swap;
   src: url("@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-ext-400-normal.woff2")
-    format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2")
-    format("woff2");
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
-    U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-ext-500-normal.woff2")
     format("woff2");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
@@ -157,4 +133,41 @@
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
     U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
     U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Metric-matched fallback for Source Serif 4 (spec v1.2): Georgia scaled to
+   the width of the wght files, so text does not reflow when the web font
+   arrives. Regular for weights up to 500, bold above. */
+@font-face {
+  font-family: "Kodprova Serif Yedek";
+  font-style: normal;
+  font-weight: 200 500;
+  src: local("Georgia");
+  size-adjust: 107.5%;
+}
+
+@font-face {
+  font-family: "Kodprova Serif Yedek";
+  font-style: normal;
+  font-weight: 501 900;
+  src: local("Georgia Bold"), local("Georgia-Bold");
+  size-adjust: 93.5%;
+}
+
+/* Metric-matched fallback for IBM Plex Mono: Consolas widened to Plex Mono's
+   0.6 em advance, so inline code in running text keeps its line breaks. */
+@font-face {
+  font-family: "Kodprova Mono Yedek";
+  font-style: normal;
+  font-weight: 200 500;
+  src: local("Consolas");
+  size-adjust: 109.13%;
+}
+
+@font-face {
+  font-family: "Kodprova Mono Yedek";
+  font-style: normal;
+  font-weight: 501 900;
+  src: local("Consolas Bold"), local("Consolas-Bold");
+  size-adjust: 109.13%;
 }

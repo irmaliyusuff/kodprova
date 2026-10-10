@@ -3,6 +3,7 @@
 // question (spec T13).
 
 import { OriginLabel, OutcomeIcon } from "../components/markers.tsx";
+import { TitleText } from "../components/text.tsx";
 import { questions, questionsIn } from "../data/questions.ts";
 import type { QuestionSummary } from "../data/types.ts";
 import { useLanguage } from "../i18n/language-context.tsx";
@@ -37,7 +38,9 @@ function QuestionCard({
           </span>
           <OriginLabel origin={question.origin} />
         </span>
-        <span className="kart-baslik">{question.title[lang]}</span>
+        <span className="kart-baslik">
+          <TitleText text={question.title[lang]} />
+        </span>
         <span className="kunye">
           <span>{t(LANGUAGE_NAME_KEYS[question.language])}</span>
           <span>{t("liste.kart.satir", { n: question.lineCount })}</span>

@@ -13,7 +13,6 @@ body {
   background: var(--zemin);
   color: var(--metin);
   font: var(--t-govde);
-  font-optical-sizing: auto;
 }
 
 h1,

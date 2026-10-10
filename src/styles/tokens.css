@@ -34,22 +34,25 @@
   --s-yorum: #585d64;
 
   /* Yazı tipi aileleri */
-  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-serif:
+    "Source Serif 4", "Kodprova Serif Yedek", Georgia, "Times New Roman", serif;
   --f-sans:
     "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --f-mono:
+    "IBM Plex Mono", "Kodprova Mono Yedek", ui-monospace, "Cascadia Mono",
+    Consolas, monospace;
 
   /* Tip ölçeği: ağırlık boyut/satır aile (1 rem = 16 px). Dar ekran karşılıkları §8'de. */
-  --t-gosteri: 600 2.75rem / 1.14 var(--f-serif);
-  --t-baslik: 600 2.125rem / 1.18 var(--f-serif);
-  --t-bolum: 600 1.625rem / 1.23 var(--f-serif);
+  --t-gosteri: 470 2.75rem / 1.14 var(--f-serif);
+  --t-baslik: 500 2.125rem / 1.18 var(--f-serif);
+  --t-bolum: 550 1.625rem / 1.23 var(--f-serif);
   --t-not: 600 1.1875rem / 1.37 var(--f-serif);
   --t-ornek: 400 1.3125rem / 1.52 var(--f-serif);
   --t-okuma: 400 1.125rem / 1.56 var(--f-serif);
   --t-govde: 400 1rem / 1.5 var(--f-sans);
   --t-dugme: 600 1rem / 1.25 var(--f-sans);
   --t-kucuk: 400 0.875rem / 1.43 var(--f-sans);
-  --t-etiket: 500 0.8125rem / 1.38 var(--f-sans);
+  --t-etiket: 400 0.8125rem / 1.38 var(--f-sans);
   --t-kod: 400 0.9375rem / 1.625rem var(--f-mono);
   --t-satir-no: 400 0.8125rem / 1 var(--f-mono);
 

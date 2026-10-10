@@ -10,7 +10,7 @@ import {
   TaskSheet,
 } from "../../components/QuestionHeader.tsx";
 import { useMarginNotes } from "../../components/useMarginNotes.ts";
-import { Warning } from "../../components/text.tsx";
+import { TitleText, Warning } from "../../components/text.tsx";
 import type { SiteQuestion } from "../../data/types.ts";
 import { useMediaQuery, WIDE_SCREEN } from "../../hooks/useMediaQuery.ts";
 import { useLanguage } from "../../i18n/language-context.tsx";
@@ -161,7 +161,9 @@ export function QuestionScreen({ question }: { question: SiteQuestion }) {
       <p className="durum-satiri" role="status">
         {router.state.restarted ? t("soru.bastan.not") : ""}
       </p>
-      <h1 className="baslik">{question.title[lang]}</h1>
+      <h1 className="baslik">
+        <TitleText text={question.title[lang]} />
+      </h1>
       <QuestionFacts question={question} />
       <TaskSheet question={question} />
 
