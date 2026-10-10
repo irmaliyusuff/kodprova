@@ -1,0 +1,12 @@
+# Local settings for the counter (functions/): TEMPLATE, no values.
+# Copy this file to .dev.vars (same folder) and fill in the value.
+# .dev.vars is not committed (.gitignore).
+#
+# In production the same name is set in the Cloudflare Pages dashboard:
+#   Workers & Pages > project > Settings > Variables and Secrets > Add > Encrypt.
+# The database binding (DB) is not a variable: Settings > Bindings.
+
+# Key for GET /api/summary (SECRET). At least 24 characters; with a shorter
+# value the summary stays closed (403). Make your own and share it with no one:
+#   node -e "console.log(require('node:crypto').randomBytes(24).toString('base64url'))"
+SUMMARY_KEY=

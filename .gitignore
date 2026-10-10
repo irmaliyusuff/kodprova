@@ -6,3 +6,6 @@ __pycache__/
 .env
 .env.*
 !.env.example
+# Counter (functions/): local wrangler state and local secrets.
+.wrangler/
+.dev.vars

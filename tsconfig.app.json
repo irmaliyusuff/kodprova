@@ -1,0 +1,24 @@
+{
+  // Type checking for the site (src/). Vite does the building; tsc only checks.
+  // Shared logic in src/lib/ is also run by `node --test`, so it keeps to
+  // erasable syntax and imports with explicit .ts extensions.
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["es2024", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    // generated/site-data.json is typed by src/vite-env.d.ts, so checking the
+    // site does not need the generated file to exist.
+    "resolveJsonModule": false,
+    "types": ["vite/client"]
+  },
+  "include": ["src", "vite.config.ts"]
+}

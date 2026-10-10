@@ -1,0 +1,83 @@
+/* ======================= 16. Nasıl hazırlandı (makale + kenar) ======================= */
+
+.makale-bas {
+  padding-top: var(--b-6);
+}
+
+.makale-bas h1 {
+  max-width: 20ch;
+  font: var(--t-gosteri);
+}
+
+.makale-bas .ozet {
+  max-width: var(--olcu);
+  margin-top: var(--b-4);
+  font: var(--t-ornek);
+}
+
+.makale-bolum {
+  margin-top: var(--b-9);
+  align-items: start;
+}
+
+.makale-bolum h2 {
+  padding-top: var(--b-3);
+  border-top: var(--c-kalin) solid var(--metin);
+  font: var(--t-bolum);
+}
+
+.makale-bolum .okuma {
+  max-width: var(--olcu);
+  font: var(--t-okuma);
+}
+
+.makale-bolum .okuma p + p,
+.makale-bolum h2 + .okuma {
+  margin-top: var(--b-3);
+}
+
+.makale-bolum h3 {
+  margin-top: var(--b-6);
+  font: var(--t-not);
+}
+
+.kenar-not {
+  padding: var(--b-3) 0 var(--b-4);
+  border-top: var(--c-kalin) solid var(--cizgi-ui);
+  font: var(--t-kucuk);
+}
+
+.kenar-not p + p,
+.kenar-not p + .dugme,
+.kenar-not .dugme + p {
+  margin-top: var(--b-3);
+}
+
+.kenar-not .komut {
+  display: block;
+  margin-top: var(--b-2);
+  padding: var(--b-2) var(--b-3);
+  background: var(--yuzey);
+  font: var(--t-kod);
+  font-size: 0.875rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+@media (min-width: 77.5rem) {
+  .makale-bolum .kenar-not {
+    margin-top: calc(var(--b-3) + 2.75rem);
+  }
+}
+
+.kenar-not .kenar-sayi {
+  font: var(--t-not);
+}
+
+/* Typeface credit under the license section (copy deck nasil.lisans.yazitipi). */
+.makale-bolum .yazi-tipi-atfi {
+  max-width: var(--olcu);
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}

@@ -1,0 +1,66 @@
+/* ======================= 11. Kanıtlayan test ve gönder ======================= */
+
+.bolum-blok {
+  margin-top: var(--b-9);
+  max-width: var(--olcu);
+}
+
+.bolum-blok.genis-blok {
+  max-width: none;
+}
+
+.bolum-blok > .alt-yazi {
+  margin-top: var(--b-2);
+  font: var(--t-govde);
+}
+
+.test-sec {
+  margin: var(--b-4) 0 0;
+  padding: 0;
+  border: 0;
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+.test-sec label {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--b-3);
+  min-height: 3.25rem;
+  padding: var(--b-3) var(--b-3) var(--b-3) var(--b-2);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+  cursor: pointer;
+}
+
+.test-sec input {
+  flex: 0 0 auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0.19rem 0 0;
+  accent-color: var(--metin);
+}
+
+.test-sec label[data-secili] {
+  background: var(--yuzey);
+}
+
+.test-sec label:hover {
+  background: var(--yuzey);
+}
+
+.gonder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--b-3) var(--b-5);
+  margin-top: var(--b-6);
+}
+
+.gonder .neden {
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.test-uyari {
+  margin-top: var(--b-3);
+}

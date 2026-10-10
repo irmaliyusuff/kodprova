@@ -1,0 +1,45 @@
+/* ======================= 8. İş fişi (görev + teslim notu) ======================= */
+
+.fis {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: var(--b-5);
+  border-top: var(--c-kalin) solid var(--metin);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.fis > section {
+  padding: var(--b-4) 0 var(--b-5);
+}
+
+.fis > section + section {
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+.fis h2 {
+  font: var(--t-dugme);
+}
+
+.fis .alt-yazi {
+  margin-bottom: var(--b-2);
+}
+
+.fis .okuma {
+  max-width: var(--olcu);
+  font: var(--t-okuma);
+}
+
+.teslim .okuma {
+  text-indent: -0.42em;
+}
+
+@media (min-width: 77.5rem) {
+  .fis {
+    grid-template-columns: minmax(0, 1fr) var(--kenar-gen);
+    column-gap: var(--kenar-ara);
+  }
+
+  .fis > section + section {
+    border-top: 0;
+  }
+}

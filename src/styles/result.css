@@ -1,0 +1,453 @@
+/* ======================= 12. Sonuç ======================= */
+
+.ozet-blok {
+  margin-top: var(--b-3);
+}
+
+.ozet-blok h1 {
+  margin-top: var(--b-4);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.ozet-cumle {
+  max-width: 24ch;
+  margin-top: var(--b-1);
+  font: var(--t-gosteri);
+  text-wrap: balance;
+}
+
+.sayilar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-2) var(--b-6);
+  margin-top: var(--b-4);
+  font: var(--t-govde);
+}
+
+.durum {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--b-2);
+  font-weight: 600;
+}
+
+.durum[data-d="bulundu"] {
+  color: var(--bulundu);
+}
+.durum[data-d="kacti"] {
+  color: var(--kacti);
+}
+.durum[data-d="yanlis"] {
+  color: var(--yanlis);
+}
+
+/* Sonuç işareti: şekil + yazı. Bulundu dolu daire ✓, kaçtı kesikli daire !, yanlış alarm daire ✕. */
+.simge {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  font: 600 0.75rem/1 var(--f-sans);
+}
+
+.simge[data-d="bulundu"] {
+  background: var(--bulundu);
+  color: var(--zemin);
+}
+
+.simge[data-d="kacti"] {
+  border: var(--c-murekkep) dashed var(--kacti);
+  color: var(--kacti);
+}
+
+.simge[data-d="yanlis"] {
+  border: var(--c-murekkep) solid var(--yanlis);
+  color: var(--yanlis);
+}
+
+.simge[data-d="bitti"] {
+  border: var(--c-murekkep) solid var(--metin);
+  color: var(--metin);
+}
+
+.test-cumle {
+  margin-top: var(--b-2);
+  color: var(--soluk);
+}
+
+/* Sonuçta kod satırları */
+.satir[data-d] .no {
+  font-weight: 600;
+}
+
+.satir[data-aralik] .oluk {
+  box-shadow: inset calc(-1 * var(--c-kalin)) 0 0 var(--aralik-renk);
+}
+
+.satir[data-aralik="bulundu"] {
+  --aralik-renk: var(--bulundu);
+}
+
+.satir[data-aralik="kacti"] .oluk {
+  box-shadow: none;
+  background-image: linear-gradient(var(--kacti) 50%, transparent 50%);
+  background-size: var(--c-kalin) 6px;
+  background-position: right top;
+  background-repeat: repeat-y;
+}
+
+.satir[data-d="bulundu"] .no {
+  background: var(--bulundu);
+  color: var(--zemin);
+  box-shadow: none;
+}
+
+.satir[data-d="bulundu"] code {
+  text-decoration: underline var(--c-murekkep) var(--bulundu);
+  text-underline-offset: 0.3em;
+}
+
+.satir[data-d="yanlis"] .no {
+  box-shadow: inset 0 0 0 var(--c-murekkep) var(--yanlis);
+  color: var(--yanlis);
+  text-decoration: line-through;
+}
+
+.satir[data-d="yanlis"] code {
+  text-decoration: underline var(--c-murekkep) dotted var(--yanlis);
+  text-underline-offset: 0.3em;
+}
+
+.sonuc .satir[data-d] .no,
+.sonuc-giris .satir[data-d] .no {
+  animation: daire var(--sure-daire) var(--egri-cikis) both;
+  animation-delay: calc(var(--sira, 0) * var(--ara-sira));
+}
+
+.not[data-d="bulundu"] {
+  border-top-color: var(--bulundu);
+}
+
+.not[data-d="kacti"] {
+  border-top-style: dashed;
+  border-top-color: var(--kacti);
+}
+
+.not[data-d="yanlis"] {
+  border-top-color: var(--cizgi-ui);
+}
+
+.not .durum {
+  font: var(--t-kucuk);
+  font-weight: 600;
+}
+
+.not h3.not-baslik {
+  margin-top: var(--b-1);
+  font: var(--t-not);
+}
+
+.karsilastir {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--b-1) var(--b-3);
+  margin-top: var(--b-3);
+}
+
+.karsilastir dt {
+  color: var(--soluk);
+}
+
+.karsilastir dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--b-2);
+  font-weight: 600;
+}
+
+.esles {
+  padding: 0 var(--b-1);
+  border: var(--c-ince) solid var(--cizgi-ui);
+  border-radius: var(--kose);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.esles[data-farkli] {
+  border-style: dashed;
+}
+
+.not .alt-baslik {
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.not .aciklama {
+  margin-top: var(--b-1);
+  font: var(--t-govde);
+  font-size: 0.9375rem;
+}
+
+.alinti {
+  margin-top: var(--b-1);
+  padding-left: var(--b-3);
+  border-left: var(--c-kalin) solid var(--cizgi);
+  font: var(--t-okuma);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.not .uyari {
+  margin-top: var(--b-2);
+}
+
+.not .itiraz {
+  margin-top: var(--b-2);
+}
+
+/* Test sonucu */
+.test-sonuc {
+  margin-top: var(--b-4);
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+.test-sonuc li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--b-3);
+  padding: var(--b-3) var(--b-2);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.test-sonuc li[data-yok] {
+  color: var(--soluk);
+}
+
+.test-sonuc li[data-yok] .simge {
+  border: var(--c-ince) solid var(--cizgi);
+}
+
+.test-sonuc .test-metin {
+  flex: 1 1 auto;
+}
+
+.test-sonuc .etiket {
+  margin-top: var(--b-1);
+}
+
+.test-neden {
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+/* Cevap bölümü: örnek cevap ana sütunda, kullanıcının gerekçeleri kenarda (K10). */
+.cevap {
+  margin-top: var(--b-9);
+}
+
+.cevap .ornek {
+  max-width: var(--olcu);
+  margin-top: var(--b-3);
+  font: var(--t-ornek);
+}
+
+.gerekceler {
+  border-top: var(--c-kalin) solid var(--murekkep);
+  padding-top: var(--b-3);
+}
+
+.gerekceler li {
+  padding: var(--b-3) 0;
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.gerekceler .etiket {
+  margin-bottom: var(--b-1);
+}
+
+.gerekceler p {
+  font: var(--t-okuma);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.kontrol {
+  margin-top: var(--b-6);
+}
+
+.kontrol h3 {
+  font: var(--t-not);
+}
+
+.kontrol ul {
+  margin-top: var(--b-2);
+}
+
+.kontrol label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--b-3);
+  min-height: var(--dokunma);
+  padding: var(--b-2) 0;
+  cursor: pointer;
+}
+
+.kontrol input {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.125rem 0 0;
+  accent-color: var(--metin);
+}
+
+/* Düzelti farkı: çıkan satırın üstü mürekkeple çizilir, giren satır sol çizgi + artı. */
+.fark .satir {
+  cursor: default;
+}
+
+.fark .oluk {
+  flex-basis: calc(var(--oluk) + 1.75rem);
+  gap: var(--b-2);
+  color: var(--soluk);
+  font: var(--t-satir-no);
+}
+
+.fark .oluk b {
+  min-width: 1.5rem;
+  font-weight: 400;
+  text-align: right;
+}
+
+.fark .isaretci {
+  flex: 0 0 1.25rem;
+  font-weight: 600;
+}
+
+.fark .satir[data-t="-"] .isaretci {
+  color: var(--murekkep);
+}
+
+.fark .satir[data-t="+"] {
+  background: var(--bulundu-zemin);
+}
+
+.fark .satir[data-t="+"] .oluk {
+  background-color: var(--bulundu-zemin);
+  box-shadow: inset 3px 0 0 var(--bulundu);
+}
+
+.fark .satir[data-t="+"] .isaretci {
+  color: var(--bulundu);
+}
+
+.fark .satir[data-t="-"] code {
+  position: relative;
+  color: var(--soluk);
+}
+
+.fark .satir[data-t="-"] code::after {
+  content: "";
+  position: absolute;
+  left: -0.25rem;
+  right: -0.25rem;
+  top: 50%;
+  height: var(--c-kalin);
+  background: var(--murekkep);
+  transform-origin: left;
+}
+
+.fark.ciz .satir[data-t="-"] code::after {
+  animation: ustunuCiz var(--sure-cizgi) var(--egri-ciz) both;
+  animation-delay: calc(var(--sira, 0) * var(--ara-cizgi));
+}
+
+@keyframes ustunuCiz {
+  from {
+    scale: 0 1;
+  }
+}
+
+.fark .atlanan {
+  padding: var(--b-2) var(--b-5) var(--b-2)
+    calc(var(--oluk) + 1.75rem + var(--b-4));
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+/* Köken bloğu */
+.koken-blok {
+  margin-top: var(--b-9);
+  max-width: var(--olcu);
+  padding-top: var(--b-4);
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+.koken-blok p {
+  margin-top: var(--b-2);
+}
+
+/* Eylem satırı */
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--b-3) var(--b-4);
+  margin-top: var(--b-8);
+  padding-top: var(--b-5);
+  border-top: var(--c-kalin) solid var(--metin);
+}
+
+.eylemler .sorun {
+  margin-left: auto;
+}
+
+.sorun-not {
+  max-width: var(--olcu);
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.konu-sonu {
+  margin-top: var(--b-8);
+  font: var(--t-okuma);
+}
+
+.karsilastir .isaretsiz {
+  font-weight: 400;
+}
+
+.simge svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cevap .alt-yazi {
+  margin-top: var(--b-2);
+}
+
+.kontrol .alt-yazi {
+  margin-top: var(--b-1);
+}
+
+.fark-kap {
+  margin-top: var(--b-4);
+}
+
+.konu-sonu + .eylemler {
+  margin-top: var(--b-4);
+}
+
+/* H8: with script, the strike waits (undrawn) until the diff is in view, then
+   draws once. Without script or with reduced motion it is drawn from the start. */
+@media (prefers-reduced-motion: no-preference) {
+  .fark.bekle .satir[data-t="-"] code::after {
+    scale: 0 1;
+  }
+}

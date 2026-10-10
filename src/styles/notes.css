@@ -1,0 +1,322 @@
+/* ======================= 10. Not (kenar notu / satır altı notu) ======================= */
+
+.not {
+  padding: var(--b-3) 0 var(--b-4);
+  border-top: var(--c-kalin) solid var(--murekkep);
+  background: var(--zemin);
+  font: var(--t-kucuk);
+  white-space: normal;
+}
+
+.not-ust {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--b-3);
+}
+
+.not-ust h3 {
+  font: var(--t-not);
+}
+
+.onem-sec {
+  margin: var(--b-2) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.onem-sec legend {
+  padding: 0;
+  margin-bottom: var(--b-1);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.onem-sec .secenekler3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--b-1);
+}
+
+.onem-sec label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--b-2);
+  min-height: var(--dokunma);
+  padding: 0 var(--b-2);
+  border: var(--c-ince) solid var(--cizgi-ui);
+  border-radius: var(--kose);
+  font: var(--t-kucuk);
+  cursor: pointer;
+}
+
+.onem-sec input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.onem-sec label[data-secili] {
+  border-color: var(--metin);
+  background: var(--metin);
+  color: var(--zemin);
+  font-weight: 600;
+}
+
+.onem-sec label:has(input:focus-visible) {
+  outline: 2px solid var(--odak);
+  outline-offset: 2px;
+}
+
+.onem-tanim {
+  margin-top: var(--b-2);
+  color: var(--soluk);
+}
+
+/* Önem işareti: çentik sayısı (Kritik 3, Önemli 2, Küçük 1). Renk taşımaz. */
+.centik {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  vertical-align: -0.1em;
+}
+
+.centik i {
+  width: 3px;
+  height: 0.75rem;
+  background: currentColor;
+}
+
+.centik i.bos {
+  opacity: 0.3;
+}
+
+.gerekce {
+  margin-top: var(--b-3);
+}
+
+.gerekce label {
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.gerekce textarea {
+  display: block;
+  width: 100%;
+  min-height: 4.5rem;
+  margin-top: var(--b-1);
+  padding: var(--b-1) 0 var(--b-2);
+  border: 0;
+  border-bottom: var(--c-ince) solid var(--cizgi-ui);
+  border-radius: 0;
+  background: none;
+  font: var(--t-okuma);
+  font-size: 1.0625rem;
+  resize: vertical;
+}
+
+.gerekce textarea:focus-visible {
+  outline-offset: 4px;
+}
+
+.gerekce textarea::placeholder {
+  color: var(--soluk);
+}
+
+.karakter {
+  display: block;
+  margin-top: var(--b-1);
+  color: var(--soluk);
+  font: var(--t-etiket);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.karakter[data-sinir] {
+  color: var(--murekkep);
+  font-weight: 600;
+}
+
+.uyari {
+  display: flex;
+  gap: var(--b-2);
+  color: var(--kacti);
+  font: var(--t-kucuk);
+  font-weight: 600;
+}
+
+.uyari::before {
+  content: "!";
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: var(--c-murekkep) dashed currentColor;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+/* Kapalı not (dar ekran, etkin olmayan işaret): tek satır özet. */
+.not-ozet {
+  display: none;
+}
+
+/* Genişte (≥ 1240 px) notlar kenar sütununa çıkar. Yerleri JS ile satır hizasına konur
+   (top + --kayma). JS yoksa durağan konumda (satırın hemen yanı) kalır. */
+@media (min-width: 77.5rem) {
+  .kod-bolum {
+    grid-template-columns: minmax(0, 1fr) var(--kenar-gen);
+    column-gap: var(--kenar-ara);
+    align-items: start;
+  }
+
+  .kod-ust {
+    grid-column: 1;
+  }
+
+  .kenar-bas {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    padding-top: var(--b-1);
+  }
+
+  .kod-kap {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .kod-bolum > .kod-kap .not {
+    position: absolute;
+    right: 0;
+    width: var(--kenar-gen);
+  }
+
+  /* Bağ çizgisi: satırın ortasından nota dirsek. --kayma = notun satır hizasından aşağı kayması (px),
+     JS yerleştirmesi verir. Kayma 0 ise düz yatay çizgi notun üst çizgisine bağlanır. */
+  .not::before {
+    content: "";
+    position: absolute;
+    top: calc(-2px - var(--kayma, 0px));
+    left: calc(-1 * var(--kenar-ara) + 0.5rem);
+    width: calc(var(--kenar-ara) - 0.5rem);
+    height: calc(var(--kayma, 0px) + 1px);
+    border-top: var(--c-ince) solid var(--bag-renk, var(--murekkep));
+    border-right: var(--c-ince) solid var(--bag-renk, var(--murekkep));
+    pointer-events: none;
+  }
+
+  .not[data-d="bulundu"] {
+    --bag-renk: var(--bulundu);
+  }
+
+  .not[data-d="yanlis"] {
+    --bag-renk: var(--cizgi-ui);
+  }
+
+  .not.yeni::before {
+    animation: bagCiz var(--sure-bag) var(--egri-ciz) both;
+  }
+
+  .not.yeni {
+    animation: notGir var(--sure-not) var(--egri-cikis) both;
+  }
+}
+
+@keyframes notGir {
+  from {
+    opacity: 0;
+    translate: 0.75rem 0;
+  }
+}
+
+@keyframes bagCiz {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* Dar ve orta ekran (< 1240 px): not satırın hemen altında, kod kabının içinde açılır
+   ve kabın görünen genişliğinde sabit durur (yatay kaydırmada kaymaz). */
+@media (max-width: 77.49rem) {
+  .kod-kap .not {
+    position: sticky;
+    left: 0;
+    width: 100cqi;
+    margin: var(--b-1) 0 var(--b-3);
+    padding-left: var(--b-4);
+    padding-right: var(--b-4);
+    border-bottom: var(--c-ince) solid var(--cizgi);
+  }
+
+  .kod-kap .not.yeni {
+    animation: notAc var(--sure-not) var(--egri-cikis) both;
+  }
+
+  .kod-kap .not[data-kapali] {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: var(--c-ince);
+  }
+
+  .kod-kap .not[data-kapali] > :not(.not-ozet) {
+    display: none;
+  }
+
+  .kod-kap .not[data-kapali] .not-ozet {
+    display: flex;
+  }
+
+  .kaydir-ipucu {
+    display: block;
+  }
+}
+
+@keyframes notAc {
+  from {
+    opacity: 0;
+    translate: 0 -0.375rem;
+  }
+}
+
+.not-ozet {
+  align-items: center;
+  gap: var(--b-2);
+  width: 100%;
+  min-height: var(--dokunma);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: var(--t-kucuk);
+  text-align: left;
+  cursor: pointer;
+}
+
+.not-ozet .ozet-metin {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--soluk);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.not-ozet strong {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.not-ozet::after {
+  content: "▾";
+  color: var(--soluk);
+}
+
+/* Collapsed note whose severity is still missing: the summary says so in ink. */
+.not-ozet .ozet-eksik {
+  color: var(--murekkep);
+}

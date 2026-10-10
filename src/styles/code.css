@@ -1,0 +1,211 @@
+/* ======================= 9. Kod bölümü ======================= */
+
+.kod-bolum {
+  position: relative;
+  display: grid;
+  align-content: start;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: var(--b-7);
+}
+
+.kod-ust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--b-1) var(--b-4);
+  margin-bottom: var(--b-3);
+}
+
+.kod-ust h2 {
+  font: var(--t-dugme);
+}
+
+.kod-ust .kunye {
+  font: var(--t-etiket);
+}
+
+/* Kenar başı: işaretleme yönergesi, sayaç, yardım. Genişte kenar sütununun başında. */
+.kenar-bas {
+  margin-bottom: var(--b-4);
+  font: var(--t-kucuk);
+}
+
+.kenar-bas .yonerge {
+  font: var(--t-govde);
+}
+
+.kenar-bas .ipucu,
+.kenar-bas .not-alti {
+  margin-top: var(--b-1);
+  color: var(--soluk);
+}
+
+.sayac-satiri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--b-1) var(--b-4);
+  margin-top: var(--b-2);
+}
+
+.sayac-satiri strong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.kenar-bas .uyari {
+  margin-top: var(--b-2);
+}
+
+.yardim summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--dokunma);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.yardim summary::-webkit-details-marker {
+  display: none;
+}
+
+.kaydir-ipucu {
+  display: none;
+  margin-bottom: var(--b-2);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+/* Kod kabı: kendi içinde yatay kayar, sayfa kaymaz. Genişte 80 karakter sığar (K4). */
+.kod-kap {
+  container-type: inline-size;
+  overflow-x: auto;
+  border-top: var(--c-ince) solid var(--cizgi);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+  background: var(--yuzey);
+  padding: var(--b-4) 0;
+}
+
+.kod {
+  min-width: max-content;
+  font: var(--t-kod);
+}
+
+.satir {
+  display: flex;
+  align-items: stretch;
+  min-height: var(--kod-satir);
+  padding-right: var(--b-5);
+}
+
+.satir[data-tikla] {
+  cursor: pointer;
+}
+
+.satir[data-aktif] {
+  background: var(--murekkep-zemin);
+}
+
+.oluk {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  flex: 0 0 var(--oluk);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: var(--b-4);
+  padding-right: var(--b-2);
+  background-color: var(--yuzey);
+  user-select: none;
+}
+
+.satir[data-aktif] .oluk {
+  background-color: var(--murekkep-zemin);
+}
+
+/* Satır numarası düğmesi: halka hedefi. Dokunma alanı satırın tamamı (satır tıklanır). */
+.no {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--halka);
+  height: var(--halka);
+  padding: 0 0.3em;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--soluk);
+  font: var(--t-satir-no);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+span.no {
+  cursor: default;
+}
+
+.satir[data-tikla]:hover .no {
+  box-shadow: inset 0 0 0 var(--c-ince) var(--cizgi-ui);
+  color: var(--metin);
+}
+
+.satir code {
+  display: block;
+  line-height: var(--kod-satir);
+  white-space: pre;
+  font: inherit;
+  padding: 0;
+  background: none;
+}
+
+/* İşaretli satır: numara mürekkeple daire içine alınır, kod satırının altı çizilir. */
+.satir[data-isaretli] .no {
+  box-shadow: inset 0 0 0 var(--c-murekkep) var(--murekkep);
+  color: var(--murekkep);
+  font-weight: 600;
+  animation: daire var(--sure-daire) var(--egri-cikis);
+}
+
+.satir[data-isaretli] code > span:first-child,
+.satir[data-isaretli] code {
+  text-decoration: underline var(--c-murekkep) var(--murekkep);
+  text-underline-offset: 0.3em;
+  text-decoration-skip-ink: none;
+}
+
+@keyframes daire {
+  from {
+    scale: 0.6;
+    opacity: 0;
+  }
+}
+
+/* Sözdizimi rolleri */
+.s-anahtar {
+  color: var(--s-anahtar);
+  font-weight: 600;
+}
+.s-dize {
+  color: var(--s-dize);
+}
+.s-sayi {
+  color: var(--s-sayi);
+}
+.s-islev {
+  color: var(--s-islev);
+}
+.s-tip {
+  color: var(--s-tip);
+}
+.s-yorum {
+  color: var(--s-yorum);
+}
+
+/* Each code line is a <pre> so its spaces survive in the prerendered HTML too. */
+pre.kod-metin {
+  margin: 0;
+  font: inherit;
+}

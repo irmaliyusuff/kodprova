@@ -1,0 +1,122 @@
+/* Design tokens (design spec v1, §1). Names are the spec's own (Turkish), so the
+   code and the spec can be read side by side. A short glossary:
+     zemin = page background · yuzey = code surface · metin = text · soluk = muted
+     cizgi = rule · cizgi-ui = control border · murekkep = ink (the editor's red pen)
+     bulundu = found · kacti = missed · yanlis = false alarm · odak = focus ring
+     t-* = type styles · b-* = spacing steps · sure-* = durations · egri-* = easing
+   Components use these tokens only: no raw colours, sizes or durations. */
+
+:root {
+  color-scheme: light;
+
+  /* Renk: açık */
+  --zemin: #ffffff;
+  --yuzey: #f2f4f6;
+  --metin: #1b1c1e;
+  --soluk: #585d64;
+  --cizgi: #d6dbe0;
+  --cizgi-ui: #80868e;
+  --murekkep: #b42318;
+  --murekkep-zemin: #fcefed;
+  --murekkep-metin: #ffffff;
+  --bulundu: #1d6a3b;
+  --bulundu-zemin: #ebf4ee;
+  --kacti: #b42318;
+  --yanlis: #585d64;
+  --odak: #1b1c1e;
+
+  /* Sözdizimi (kod yüzeyinde, işaretli satır zemininde ve fark zemininde ≥ 4,5) */
+  --s-anahtar: #1b1c1e;
+  --s-dize: #84470a;
+  --s-sayi: #1b5aa0;
+  --s-islev: #573996;
+  --s-tip: #0b5e5a;
+  --s-yorum: #585d64;
+
+  /* Yazı tipi aileleri */
+  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-sans:
+    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Tip ölçeği: ağırlık boyut/satır aile (1 rem = 16 px). Dar ekran karşılıkları §8'de. */
+  --t-gosteri: 600 2.75rem / 1.14 var(--f-serif);
+  --t-baslik: 600 2.125rem / 1.18 var(--f-serif);
+  --t-bolum: 600 1.625rem / 1.23 var(--f-serif);
+  --t-not: 600 1.1875rem / 1.37 var(--f-serif);
+  --t-ornek: 400 1.3125rem / 1.52 var(--f-serif);
+  --t-okuma: 400 1.125rem / 1.56 var(--f-serif);
+  --t-govde: 400 1rem / 1.5 var(--f-sans);
+  --t-dugme: 600 1rem / 1.25 var(--f-sans);
+  --t-kucuk: 400 0.875rem / 1.43 var(--f-sans);
+  --t-etiket: 500 0.8125rem / 1.38 var(--f-sans);
+  --t-kod: 400 0.9375rem / 1.625rem var(--f-mono);
+  --t-satir-no: 400 0.8125rem / 1 var(--f-mono);
+
+  /* Boşluk (4 px tabanı) */
+  --b-1: 0.25rem;
+  --b-2: 0.5rem;
+  --b-3: 0.75rem;
+  --b-4: 1rem;
+  --b-5: 1.5rem;
+  --b-6: 2rem;
+  --b-7: 2.5rem;
+  --b-8: 3rem;
+  --b-9: 4.5rem;
+
+  /* Ölçüler */
+  --sayfa-max: 77.5rem;
+  --sayfa-pay: 2rem;
+  --kenar-gen: 18.75rem;
+  --kenar-ara: 2.5rem;
+  --olcu: 40rem;
+  --kod-satir: 1.625rem;
+  --oluk: 3.5rem;
+  --halka: 1.625rem;
+  --dugme-y: 3rem;
+  --dokunma: 2.75rem;
+
+  /* Çizgi ve köşe */
+  --c-ince: 1px;
+  --c-kalin: 2px;
+  --c-murekkep: 1.5px;
+  --kose: 2px;
+
+  /* Hareket */
+  --egri-cikis: cubic-bezier(0.2, 0, 0, 1);
+  --egri-ciz: cubic-bezier(0.65, 0, 0.35, 1);
+  --sure-hizli: 120ms;
+  --sure-daire: 180ms;
+  --sure-not: 240ms;
+  --sure-bag: 320ms;
+  --sure-cizgi: 420ms;
+  --ara-sira: 60ms;
+  --ara-cizgi: 120ms;
+}
+
+/* Dark: follows the device setting only; there is no theme switch (spec A1, T9). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --zemin: #131416;
+    --yuzey: #1c1e21;
+    --metin: #e8eaed;
+    --soluk: #a3a9b1;
+    --cizgi: #33373c;
+    --cizgi-ui: #78808a;
+    --murekkep: #ff8b7b;
+    --murekkep-zemin: #3a201d;
+    --murekkep-metin: #131416;
+    --bulundu: #6fcf97;
+    --bulundu-zemin: #172a20;
+    --kacti: #ff8b7b;
+    --yanlis: #a3a9b1;
+    --odak: #e8eaed;
+    --s-anahtar: #e8eaed;
+    --s-dize: #e3b577;
+    --s-sayi: #8db8f0;
+    --s-islev: #c8acf2;
+    --s-tip: #6cc9c1;
+    --s-yorum: #a3a9b1;
+  }
+}

@@ -1,0 +1,21 @@
+# LOCAL ONLY: the counter's local D1 commands (migrations, queries) read this.
+#
+# Deliberately not named "wrangler.toml" and not in the repository root:
+# Cloudflare Pages and "wrangler pages dev" do not pick it up. In production
+# the D1 binding (DB) and the SUMMARY_KEY secret are set in the dashboard
+# (Settings > Bindings, Settings > Variables and Secrets); this file does not
+# affect production.
+#
+# Use (from the repository root): npm run counter:migrate
+# Never add "--remote" to a command: running anything against the production
+# database is a release step (DevOps + Yusuf).
+
+name = "kodprova-sayac-local"
+compatibility_date = "2026-10-01"
+send_metrics = false                            # no wrangler usage telemetry
+
+[[d1_databases]]
+binding = "DB"                                  # env.DB in the code
+database_name = "kodprova-sayac"
+database_id = "local-kodprova-sayac"            # not a real id; names the local file
+migrations_dir = "_migrations"                  # relative to this file

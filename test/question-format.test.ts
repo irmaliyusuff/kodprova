@@ -8,7 +8,12 @@ import {
   validateQuestion,
   type QuestionContext,
 } from "../scripts/lib/question.ts";
-import { FIXTURE_QUESTIONS, REAL_QUESTIONS } from "./helpers.ts";
+import {
+  copyQuestions,
+  editJson,
+  FIXTURE_QUESTIONS,
+  REAL_QUESTIONS,
+} from "./helpers.ts";
 
 const CONTEXT: QuestionContext = {
   folderName: "age-check",
@@ -230,6 +235,22 @@ describe("question format", () => {
   test("the id must match the folder name", async () => {
     const errors = await errorsAfter(() => {}, { folderName: "age-check-2" });
     assert.deepEqual(errors, ['"id" must match the folder name "age-check-2"']);
+  });
+
+  test("a bug range cannot start or end on an empty line", async () => {
+    // Line 3 of the fixture is empty; the site does not let users mark it.
+    const dir = await copyQuestions(FIXTURE_QUESTIONS, ["age-check"]);
+    await editJson(join(dir, "age-check", "question.json"), (json) => {
+      json.bugs[0].lines = [3, 5];
+    });
+    const { errors } = await loadQuestions(dir);
+    assert.equal(errors.length, 1);
+    assert.ok(
+      errors[0]!.endsWith(
+        'age-check: "bugs[0].lines" must start and end on a line of code (line 3 is empty)',
+      ),
+      errors[0],
+    );
   });
 
   test("the original code must be 15 to 60 lines", async () => {

@@ -1,0 +1,80 @@
+/* ======================= 6. Düğmeler ve bağlantılar ======================= */
+
+.dugme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--b-2);
+  min-height: var(--dugme-y);
+  padding: 0 var(--b-5);
+  border: var(--c-ince) solid var(--metin);
+  border-radius: var(--kose);
+  background: var(--metin);
+  color: var(--zemin);
+  font: var(--t-dugme);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--sure-hizli),
+    color var(--sure-hizli);
+}
+
+.dugme:hover {
+  background: var(--soluk);
+  border-color: var(--soluk);
+}
+
+.dugme.ikincil {
+  border-color: var(--cizgi-ui);
+  background: none;
+  color: var(--metin);
+}
+
+.dugme.ikincil:hover {
+  border-color: var(--metin);
+  background: var(--yuzey);
+}
+
+.dugme.tehlike {
+  border-color: var(--murekkep);
+  background: var(--murekkep);
+  color: var(--murekkep-metin);
+}
+
+.dugme[aria-disabled="true"] {
+  border-style: dashed;
+  border-color: var(--cizgi-ui);
+  background: none;
+  color: var(--soluk);
+  cursor: not-allowed;
+}
+
+.dugme.kucuk {
+  min-height: var(--dokunma);
+  padding: 0 var(--b-4);
+  font: var(--t-kucuk);
+  font-weight: 600;
+}
+
+.metin-dugme {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--dokunma);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--metin);
+  font: var(--t-kucuk);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+}
+
+.metin-dugme.soluk {
+  color: var(--soluk);
+}
+
+.dis::after {
+  content: " ↗";
+}

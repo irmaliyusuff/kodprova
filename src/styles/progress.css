@@ -1,0 +1,110 @@
+/* ======================= 14. İlerleme ======================= */
+
+.tablo-kap {
+  max-width: 48rem;
+  margin-top: var(--b-6);
+  overflow-x: auto;
+}
+
+.ilerleme-tablo {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.ilerleme-tablo th,
+.ilerleme-tablo td {
+  padding: var(--b-3) var(--b-3) var(--b-3) 0;
+  border-bottom: var(--c-ince) solid var(--cizgi);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.ilerleme-tablo thead th {
+  border-bottom: var(--c-kalin) solid var(--metin);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.ilerleme-tablo tbody th {
+  font: var(--t-not);
+  font-size: 1.0625rem;
+}
+
+.ilerleme-tablo tfoot th,
+.ilerleme-tablo tfoot td {
+  border-bottom: 0;
+  border-top: var(--c-kalin) solid var(--metin);
+  font-weight: 600;
+}
+
+.cetele {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: var(--b-2);
+  vertical-align: -0.05em;
+}
+
+.cetele i {
+  width: 0.625rem;
+  height: 0.625rem;
+  border: var(--c-ince) solid var(--cizgi-ui);
+}
+
+.cetele i[data-dolu] {
+  border-color: var(--metin);
+  background: var(--metin);
+}
+
+.ilerleme-alt {
+  margin-top: var(--b-8);
+  padding-top: var(--b-4);
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+/* Onay penceresi */
+dialog.onay {
+  width: min(28rem, calc(100vw - 2rem));
+  padding: var(--b-5);
+  border: var(--c-ince) solid var(--cizgi-ui);
+  border-top: var(--c-kalin) solid var(--murekkep);
+  border-radius: var(--kose);
+  background: var(--zemin);
+  color: var(--metin);
+}
+
+dialog.onay::backdrop {
+  background: rgb(19 20 22 / 0.6);
+}
+
+dialog.onay[open] {
+  animation: notAc var(--sure-daire) var(--egri-cikis);
+}
+
+dialog.onay h2 {
+  font: var(--t-not);
+  font-size: 1.375rem;
+}
+
+dialog.onay p {
+  margin-top: var(--b-3);
+}
+
+dialog.onay .dugmeler {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--b-3);
+  margin-top: var(--b-5);
+}
+
+/* Empty and no-storage states: a sentence (and a button) instead of the table. */
+.ilerleme-bilgi {
+  max-width: var(--olcu);
+  margin-top: var(--b-6);
+  font: var(--t-okuma);
+}
+
+.ilerleme-bilgi .dugme {
+  margin-top: var(--b-4);
+}

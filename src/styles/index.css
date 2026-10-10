@@ -1,0 +1,28 @@
+/* Kodprova styles. Direction A ("proofreading"): code is a proof, the user
+   circles a line like an editor and writes a note in the margin; the result
+   shows the editor's correction marks.
+
+   The files follow the design spec's reference stylesheet section by section
+   and in the same order, so the cascade is the one that was measured. Narrow
+   screen overrides come last on purpose (narrow.css). */
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./header-footer.css";
+@import "./notices.css";
+@import "./buttons.css";
+@import "./headings.css";
+@import "./task-sheet.css";
+@import "./code.css";
+@import "./notes.css";
+@import "./test-picker.css";
+@import "./result.css";
+@import "./question-list.css";
+@import "./progress.css";
+@import "./home.css";
+@import "./article.css";
+@import "./status-screen.css";
+@import "./narrow.css";
+@import "./reduced-motion.css";

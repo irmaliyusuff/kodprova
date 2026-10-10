@@ -1,0 +1,68 @@
+/* ======================= 7. Başlık blokları, künye, köken ======================= */
+
+.yol ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--b-2);
+  padding-top: var(--b-6);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.yol li + li::before {
+  content: "›";
+  margin-right: var(--b-2);
+  color: var(--cizgi-ui);
+}
+
+.yol a {
+  color: var(--soluk);
+}
+
+.kunye {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-1) var(--b-4);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+/* Origin: ◆ real, ◇ fictional (inline SVG, 10 px). */
+.koken {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.koken svg {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+.soru-kunye {
+  margin-top: var(--b-2);
+}
+
+h1.baslik {
+  max-width: 28ch;
+  margin-top: var(--b-3);
+  font: var(--t-baslik);
+  text-wrap: balance;
+}
+
+.etiket {
+  display: block;
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.alt-yazi {
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+h2.bolum {
+  font: var(--t-bolum);
+  text-wrap: balance;
+}

@@ -1,0 +1,140 @@
+/* ======================= 13. Soru listesi: konu × zorluk tablosu ======================= */
+
+.liste-bas {
+  padding-top: var(--b-6);
+}
+
+.liste-bas .alt-yazi {
+  margin-top: var(--b-2);
+  font: var(--t-govde);
+}
+
+.liste-bas .cozulen {
+  margin-top: var(--b-1);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+  font-variant-numeric: tabular-nums;
+}
+
+.konu-git {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--b-4);
+  margin-top: var(--b-4);
+  font: var(--t-kucuk);
+}
+
+.konu-git .etiket {
+  display: inline;
+}
+
+.konu-git a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--dokunma);
+}
+
+.matris {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--b-8);
+  margin-top: var(--b-6);
+}
+
+.konu-sutun h2 {
+  font: var(--t-bolum);
+  font-size: 1.375rem;
+}
+
+.konu-sutun > p {
+  margin-top: var(--b-1);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.konu-sutun ol {
+  margin-top: var(--b-3);
+  border-top: var(--c-kalin) solid var(--metin);
+}
+
+.soru-kart {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--b-1);
+  padding: var(--b-3) var(--b-2) var(--b-4);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+  text-decoration: none;
+  transition: background-color var(--sure-hizli);
+}
+
+.soru-kart:hover {
+  background: var(--yuzey);
+}
+
+.soru-kart:hover .kart-baslik {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.kart-ust {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--b-2);
+  color: var(--soluk);
+  font: var(--t-etiket);
+}
+
+.kart-baslik {
+  font: var(--t-not);
+  font-size: 1.0625rem;
+}
+
+.kart-durum {
+  display: flex;
+  align-items: center;
+  gap: var(--b-2);
+  margin-top: var(--b-1);
+  font: var(--t-etiket);
+}
+
+.kart-durum[data-bitti] {
+  font-weight: 600;
+}
+
+.kart-durum:not([data-bitti]) {
+  color: var(--soluk);
+}
+
+.kart-durum .simge {
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.625rem;
+}
+
+@media (min-width: 48rem) {
+  .matris {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--b-6);
+  }
+}
+
+@media (min-width: 77.5rem) {
+  .matris {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--b-5);
+  }
+
+  .konu-git {
+    display: none;
+  }
+
+  .konu-sutun > p {
+    min-height: 3.75rem;
+  }
+}
+
+.liste-bas h1.baslik {
+  margin-top: 0;
+}

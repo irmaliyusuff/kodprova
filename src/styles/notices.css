@@ -1,0 +1,39 @@
+/* ======================= 5. Şerit, durum satırı ======================= */
+
+.serit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--b-2) var(--b-4);
+  margin-top: var(--b-4);
+  padding: var(--b-3) var(--b-4);
+  border-left: var(--c-kalin) solid var(--cizgi-ui);
+  background: var(--yuzey);
+  font: var(--t-kucuk);
+}
+
+.serit p {
+  flex: 1 1 20rem;
+}
+
+.serit .kapat {
+  justify-content: center;
+  min-width: var(--dokunma);
+  margin-left: auto;
+  text-decoration: none;
+}
+
+.durum-satiri {
+  margin-top: var(--b-4);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.durum-satiri:empty {
+  display: none;
+}
+
+.serit .kapat svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}

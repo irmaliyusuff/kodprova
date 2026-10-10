@@ -129,6 +129,7 @@ async function loadQuestion(
   if (!question) {
     return { question: null, errors };
   }
+  errors.push(...emptyRangeEnds(question, lines(original)));
 
   let subject: string | null = null;
   const flawed: Record<string, string> = {};
@@ -158,6 +159,21 @@ async function loadQuestion(
     },
     errors: [],
   };
+}
+
+/**
+ * A bug's range must start and end on a line of code: the site does not let
+ * users mark empty lines, so an empty first or last line only looks markable.
+ */
+function emptyRangeEnds(question: Question, originalLines: string[]): string[] {
+  return question.bugs.flatMap((bug, index) =>
+    [...new Set(bug.lines)]
+      .filter((line) => originalLines[line - 1]?.trim() === "")
+      .map(
+        (line) =>
+          `"bugs[${index}].lines" must start and end on a line of code (line ${line} is empty)`,
+      ),
+  );
 }
 
 /** Reads a code file; records missing files, CRLF and long lines as errors. */

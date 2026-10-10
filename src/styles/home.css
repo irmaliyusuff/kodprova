@@ -1,0 +1,240 @@
+/* ======================= 15. Giriş ======================= */
+
+.giris-bas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--b-7);
+  padding-top: var(--b-8);
+}
+
+.giris-bas .etiket {
+  font: var(--t-kucuk);
+}
+
+.giris-bas h1 {
+  max-width: 21ch;
+  margin-top: var(--b-3);
+  font: var(--t-gosteri);
+  text-wrap: balance;
+}
+
+.giris-bas .tanim {
+  max-width: 34rem;
+  margin-top: var(--b-4);
+  font: var(--t-ornek);
+}
+
+.giris-bas .eylem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-3);
+  margin-top: var(--b-6);
+}
+
+.giris-bas .kunye {
+  margin-top: var(--b-4);
+}
+
+/* Prova örneği: ürünün tek eylemini gösteren şematik kod sayfası (sahte kod yok, çubuklar). */
+.prova {
+  position: relative;
+  align-self: start;
+  padding: var(--b-5) 0 var(--b-5);
+  border-top: var(--c-ince) solid var(--cizgi);
+  border-bottom: var(--c-ince) solid var(--cizgi);
+  background: var(--yuzey);
+}
+
+.prova .p-satir {
+  display: flex;
+  align-items: center;
+  height: var(--kod-satir);
+}
+
+.prova .p-no {
+  flex: 0 0 var(--oluk);
+  display: flex;
+  justify-content: flex-end;
+  padding-right: var(--b-2);
+  margin-right: var(--b-4);
+  color: var(--soluk);
+  font: var(--t-satir-no);
+}
+
+.prova .p-no span {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--halka);
+  height: var(--halka);
+  border-radius: 999px;
+}
+
+.prova .p-cubuk {
+  height: 0.5rem;
+  border-radius: 1px;
+  background: var(--cizgi);
+}
+
+.prova .p-satir[data-isaretli] .p-no span {
+  box-shadow: inset 0 0 0 var(--c-murekkep) var(--murekkep);
+  color: var(--murekkep);
+  font-weight: 600;
+}
+
+.prova .p-satir[data-isaretli] .p-cubuk {
+  background: var(--cizgi-ui);
+  box-shadow: 0 0.4rem 0 -0.15rem var(--murekkep);
+}
+
+.prova .p-not {
+  position: absolute;
+  right: var(--b-4);
+  top: calc(var(--b-5) + 3 * var(--kod-satir) + var(--kod-satir) / 2 + 1rem);
+  width: min(22rem, 76%);
+  padding: var(--b-2) var(--b-3) var(--b-3);
+  border-top: var(--c-kalin) solid var(--murekkep);
+  background: var(--zemin);
+  font: var(--t-kucuk);
+}
+
+.prova .p-not::before {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: calc(-1rem - 1px);
+  width: 2rem;
+  height: 1rem;
+  border-top: var(--c-ince) solid var(--murekkep);
+  border-right: var(--c-ince) solid var(--murekkep);
+  translate: 0 0;
+  clip-path: none;
+}
+
+.prova .p-not .p-onem {
+  display: flex;
+  gap: var(--b-1);
+  margin-top: var(--b-2);
+}
+
+.prova .p-not .p-onem span {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 1.75rem;
+  border: var(--c-ince) solid var(--cizgi-ui);
+  border-radius: var(--kose);
+  font: var(--t-etiket);
+}
+
+.prova .p-not .p-onem span[data-secili] {
+  border-color: var(--metin);
+  background: var(--metin);
+  color: var(--zemin);
+}
+
+.prova .p-not .p-gerekce {
+  margin-top: var(--b-2);
+  padding-bottom: var(--b-1);
+  border-bottom: var(--c-ince) solid var(--cizgi-ui);
+  color: var(--soluk);
+  font: var(--t-okuma);
+  font-size: 0.9375rem;
+}
+
+.prova-giris .p-satir[data-isaretli] .p-no span {
+  animation: daire var(--sure-daire) var(--egri-cikis) 400ms both;
+}
+
+.prova-giris .p-not {
+  animation: notGir var(--sure-not) var(--egri-cikis) 560ms both;
+}
+
+.adimlar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--b-5);
+  margin-top: var(--b-4);
+}
+
+.adim {
+  padding-top: var(--b-4);
+  border-top: var(--c-kalin) solid var(--metin);
+}
+
+.adim .isaret-ornek {
+  display: flex;
+  align-items: center;
+  gap: var(--b-2);
+  height: 1.75rem;
+  color: var(--soluk);
+  font: var(--t-satir-no);
+}
+
+.adim h3 {
+  margin-top: var(--b-2);
+  font: var(--t-not);
+}
+
+.adim p {
+  margin-top: var(--b-2);
+}
+
+.giris-alt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-2) var(--b-5);
+  align-items: center;
+  margin-top: var(--b-5);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.onem-olcu {
+  margin-top: var(--b-4);
+  border-top: var(--c-kalin) solid var(--metin);
+}
+
+.onem-olcu li {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--b-3);
+  align-items: baseline;
+  padding: var(--b-3) 0;
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.onem-olcu b {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--b-2);
+  font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+  .adimlar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 77.5rem) {
+  .giris-bas {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--b-8);
+    align-items: center;
+  }
+}
+
+/* Step pictures (B32): the handoff note's opening quote and a circled line number. */
+.adim-tirnak {
+  font: var(--t-okuma);
+  font-size: 1.5rem;
+}
+
+.adim .adim-halka {
+  box-shadow: inset 0 0 0 var(--c-murekkep) var(--murekkep);
+  color: var(--murekkep);
+  font-weight: 600;
+  cursor: default;
+}

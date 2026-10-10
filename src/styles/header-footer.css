@@ -1,0 +1,90 @@
+/* ======================= 4. Üst bölüm ve alt bilgi ======================= */
+
+.ust {
+  display: flex;
+  align-items: center;
+  gap: var(--b-6);
+  min-height: 4rem;
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.marka {
+  display: inline-flex;
+  margin-right: auto;
+  color: var(--metin);
+  text-decoration: none;
+}
+
+.marka svg {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+}
+
+.marka .halka-yolu {
+  fill: none;
+  stroke: var(--murekkep);
+}
+
+.menu {
+  display: flex;
+  gap: var(--b-5);
+  font: var(--t-kucuk);
+  font-size: 0.9375rem;
+}
+
+.menu a,
+.dil a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--dokunma);
+  color: var(--soluk);
+  text-decoration: none;
+}
+
+.menu a:hover,
+.dil a:hover {
+  color: var(--metin);
+}
+
+.menu a[aria-current="page"] {
+  color: var(--metin);
+  text-decoration: underline;
+  text-decoration-thickness: var(--c-kalin);
+  text-underline-offset: 0.5em;
+}
+
+.dil {
+  display: flex;
+  gap: var(--b-3);
+  font: var(--t-kucuk);
+}
+
+.dil a {
+  justify-content: center;
+  min-width: 1.75rem;
+  padding: 0 var(--b-1);
+}
+
+.dil a[aria-current="true"] {
+  color: var(--metin);
+  font-weight: 600;
+}
+
+.dil .kisa {
+  display: none;
+}
+
+.alt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-2) var(--b-5);
+  padding: var(--b-5) 0 var(--b-6);
+  border-top: var(--c-ince) solid var(--cizgi);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+.alt a {
+  color: var(--metin);
+}

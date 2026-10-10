@@ -3,8 +3,8 @@
 Practice finding the hidden bugs in AI-written code, and explaining them the way an interviewer
 expects: how severe the bug is, why, and which test proves it. Turkish and English.
 
-> **Status: early.** This repository holds the question format, the format checker and the proof
-> gate. The site itself (React + TypeScript + Vite) comes next.
+> **Status: before the first release.** The site, the question format, the format checker and
+> the proof gate are here; the questions are being reviewed.
 
 ## How it works
 
@@ -30,19 +30,53 @@ npm install
 
 ## Commands
 
-| Command                   | What it does                                                                |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `npm run proof`           | Proof gate: validates every question, then proves every question            |
-| `npm run build:questions` | Validates every question and writes `generated/questions.json` for the site |
-| `npm test`                | Tests of the format checker, the build and the proof gate itself            |
-| `npm run typecheck`       | `tsc` over scripts, tests and the TypeScript questions                      |
-| `npm run format:check`    | Prettier check (`npm run format` to fix)                                    |
-| `npm run check`           | All of the above                                                            |
-| `npm run scan-names`      | Looks for private names in every file and in the git history (see below)    |
+| Command                   | What it does                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `npm run dev`             | Builds the question data and starts the site on a local development server     |
+| `npm run build`           | Builds the site into `dist/`: question data, bundle, one HTML page per address |
+| `npm run preview`         | Serves `dist/` the way Cloudflare Pages does (404 page, the counter API)       |
+| `npm run proof`           | Proof gate: validates every question, then proves every question               |
+| `npm run build:questions` | Validates every question and writes `generated/questions.json` for the site    |
+| `npm test`                | Tests of the format checker, the build and the proof gate itself               |
+| `npm run typecheck`       | `tsc` over scripts, tests and the TypeScript questions                         |
+| `npm run format:check`    | Prettier check (`npm run format` to fix)                                       |
+| `npm run build:site-data` | Turns `generated/questions.json` into the site's data (see below)              |
+| `npm run check`           | Format, types, tests, proof gate and a full site build                         |
+| `npm run scan-names`      | Looks for private names in every file and in the git history (see below)       |
 
 Proof gate options: `-- --lang ts,js` (or `python`) checks only those languages,
 `-- --only <question id>` a single question (only that folder is validated, so an unfinished
 folder elsewhere does not stop it). A filtered run says so in its result line.
+
+## The site
+
+React + TypeScript, built with Vite into a static site. Each screen has its own address, with
+the language first: `/tr/questions/<id>/`, `/en/progress/` and so on. `npm run build` runs:
+
+1. `build:questions` validates every question folder and writes `generated/questions.json`.
+2. `build:site-data` writes `generated/site-index.json` (every question's summary, part of the
+   main bundle) and `generated/questions/<id>.json` (one question with its code already split
+   into syntax-coloured lines, loaded when its screen opens).
+3. Vite builds the client, then the server entry (`src/entry-server.tsx`).
+4. `scripts/prerender.ts` renders every address to its own `index.html`, so each page has its
+   content, title and description before any script runs. The browser then hydrates that HTML.
+
+| Folder            | What is in it                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `src/screens/`    | One component per screen: home, list, question, result, progress, how it's made    |
+| `src/components/` | Pieces shared by screens: layout, code view, markers, margin notes                 |
+| `src/lib/`        | Logic without React (scoring, diff, routes, stored progress), tested by `npm test` |
+| `src/i18n/`       | Interface copy in Turkish and English, keyed by the copy deck's ids                |
+| `src/styles/`     | CSS, following the design spec section by section                                  |
+
+Progress stays in the browser (`localStorage`); there are no accounts and no personal data is
+sent. Settings are read at build time from environment variables:
+
+| Variable               | Effect                                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `VITE_COUNTER_ENABLED` | `true` turns on the anonymous counter, one request per submitted answer. Off by default, and then nothing is sent at all |
+| `VITE_REPOSITORY_URL`  | This repository's address; without it the source, license and "Report a problem" links are left out                      |
+| `VITE_SITE_URL`        | The published address, for canonical and language alternate links                                                        |
 
 ## Adding a question
 
@@ -242,6 +276,8 @@ interpreter all count as a failure.
 
 - Code uses English names, so one code listing serves both languages.
 - Original and fixed code: 15–60 lines, at most 80 characters per line, LF line endings.
+- A bug's line range starts and ends on a line of code, not on an empty line: the site does not
+  let users mark empty lines.
   TypeScript questions are Prettier-formatted (`npm run format`) **before** you count line numbers.
 - TypeScript questions run without a build step, so use erasable syntax only (no `enum`,
   `namespace` or constructor parameter properties).

@@ -1,0 +1,35 @@
+/* ======================= 3. Sayfa ızgarası ======================= */
+
+.sayfa {
+  max-width: var(--sayfa-max);
+  margin: 0 auto;
+  padding: 0 var(--sayfa-pay);
+}
+
+main {
+  display: block;
+  outline: none;
+  padding-bottom: var(--b-9);
+}
+
+/* Geniş ızgara: ana sütun + kenar sütunu (300 px). Dar ekranda tek sütun. */
+.izgara {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--b-5);
+}
+
+@media (min-width: 77.5rem) {
+  .izgara {
+    grid-template-columns: minmax(0, 1fr) var(--kenar-gen);
+    column-gap: var(--kenar-ara);
+  }
+
+  .izgara > .tam {
+    grid-column: 1 / -1;
+  }
+
+  .izgara > .kenarda {
+    grid-column: 2;
+  }
+}

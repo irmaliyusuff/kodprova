@@ -1,0 +1,99 @@
+/* ======================= 2. Taban ======================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--zemin);
+  color: var(--metin);
+  font: var(--t-govde);
+  font-optical-sizing: auto;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+dl,
+dd,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--odak);
+  outline-offset: 2px;
+}
+
+/* Metin içi bağlantı: dokunma yüksekliği ≥ 24 (WCAG 2.5.8) */
+main p a:not(.dugme),
+.alt a,
+.yol a {
+  padding-block: 0.25rem;
+}
+
+/* Satır içi kod (görev, açıklama, test seçeneği, örnek cevap içindeki `…`) */
+:not(pre) > code,
+.satir-ici {
+  font-family: var(--f-mono);
+  font-size: 0.875em;
+  padding: 0 0.2em;
+  border-radius: var(--kose);
+  background: var(--yuzey);
+  overflow-wrap: anywhere;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.gizli {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.atla {
+  position: absolute;
+  left: var(--b-4);
+  top: -4rem;
+  z-index: 10;
+  padding: var(--b-2) var(--b-4);
+  background: var(--metin);
+  color: var(--zemin);
+  font: var(--t-dugme);
+}
+
+.atla:focus {
+  top: var(--b-2);
+}
