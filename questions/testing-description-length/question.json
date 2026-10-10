@@ -1,0 +1,83 @@
+{
+  "id": "testing-description-length",
+  "title": {
+    "tr": "Meta açıklama uzunluğu testleri",
+    "en": "Meta description length tests"
+  },
+  "topic": "testing",
+  "difficulty": 2,
+  "language": "ts",
+  "origin": "real",
+  "task": {
+    "tr": "Yazı formundaki meta açıklama doğrulaması `descriptionError(text)` için birim testleri yaz. Kural: baştaki ve sondaki boşluklar kırpıldıktan sonra uzunluk 120 ile 160 karakter arasında olmalı, iki sınır da dahil. Kısaysa `\"too-short\"`, uzunsa `\"too-long\"`, geçerliyse `null` döner.",
+    "en": "Write unit tests for `descriptionError(text)`, the meta description check in the article form. Rule: after trimming leading and trailing spaces, the length must be from 120 to 160 characters, both limits included. It returns `\"too-short\"` when the text is too short, `\"too-long\"` when it is too long and `null` when it is valid."
+  },
+  "deliveryNote": {
+    "tr": "Geçerli uzunluk, iki sınır ve boşluk kırpma test edildi. Kuraldaki her durum için bir test var.",
+    "en": "Tested a valid length, both limits and space trimming. Every case in the rule has a test."
+  },
+  "bugs": [
+    {
+      "id": "lower-bound",
+      "lines": [12, 12],
+      "fixedLines": [12, 13],
+      "severity": "major",
+      "explanation": {
+        "tr": "Alt sınır sınır değerinden çok uzak bir girdiyle (40 karakter) test ediliyor. Alt sınırı yanlış olan bir uygulama (örneğin 120 yerine 70) 40 karakteri yine reddettiği için test geçer; 70–119 karakterlik açıklamalar sessizce kabul edilir. Üst sınır 160 ve 161 ile doğru sınanmışken alt sınırda aynısı yapılmamış. Düzeltme: 119'un reddedildiğini ve 120'nin kabul edildiğini test etmek.",
+        "en": "The lower limit is tested with an input far from the boundary value (40 characters). An implementation with a wrong lower limit (say 70 instead of 120) still rejects 40 characters, so the test passes, and descriptions of 70–119 characters are accepted without a word. The upper limit is properly checked with 160 and 161, but the lower one is not. Fix: test that 119 is rejected and 120 is accepted."
+      },
+      "flawedImplementation": {
+        "tr": "Alt sınırı 120 yerine 70 olan bir uygulama.",
+        "en": "An implementation whose lower limit is 70 instead of 120."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "lower-bound",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "119 karakter `\"too-short\"` döner.",
+          "en": "119 characters gives `\"too-short\"`."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "120 karakter `null` döner.",
+          "en": "120 characters gives `null`."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "10 karakter `\"too-short\"` döner.",
+          "en": "10 characters gives `\"too-short\"`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "161 karakter `\"too-long\"` döner.",
+          "en": "161 characters gives `\"too-long\"`."
+        }
+      }
+    ],
+    "correct": "a"
+  },
+  "sampleAnswer": {
+    "tr": "Kısa metin testi 40 karakter kullanıyor; alt sınırı 70 olan yanlış bir uygulama da 40'ı reddettiği için test geçer ve 70–119 karakterlik açıklamalar kabul edilir. Üst sınır 160 ve 161 ile sınanmışken alt sınır sınır değerinde sınanmamış. 119'un `\"too-short\"`, 120'nin `null` döndüğünü test ederdim.",
+    "en": "The short text test uses 40 characters, so a wrong implementation with a lower limit of 70 still rejects it, the test passes and descriptions of 70–119 characters are accepted. The upper limit is checked with 160 and 161, but the lower limit is not checked at its boundary value. I'd test that 119 gives `\"too-short\"` and 120 gives `null`."
+  },
+  "checklist": [
+    {
+      "tr": "Testin hangi hatalı uygulamayı geçirdiğini söyledim (yanlış alt sınır)",
+      "en": "I said which broken implementation the test lets through (a wrong lower limit)"
+    },
+    {
+      "tr": "Sınır değerinin iki yanını (119 ve 120) test etmeyi önerdim",
+      "en": "I proposed testing both sides of the boundary value (119 and 120)"
+    }
+  ]
+}

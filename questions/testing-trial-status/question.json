@@ -1,0 +1,87 @@
+{
+  "id": "testing-trial-status",
+  "title": {
+    "tr": "Deneme süresi testleri",
+    "en": "Free trial tests"
+  },
+  "topic": "testing",
+  "difficulty": 4,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "Deneme üyeliği için iki fonksiyonun birim testlerini yaz. İkisi de şimdiki zamanı `now` parametresiyle alır. `trialState(endsAt, now)`: 3 günden fazla kaldıysa `\"active\"`, 0'dan fazla ve en çok 3 gün kaldıysa `\"ending-soon\"`, süre dolduysa `\"expired\"`. `daysLeft(endsAt, now)`: kalan gün sayısı, yukarı yuvarlanır; süre dolduysa 0.",
+    "en": "Write unit tests for two functions of a free trial. Both take the current time as the `now` parameter. `trialState(endsAt, now)`: `\"active\"` with more than 3 days left, `\"ending-soon\"` with more than 0 and at most 3 days left, `\"expired\"` once the time is up. `daysLeft(endsAt, now)`: the number of days left, rounded up; 0 once the time is up."
+  },
+  "deliveryNote": {
+    "tr": "İki fonksiyonun tüm durumları ve sınır değerleri test edildi. Testler sabit tarih yerine şimdiki zamanı kullanıyor, yani gerçek kullanımı yansıtıyor ve hiçbir tarihte eskimiyor.",
+    "en": "Every state and boundary value of both functions is tested. The tests use the current time instead of a fixed date, so they reflect real use and never go out of date."
+  },
+  "bugs": [
+    {
+      "id": "real-clock",
+      "lines": [6, 6],
+      "fixedLines": [6, 6],
+      "severity": "major",
+      "explanation": {
+        "tr": "Testler `now` olarak gerçek saati (`new Date()`) veriyor. `now` parametresini yok sayıp saati kendisi okuyan (`Date.now()`) bir uygulama da aynı ana yakın bir değer gördüğü için tüm testlerden geçer; oysa önbelleğe alınmış ya da geçmiş bir zamanla çağrıldığında yanlış gün sayısı gösterir. Testin sonucu da çalıştığı ana bağlıdır, yani kırılgan bir testtir. Düzeltme: `now`'ı sabit bir tarih yapmak (`2020-01-01T12:00:00Z`).",
+        "en": "The tests pass the real clock (`new Date()`) as `now`. An implementation that ignores the `now` parameter and reads the clock itself (`Date.now()`) sees almost the same moment, so it passes every test, yet it shows the wrong number of days when called with a cached or past time. The result of the test also depends on the moment it runs, so it is a flaky test. Fix: make `now` a fixed date (`2020-01-01T12:00:00Z`)."
+      },
+      "flawedImplementation": {
+        "tr": "`daysLeft`'te `now` parametresini yok sayıp `Date.now()` kullanan bir uygulama.",
+        "en": "An implementation whose `daysLeft` ignores the `now` parameter and uses `Date.now()`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "real-clock",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`now` 2020-01-01 12:00 UTC'ye sabitken, iki gün önce bitmiş denemede `daysLeft` 0 döner.",
+          "en": "With `now` fixed at 2020-01-01 12:00 UTC, a trial that ended two days earlier gives `daysLeft` 0."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`now` 2020-01-01 12:00 UTC'ye sabitken, iki gün sonra bitecek denemede `daysLeft` 2 döner.",
+          "en": "With `now` fixed at 2020-01-01 12:00 UTC, a trial that ends two days later gives `daysLeft` 2."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`now = new Date()` ile, 2 gün 1 dakika sonra bitecek denemede `daysLeft` 3 döner.",
+          "en": "With `now = new Date()`, a trial that ends in 2 days and 1 minute gives `daysLeft` 3."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "`now = new Date()` ile, tam 3 gün sonra bitecek deneme `\"ending-soon\"` olur.",
+          "en": "With `now = new Date()`, a trial that ends in exactly 3 days is `\"ending-soon\"`."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Testler `now` olarak gerçek saati veriyor; `now`'ı yok sayıp saati kendisi okuyan bir uygulama da neredeyse aynı anı gördüğü için geçiyor. Böyle bir uygulama başka bir zamanla çağrıldığında yanlış gün sayısı gösterir, bu yüzden Önemli derdim. `now`'ı 2020-01-01 gibi sabit bir tarihe bağlar, iki gün sonra bitecek denemede `daysLeft`'in 2 döndüğünü kontrol ederdim.",
+    "en": "The tests pass the real clock as `now`, so an implementation that ignores `now` and reads the clock itself sees almost the same moment and passes. Called with any other time it shows the wrong number of days, so I'd mark it major. I'd pin `now` to a fixed date such as 2020-01-01 and check that a trial ending two days later gives `daysLeft` 2."
+  },
+  "checklist": [
+    {
+      "tr": "Testin gerçek saate bağlı olduğunu söyledim",
+      "en": "I said the test depends on the real clock"
+    },
+    {
+      "tr": "Testin hangi hatalı uygulamayı geçirdiğini söyledim (`now`'ı yok sayan)",
+      "en": "I said which broken implementation the test lets through (one that ignores `now`)"
+    },
+    {
+      "tr": "`now` için sabit bir tarih önerdim",
+      "en": "I proposed a fixed date for `now`"
+    }
+  ]
+}

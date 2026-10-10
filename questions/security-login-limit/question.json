@@ -1,0 +1,97 @@
+{
+  "id": "security-login-limit",
+  "title": {
+    "tr": "Giriş denemelerini sınırlama",
+    "en": "Limiting login attempts"
+  },
+  "topic": "security",
+  "difficulty": 5,
+  "language": "js",
+  "origin": "fictional",
+  "task": {
+    "tr": "`POST /login` için hesap başına deneme sınırı yaz. Bir hesapta 15 dakika içinde 5 başarısız denemeden sonra, ilk başarısız denemenin üzerinden 15 dakika geçene kadar o hesaba gelen her deneme, şifre doğru olsa bile 429 almalı. Başarılı giriş sayacı sıfırlar; yanlış şifre 401 alır. E-postada büyük-küçük harf önemsizdir; `users.findUser` da harfe bakmadan arar. Servis tek bir Node.js sürecinde çalışır; eski kayıtları başka bir iş temizler. Hangi e-postanın kayıtlı olduğunu gizlemek bu görevin kapsamında değil.",
+    "en": "Write a per-account attempt limit for `POST /login`. After 5 failed attempts on an account within 15 minutes, every attempt on that account must get 429 until 15 minutes have passed since the first failed attempt, even with the right password. A successful login resets the count, and a wrong password gets 401. Email letter case does not matter, and `users.findUser` also ignores it. The service runs as a single Node.js process, and a separate job cleans up old entries. Hiding which emails are registered is out of scope for this task."
+  },
+  "deliveryNote": {
+    "tr": "Kaba kuvvet denemelerine karşı hesap başına sınır eklendi: 15 dakikada 5 başarısız denemeden sonra 429 dönüyor. Deneme, bekleme yapılmadan önce sayıldığı için aynı anda gelen istekler de sınırı aşamıyor.",
+    "en": "A per-account limit against brute-force attempts is in place: after 5 failed attempts in 15 minutes the answer is 429. Each attempt is counted before anything is awaited, so requests that arrive together cannot get past the limit either."
+  },
+  "bugs": [
+    {
+      "id": "case-resets-limit",
+      "lines": [24, 24],
+      "fixedLines": [24, 24],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Sayaç anahtarı e-postanın yazıldığı hâliyle tutuluyor ama kullanıcı harfe bakılmadan bulunuyor. `alice@example.com` için 5 deneme dolunca `Alice@example.com`, `ALICE@example.com` gibi her yeni yazım aynı hesaba 5 deneme daha verir; sınır pratikte hiç işlemez ve şifre tahmini sürer. Düzeltme: anahtarı küçük harfe çevirmek, `email.trim().toLowerCase()`.",
+        "en": "The counter key keeps the email exactly as typed, but the user is found regardless of letter case. Once `alice@example.com` uses up its 5 attempts, every new spelling such as `Alice@example.com` or `ALICE@example.com` gives the same account 5 more, so the limit does not hold and password guessing goes on. Fix: lowercase the key, `email.trim().toLowerCase()`."
+      }
+    },
+    {
+      "id": "lock-checked-after-password",
+      "lines": [33, 39],
+      "fixedLines": [31, 33],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Kilit, şifre kontrol edildikten sonra ve yalnız yanlış şifrede uygulanıyor. Kilitliyken doğru şifre yine 200 alıyor: tahmin eden kişi yanlışlarda 429, doğruda 200 görür, yani deneme sınırı tahmini durdurmaz, yalnız cevabı değiştirir. Düzeltme: sayaç artınca sınır aşıldıysa şifreye bakmadan 429 dönmek.",
+        "en": "The lock is applied after the password check, and only for a wrong password. While locked, the right password still gets 200: someone guessing sees 429 for wrong guesses and 200 for the right one, so the limit does not stop guessing, it only changes the answer. Fix: once the count goes up, answer 429 before looking at the password if the limit is passed."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "lock-checked-after-password",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Dört yanlış şifreden sonra doğru şifre giriş yapar.",
+          "en": "After four wrong passwords, the right one logs in."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Beş yanlış şifreden sonra doğru şifre 429 alır.",
+          "en": "After five wrong passwords, the right one gets 429."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "İlk başarısız denemeden 15 dakika sonra hesap yeniden giriş yapabilir.",
+          "en": "Fifteen minutes after the first failed attempt, the account can log in again."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Yanlış şifre 401 alır.",
+          "en": "A wrong password gets 401."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Kilit şifre kontrolünden sonra geliyor; kilitliyken doğru şifre hâlâ 200 alıyor, yani tahmin eden kişi doğru şifreyi bulduğunda anlıyor ve sınır tahmini durdurmuyor. Ayrıca sayaç anahtarı küçük harfe çevrilmiyor; e-postayı farklı harflerle yazmak her seferinde 5 yeni deneme veriyor. İkisi de kaba kuvvete karşı korumayı kaldırdığı için Kritik derdim. Beş yanlış denemeden sonra doğru şifrenin 429 aldığını ve farklı harfle yazılmış e-postanın aynı sayaca düştüğünü test ederdim.",
+    "en": "The lock comes after the password check, so while locked the right password still gets 200; someone guessing finds out when they hit the right one, and the limit does not stop guessing. The counter key is also not lowercased, so typing the email with different letter case gives 5 new attempts each time. Both remove the protection against brute force, so I would mark both critical. I would test that the right password gets 429 after five wrong ones and that an email typed with different case lands on the same counter."
+  },
+  "checklist": [
+    {
+      "tr": "Kilitliyken doğru şifrenin 200 aldığını söyledim",
+      "en": "I said the right password gets 200 while locked"
+    },
+    {
+      "tr": "E-postanın farklı harflerle yazılınca sayacı sıfırladığını söyledim",
+      "en": "I said typing the email with different letter case starts a new count"
+    },
+    {
+      "tr": "Etkisini söyledim: şifre tahmini sınırsız sürebilir",
+      "en": "I said the impact: password guessing can go on without a limit"
+    },
+    {
+      "tr": "Beş yanlış denemeden sonra doğru şifreyle bir test önerdim",
+      "en": "I proposed a test with the right password after five wrong ones"
+    }
+  ]
+}

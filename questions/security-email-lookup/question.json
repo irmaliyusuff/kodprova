@@ -1,0 +1,83 @@
+{
+  "id": "security-email-lookup",
+  "title": {
+    "tr": "E-postayla hesap bulma",
+    "en": "Finding an account by email"
+  },
+  "topic": "security",
+  "difficulty": 1,
+  "language": "python",
+  "origin": "fictional",
+  "task": {
+    "tr": "\"Şifremi unuttum\" uç noktası için e-postayla hesap bulan bir fonksiyon yaz. E-postalar veritabanında küçük harfle saklanır; arama baştaki ve sondaki boşlukları ve büyük-küçük harfi yok saysın. Hesap varsa kimliğini ve e-postasını, yoksa `None` döndürsün. Uç nokta her durumda aynı cevabı verir; bu fonksiyon yalnız hesabı bulur.",
+    "en": "Write a function that finds an account by email for the \"forgot password\" endpoint. Emails are stored in lower case; the lookup ignores leading and trailing spaces and letter case. Return the account's id and email if it exists, otherwise `None`. The endpoint answers the same way in every case; this function only finds the account."
+  },
+  "deliveryNote": {
+    "tr": "E-posta temizlenip küçük harfe çevriliyor, uzunluk sınırı kontrol ediliyor. Yalnız gereken iki sütun okunuyor, şifre özeti dönmüyor.",
+    "en": "The email is trimmed and lowercased, and its length is checked. Only the two columns that are needed are read, so the password hash is never returned."
+  },
+  "bugs": [
+    {
+      "id": "query-built-from-input",
+      "lines": [14, 16],
+      "fixedLines": [15, 15],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Sorgu, istekten gelen e-posta f-string ile içine yazılarak kuruluyor: SQL enjeksiyonu. Tırnak içeren bir girdi sorgunun anlamını değiştirir; `nobody@example.com' OR '1'='1` hiçbir hesaba ait değilken ilk hesabı döndürür, tırnaklı bir adres de sorguyu bozup hataya düşürür. Düzeltme: değeri parametreyle vermek, `WHERE email = ?` ve `(email,)`.",
+        "en": "The query is built by writing the email from the request into it with an f-string: SQL injection. Input with a quote changes what the query means; `nobody@example.com' OR '1'='1` belongs to no account but returns the first one, and an address with a quote breaks the query with an error. Fix: pass the value as a parameter, `WHERE email = ?` with `(email,)`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "query-built-from-input",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Var olan bir e-posta o hesabı döndürür.",
+          "en": "An existing email returns that account."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Hesabı olmayan bir e-posta `None` döndürür.",
+          "en": "An email with no account returns `None`."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`nobody@example.com' OR '1'='1` girdisi `None` döndürür.",
+          "en": "The input `nobody@example.com' OR '1'='1` returns `None`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "`\"  Alice@Example.com \"` girdisi alice@example.com hesabını bulur.",
+          "en": "The input `\"  Alice@Example.com \"` finds the alice@example.com account."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "E-posta sorgunun içine f-string ile yazılıyor, yani girdideki bir tırnak sorgunun anlamını değiştirebiliyor: bu SQL enjeksiyonu. Hiçbir hesaba ait olmayan bir girdi başka birinin hesabını döndürebildiği için güvenlik açığı, Kritik derdim. Değeri parametreyle verir, tırnak ve OR içeren bir girdinin `None` döndürdüğünü kontrol eden bir testle gösterirdim.",
+    "en": "The email is written into the query with an f-string, so a quote in the input can change what the query means: that is SQL injection. Input that belongs to no account can return someone else's account, which is a security hole, so I would mark it critical. I would pass the value as a parameter and prove it with a test that sends input with a quote and OR and expects `None`."
+  },
+  "checklist": [
+    {
+      "tr": "Sorgunun girdiyle birleştirildiğini söyledim (f-string)",
+      "en": "I said the query is built from the input (an f-string)"
+    },
+    {
+      "tr": "Etkisini söyledim: girdi sorguyu değiştirir, başka hesap döner",
+      "en": "I said the impact: the input changes the query and another account comes back"
+    },
+    {
+      "tr": "Düzeltmeyi söyledim: parametreli sorgu",
+      "en": "I named the fix: a parameterized query"
+    }
+  ]
+}

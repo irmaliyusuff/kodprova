@@ -1,0 +1,83 @@
+{
+  "id": "api-message-pages",
+  "title": {
+    "tr": "Mesajları sayfa sayfa getirme",
+    "en": "Paging through messages"
+  },
+  "topic": "api",
+  "difficulty": 3,
+  "language": "python",
+  "origin": "fictional",
+  "task": {
+    "tr": "`GET /conversations/<id>/messages` uç noktası için sayfalama yaz: mesajlar en yeniden eskiye, sayfa sayfa gelsin. Her sayfa `next` değeri döndürür; istemci bir sonraki sayfa için onu geri gönderir ve kaydırarak her mesajı tam bir kez görmelidir. Daha eski mesaj kalmadıysa `next` `None` olsun. `sent_at` saniye hassasiyetinde, hep aynı biçimde UTC ISO 8601 metnidir. Kullanıcının bu konuşmanın üyesi olduğu ve `limit`'in 1–100 arasında olduğu daha önce kontrol edildi.",
+    "en": "Write the paging for the `GET /conversations/<id>/messages` endpoint: messages come newest first, one page at a time. Each page returns a `next` value that the client sends back for the following page, and scrolling must show every message exactly once. When there are no older messages, `next` is `None`. `sent_at` is UTC ISO 8601 text to the second, always in the same format. The caller has already checked that the user is a member of the conversation and that `limit` is between 1 and 100."
+  },
+  "deliveryNote": {
+    "tr": "Sayfalama imleçle yapılıyor, yani yeni mesaj gelse de sayfalar kaymıyor. Sıralama `id` ile de belirleniyor, sorgu parametreli; bir fazla satır okunarak son sayfa doğru tespit ediliyor.",
+    "en": "Paging uses a cursor, so pages do not shift when new messages arrive. The order is made stable with `id`, the query is parameterized, and one extra row is read to detect the last page correctly."
+  },
+  "bugs": [
+    {
+      "id": "same-time-skipped",
+      "lines": [20, 21],
+      "fixedLines": [20, 21],
+      "severity": "major",
+      "explanation": {
+        "tr": "Sıralama `sent_at` ve `id` ile yapılıyor ama sonraki sayfanın koşulu yalnız `sent_at < ?`. Sayfa sınırına denk gelen saniyede birden fazla mesaj varsa, o saniyenin bir sonraki sayfaya kalan mesajları hiç gösterilmez: aynı saniyede gönderilmiş 3 mesaj, `limit` 2 ile okununca biri kaybolur. Düzeltme: imlecin ikinci yarısını da kullanmak, `sent_at < ? OR (sent_at = ? AND id < ?)`.",
+        "en": "The order uses `sent_at` and `id`, but the condition for the next page is only `sent_at < ?`. When more than one message shares the second at a page boundary, the ones left for the next page are never shown: three messages sent in the same second, read with `limit` 2, lose one. Fix: use the second half of the cursor too, `sent_at < ? OR (sent_at = ? AND id < ?)`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "same-time-skipped",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`limit` 2 iken ilk sayfada en yeni iki mesaj, yeniden eskiye sıralı gelir.",
+          "en": "With `limit` 2, the first page holds the two newest messages, newest first."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Aynı saniyede gönderilmiş üç mesaj `limit` 2 ile sayfa sayfa okununca üçü de birer kez gelir.",
+          "en": "Reading three messages sent in the same second page by page with `limit` 2 returns all three, each once."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Son sayfada `next` `None` olur.",
+          "en": "On the last page, `next` is `None`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Başka bir konuşmanın mesajları gelmez.",
+          "en": "Messages from another conversation are not returned."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "İmleç `sent_at` ve `id` taşıyor ama sorgu yalnız `sent_at` ile filtreliyor; sayfa sınırındaki saniyede birden fazla mesaj varsa kalanlar atlanıyor. Kullanıcı bazı mesajları hiç görmüyor, bu yanlış sonuç, Önemli derdim. Koşula, aynı `sent_at` için `id` karşılaştırmasını ekler, aynı saniyede gönderilmiş üç mesajı `limit` 2 ile okuyup üçünün de geldiğini kontrol eden bir testle gösterirdim.",
+    "en": "The cursor carries `sent_at` and `id`, but the query only filters on `sent_at`, so when several messages share the second at a page boundary the rest are skipped. The user never sees some messages, which is a wrong result, so I would mark it major. I would add an `id` comparison for the same `sent_at` to the condition, and prove it with a test that reads three messages from the same second with `limit` 2 and expects all three."
+  },
+  "checklist": [
+    {
+      "tr": "Mesajın kaybolduğu durumu söyledim (sayfa sınırında aynı `sent_at`)",
+      "en": "I named the case that loses a message (the same `sent_at` at a page boundary)"
+    },
+    {
+      "tr": "Nedenini söyledim: imlecin `id` yarısı sorguda kullanılmıyor",
+      "en": "I said why: the query does not use the `id` half of the cursor"
+    },
+    {
+      "tr": "Aynı saniyede gönderilmiş mesajlarla bir test önerdim",
+      "en": "I proposed a test with messages sent in the same second"
+    }
+  ]
+}

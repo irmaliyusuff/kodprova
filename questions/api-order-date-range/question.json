@@ -1,0 +1,83 @@
+{
+  "id": "api-order-date-range",
+  "title": {
+    "tr": "Siparişleri tarih aralığıyla listeleme",
+    "en": "Listing orders by date range"
+  },
+  "topic": "api",
+  "difficulty": 2,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "Rapor ekranı için `GET /orders?from=YYYY-MM-DD&to=YYYY-MM-DD` uç noktasının filtresini yaz. İki gün de aralığa dahildir ve günler UTC'ye göredir. Tarih eksik, geçersiz ya da `from` `to`'dan sonraysa 400 ve hata kodu döndür; değilse 200 ve aralıktaki siparişleri döndür.",
+    "en": "Write the filter for the `GET /orders?from=YYYY-MM-DD&to=YYYY-MM-DD` endpoint used by the reports screen. Both days are part of the range, and days are in UTC. If a date is missing or invalid, or `from` is after `to`, answer 400 with an error code; otherwise answer 200 with the orders in the range."
+  },
+  "deliveryNote": {
+    "tr": "Tarihler biçim ve geçerlilik için kontrol ediliyor (31 Şubat gibi günler reddediliyor), ters aralık 400 alıyor. Karşılaştırma UTC'de yapıldığı için saat dilimi sorunu yok.",
+    "en": "Dates are checked for format and validity (days such as February 31 are rejected), and a reversed range gets a 400. The comparison runs in UTC, so there are no time zone issues."
+  },
+  "bugs": [
+    {
+      "id": "last-day-excluded",
+      "lines": [32, 32],
+      "fixedLines": [30, 34],
+      "severity": "major",
+      "explanation": {
+        "tr": "`to`, bitiş gününün gece yarısıdır (00:00). `createdAt < to` o günün yalnız ilk anından öncesini alır; bitiş gününde verilen siparişlerin hepsi rapordan düşer. `from` ile `to` aynı gün olunca liste hep boş gelir. Düzeltme: bitişi bir gün ileri almak (`to` + 1 gün) ve ondan küçük olanları almak.",
+        "en": "`to` is midnight (00:00) at the start of the last day. `createdAt < to` only keeps what came before that moment, so every order placed on the last day is missing from the report. When `from` and `to` are the same day the list is always empty. Fix: move the end one day forward (`to` + 1 day) and keep what is before it."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "last-day-excluded",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "10–12 Ekim aralığı 11 Ekim'deki bir siparişi içerir.",
+          "en": "The range October 10–12 includes an order from October 11."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Başlangıcı bitişinden sonra olan bir aralık 400 alır.",
+          "en": "A range that starts after it ends gets a 400."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`from` ve `to` 10 Ekim olunca o gün saat 15:00'teki sipariş listede olur.",
+          "en": "With `from` and `to` both October 10, an order from 15:00 that day is in the list."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "10–12 Ekim aralığı 9 Ekim'deki bir siparişi içermez.",
+          "en": "The range October 10–12 leaves out an order from October 9."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "`to` bitiş gününün gece yarısı ve kod `createdAt < to` diyor; bitiş günündeki bütün siparişler rapordan düşüyor, tek günlük aralık hep boş geliyor. Kullanıcı yanlış rapor aldığı için Önemli derdim. Bitişi bir gün ileri alarak düzeltir, `from` ve `to` aynı günken o gün öğleden sonra verilen siparişin listede olduğunu kontrol eden bir testle gösterirdim.",
+    "en": "`to` is midnight at the start of the last day and the code checks `createdAt < to`, so every order from the last day is missing and a one-day range is always empty. The user gets a wrong report, so I'd mark it major. I'd fix it by moving the end one day forward, and prove it with a test where `from` and `to` are the same day and an afternoon order from that day must be in the list."
+  },
+  "checklist": [
+    {
+      "tr": "Yanlış sonuç veren bir aralık söyledim (tek günlük aralık boş gelir)",
+      "en": "I named a range that gives a wrong result (a one-day range comes back empty)"
+    },
+    {
+      "tr": "Nedenini söyledim: `to` günün başı, sonu değil",
+      "en": "I said why: `to` is the start of the day, not its end"
+    },
+    {
+      "tr": "Bitiş günündeki bir siparişle bir test önerdim",
+      "en": "I proposed a test with an order placed on the last day"
+    }
+  ]
+}

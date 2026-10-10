@@ -1,0 +1,83 @@
+{
+  "id": "web-field-validation",
+  "title": {
+    "tr": "Basış sırasında bekleyen alan doğrulaması",
+    "en": "Field checks held during a press"
+  },
+  "topic": "web",
+  "difficulty": 4,
+  "language": "ts",
+  "origin": "real",
+  "task": {
+    "tr": "Formda bir alan odağı kaybedince (`focusout`) yeniden doğrulanır ve hata mesajı güncellenir. Hata mesajının kalkması altındaki düğmeleri yukarı kaydırır; kullanıcı o sırada fareyle bir düğmeye basıyorsa tıklama boşa gider. Bu yüzden fare tuşu basılıyken odağını kaybeden alanların doğrulamasını beklet ve basış bitince çalıştır. Basış `click` ya da `pointercancel` ile biter. Kullanıcı tuş basılıyken sekme ya da pencere değiştirirse (`pageLeft`) basış bu sayfada bitmez; o zaman da bitmiş say. Aynı anda tek basış olur. Basış yokken doğrulama beklemeden çalışır; bir alan bir basış boyunca birden çok kez odak kaybederse bir kez doğrulanır.",
+    "en": "When a form field loses focus (`focusout`) it is validated again and its error message is updated. Removing an error message moves the buttons below it up, so if the user is pressing a button with the mouse at that moment, the click misses. So while the mouse button is down, hold the validation of fields that lose focus and run it when the press ends. A press ends with `click` or `pointercancel`. If the user switches tabs or windows with the button down (`pageLeft`), the press will not end on this page; count it as ended then too. There is only one press at a time. Without a press, validation runs at once; a field that loses focus more than once during a press is validated once."
+  },
+  "deliveryNote": {
+    "tr": "Basış sırasında bekleyen doğrulamalar `click` ve `pointercancel`'da çalışıyor. Sayfadan çıkılınca da hemen çalışıyor, kullanıcı döndüğünde hatalar güncel oluyor.",
+    "en": "Checks held during a press run on `click` and on `pointercancel`. They also run as soon as the user leaves the page, so the errors are up to date when the user comes back."
+  },
+  "bugs": [
+    {
+      "id": "press-left-open",
+      "lines": [37, 41],
+      "fixedLines": [37, 38],
+      "severity": "minor",
+      "explanation": {
+        "tr": "`pageLeft` bekleyen doğrulamaları çalıştırıyor ama `pressed` bayrağını kapatmıyor. Basış bu sayfada hiç bitmeyeceği için bayrak bir sonraki tıklamaya kadar açık kalır: kullanıcı döner, alanı düzeltip Tab ile çıkar, ama doğrulama yine bekletilir ve eski hata mesajı ekranda kalır. Tetikleyici nadir (tuş basılıyken sekme değiştirmek), bir sonraki tıklama durumu düzeltir. Düzeltme: `pageLeft`'te de basışı bitirmek (`endPress`).",
+        "en": "`pageLeft` runs the held checks but never clears the `pressed` flag. Since the press will never end on this page, the flag stays on until the next click: the user comes back, fixes a field and leaves it with Tab, but the check is held again and the old error message stays on screen. The trigger is rare (switching tabs with the button down), and the next click puts things right. Fix: end the press in `pageLeft` too (`endPress`)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "press-left-open",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Basış sırasında sayfadan çıkılıp dönülünce, Tab ile çıkılan alan hemen doğrulanır.",
+          "en": "After the page is left during a press, a field left with Tab is validated at once."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Basış yokken odağını kaybeden alan hemen doğrulanır.",
+          "en": "Without a press, a field that loses focus is validated at once."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Basış sırasında doğrulama bekler, `click` gelince çalışır.",
+          "en": "During a press the validation waits and runs on `click`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Bir basış boyunca iki kez odak kaybeden alan bir kez doğrulanır.",
+          "en": "A field that loses focus twice during one press is validated once."
+        }
+      }
+    ],
+    "correct": "a"
+  },
+  "sampleAnswer": {
+    "tr": "`pageLeft` bekleyenleri çalıştırıyor ama basışı bitirmiyor; kullanıcı tuş basılıyken sekme değiştirip dönerse sonraki Tab doğrulamaları bir tıklamaya kadar bekliyor ve ekranda eski hata mesajı kalıyor. Tetikleyici nadir ve bir tıklama durumu düzelttiği için Küçük derdim. Basış, `pageLeft`, ardından `focusOut` gönderip doğrulamanın hemen çalıştığını kontrol eden bir testle gösterir, `pageLeft`'te `endPress` çağırırdım.",
+    "en": "`pageLeft` runs the held checks but does not end the press, so if the user switches tabs with the button down and comes back, later Tab checks wait for a click and the old error message stays on screen. The trigger is rare and a click puts it right, so I'd mark it minor. I'd show it with a test that sends a press, `pageLeft` and then `focusOut` and checks that validation runs at once, and call `endPress` in `pageLeft`."
+  },
+  "checklist": [
+    {
+      "tr": "Hangi bayrağın açık kaldığını söyledim (`pressed`, `pageLeft`'ten sonra)",
+      "en": "I named the flag that stays on (`pressed`, after `pageLeft`)"
+    },
+    {
+      "tr": "Kullanıcıya etkisini söyledim: düzeltilmiş alanın hata mesajı kalıyor",
+      "en": "I said the effect on the user: a fixed field keeps its error message"
+    },
+    {
+      "tr": "Olay dizisini (basış, sayfadan çıkış, Tab) gönderen bir test önerdim",
+      "en": "I proposed a test that sends the sequence (press, leaving the page, Tab)"
+    }
+  ]
+}

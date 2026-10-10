@@ -1,0 +1,83 @@
+{
+  "id": "web-search-url",
+  "title": {
+    "tr": "Arama sayfasının adresi",
+    "en": "Search page URL"
+  },
+  "topic": "web",
+  "difficulty": 1,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "Ürün arama formundaki filtrelerden arama sayfasının adresini üret. `term` kullanıcının yazdığı arama metnidir, `category` sabit bir listeden gelen kısa addır (yalnız küçük harf ve tire), `page` 1'den başlayan tam sayıdır. `base` soru işareti içermeyen bir yoldur (`/search`). Boş alanları ve 1. sayfayı adrese yazma; arama metninin başındaki ve sonundaki boşlukları kırp.",
+    "en": "Build the search page URL from the product search form's filters. `term` is the text the user typed, `category` is a short name from a fixed list (lowercase letters and hyphens only), `page` is an integer starting at 1. `base` is a path without a question mark (`/search`). Leave out empty fields and page 1; trim spaces around the search text."
+  },
+  "deliveryNote": {
+    "tr": "Boş alanlar atlanıyor, arama metni kırpılıyor, 1. sayfa adrese eklenmiyor. Her filtre adreste kendi parametresiyle yer alıyor.",
+    "en": "Empty fields are skipped, the search text is trimmed and page 1 is left out of the URL. Every filter gets its own parameter."
+  },
+  "bugs": [
+    {
+      "id": "unencoded-term",
+      "lines": [11, 11],
+      "fixedLines": [11, 11],
+      "severity": "major",
+      "explanation": {
+        "tr": "Arama metni adrese olduğu gibi yazılıyor. Kullanıcı `&`, `#`, `+` ya da `=` içeren bir şey ararsa (`R&B`, `C#`) adres başka türlü okunur: `q=R&B` adresinde `q` yalnız `R` olur, `B` ayrı bir parametreye dönüşür, `C#` adresinde `#` sonrası hiç gönderilmez. Kullanıcı aradığından farklı bir aramanın sonuçlarını görür. Düzeltme: değeri `encodeURIComponent` ile kodlamak (ya da adresi `URLSearchParams` ile kurmak).",
+        "en": "The search text goes into the URL as it is. If the user searches for something with `&`, `#`, `+` or `=` in it (`R&B`, `C#`), the URL reads differently: in `q=R&B` the value of `q` is just `R` and `B` becomes a parameter of its own, and in `C#` everything after `#` is never sent. The user sees results for a different search than the one they typed. Fix: encode the value with `encodeURIComponent` (or build the URL with `URLSearchParams`)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "unencoded-term",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Tüm alanlar boşken adres yalnız `/search` olur.",
+          "en": "With every field empty, the URL is just `/search`."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`\"  lamp \"` aranınca adresten okunan `q` değeri `lamp` olur.",
+          "en": "Searching for `\"  lamp \"` gives `lamp` as the `q` value read from the URL."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Kategori `lamps` ve 3. sayfa için adres `/search?category=lamps&page=3` olur.",
+          "en": "For category `lamps` and page 3 the URL is `/search?category=lamps&page=3`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "`R&B` aranınca adresten okunan `q` değeri `R&B` olur.",
+          "en": "Searching for `R&B` gives `R&B` as the `q` value read from the URL."
+        }
+      }
+    ],
+    "correct": "d"
+  },
+  "sampleAnswer": {
+    "tr": "Arama metni adrese kodlanmadan yazılıyor; `R&B` aranınca `q` yalnız `R` olarak okunuyor ve kullanıcı başka bir aramanın sonuçlarını görüyor. Kullanıcı yanlış sonuç aldığı için Önemli derdim. `R&B` arayıp adresten `q` değerini `URLSearchParams` ile geri okuyan bir testle gösterir, değeri `encodeURIComponent` ile kodlardım.",
+    "en": "The search text goes into the URL without encoding, so searching for `R&B` reads back as `q` = `R` and the user sees results for a different search. The user gets a wrong result, so I'd mark it major. I'd show it with a test that searches for `R&B` and reads `q` back with `URLSearchParams`, and encode the value with `encodeURIComponent`."
+  },
+  "checklist": [
+    {
+      "tr": "Hangi girdinin adresi bozduğunu söyledim (`&`, `#` gibi özel karakterler)",
+      "en": "I named the input that breaks the URL (special characters such as `&` or `#`)"
+    },
+    {
+      "tr": "Kullanıcıya etkisini söyledim: başka bir aramanın sonuçları gelir",
+      "en": "I said the effect on the user: results for a different search"
+    },
+    {
+      "tr": "Adresi geri okuyan bir test önerdim",
+      "en": "I proposed a test that reads the URL back"
+    }
+  ]
+}

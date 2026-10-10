@@ -1,0 +1,87 @@
+{
+  "id": "testing-currency-convert",
+  "title": {
+    "tr": "Kur çevirme testleri",
+    "en": "Currency conversion tests"
+  },
+  "topic": "testing",
+  "difficulty": 3,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "`convertPrice(amount, from, to, rates)` için birim testleri yaz. Fonksiyon kuru `rates.rate(from, to)` ile alır (bir birim `from` kaç birim `to` eder), tutarı çevirir ve kuruşa yuvarlar. Para birimi aynıysa kur sormadan tutarı döndürür; kur alınamazsa hata yukarı iletilir. Kur servisi testte sahte nesneyle verilir.",
+    "en": "Write unit tests for `convertPrice(amount, from, to, rates)`. The function gets the rate with `rates.rate(from, to)` (how many units of `to` one unit of `from` buys), converts the amount and rounds it to cents. With the same currency it returns the amount without asking for a rate; if the rate cannot be fetched, the error is passed on. In tests the rate service is a mock."
+  },
+  "deliveryNote": {
+    "tr": "Çevirme, kuruşa yuvarlama, aynı para birimi ve kur servisinin hatası test edildi. Kur servisi sahte nesneyle verildiği için testler ağa çıkmıyor.",
+    "en": "Tested conversion, rounding to cents, the same currency and a failing rate service. The rate service is a mock, so the tests never touch the network."
+  },
+  "bugs": [
+    {
+      "id": "constant-fake",
+      "lines": [4, 6],
+      "fixedLines": [4, 13],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Sahte kur servisi hangi para birimleri sorulursa sorulsun 1,25 dönüyor. Bu yüzden testler fonksiyonun kuru doğru çiftle istediğini hiç doğrulamıyor: `rate(to, from)` diye ters soran bir uygulama da, yanlış para birimi soran bir uygulama da aynı cevabı alır ve geçer. Gerçek serviste ters kur yanlış tutar, yani para kaybı demek. Düzeltme: sahte nesnenin yalnız bilinen çiftlere cevap vermesi (`EUR>USD` 1,25, `USD>EUR` 0,8), başka bir çiftte hata fırlatması.",
+        "en": "The mock rate service answers 1.25 whatever currencies it is asked about. So the tests never check that the function asks for the rate with the right pair: an implementation that asks `rate(to, from)` the wrong way round, or for the wrong currency, gets the same answer and passes. With the real service a reversed rate means a wrong amount, that is lost money. Fix: make the mock answer only known pairs (`EUR>USD` 1.25, `USD>EUR` 0.8) and throw for any other pair."
+      },
+      "flawedImplementation": {
+        "tr": "Kuru ters yönde, `rates.rate(to, from)` diye isteyen bir uygulama.",
+        "en": "An implementation that asks for the rate the wrong way round, `rates.rate(to, from)`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "constant-fake",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "10 EUR'yu EUR'ya çevirmek 10 verir ve kur sormaz.",
+          "en": "Converting 10 EUR to EUR gives 10 without asking for a rate."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Her soruya 1,25 dönen sahte servisle 0,99 EUR, USD'ye 1,24 olarak çevrilir.",
+          "en": "With a mock that always answers 1.25, 0.99 EUR converts to 1.24 USD."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Kur servisi hata verirse çevirme aynı hatayla başarısız olur.",
+          "en": "If the rate service fails, the conversion fails with the same error."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Yalnız `EUR>USD` = 1,25 ve `USD>EUR` = 0,8 bilen sahte servisle 10 EUR, USD'ye 12,5 olarak çevrilir.",
+          "en": "With a mock that knows only `EUR>USD` = 1.25 and `USD>EUR` = 0.8, 10 EUR converts to 12.5 USD."
+        }
+      }
+    ],
+    "correct": "d"
+  },
+  "sampleAnswer": {
+    "tr": "Sahte kur servisi argümanlarına bakmadan hep 1,25 dönüyor; kuru ters yönde isteyen bir uygulama da aynı cevabı alıp testlerden geçiyor. Gerçekte bu yanlış tutar, yani para kaybı demek, bu yüzden Kritik derdim. Sahte nesneyi yalnız bilinen çiftlere cevap verecek biçimde yazar, `EUR>USD` ve `USD>EUR` için farklı kur verip 10 EUR'nun 12,5 USD olduğunu kontrol ederdim.",
+    "en": "The mock rate service ignores its arguments and always answers 1.25, so an implementation that asks for the rate the wrong way round gets the same answer and passes. In real use that is a wrong amount, which means lost money, so I'd mark it critical. I'd make the mock answer only known pairs, give `EUR>USD` and `USD>EUR` different rates and check that 10 EUR becomes 12.5 USD."
+  },
+  "checklist": [
+    {
+      "tr": "Sahte nesnenin argümanlarına bakmadığını söyledim",
+      "en": "I said the mock ignores its arguments"
+    },
+    {
+      "tr": "Testin hangi hatalı uygulamayı geçirdiğini söyledim (ters kur)",
+      "en": "I said which broken implementation the test lets through (a reversed rate)"
+    },
+    {
+      "tr": "Yalnız bilinen çiftlere cevap veren bir sahte nesne önerdim",
+      "en": "I proposed a mock that answers only known pairs"
+    }
+  ]
+}

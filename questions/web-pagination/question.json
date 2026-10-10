@@ -1,0 +1,83 @@
+{
+  "id": "web-pagination",
+  "title": {
+    "tr": "Liste sayfalama bilgisi",
+    "en": "List pagination info"
+  },
+  "topic": "web",
+  "difficulty": 2,
+  "language": "js",
+  "origin": "fictional",
+  "task": {
+    "tr": "Ürün listesinin sayfalama çubuğu için `getPageInfo(requestedPage, totalItems, pageSize)` yaz. `requestedPage` adresten gelen tam sayıdır; aralık dışındaysa en yakın geçerli sayfaya çek. `pageSize` pozitif tam sayıdır. Döndür: geçerli sayfa, toplam sayfa, `11–20 / 45` biçiminde etiket, önceki ve sonraki sayfa var mı, ve en çok 5 sayfa numarası (geçerli sayfa mümkünse ortada). Hiç ürün yoksa tek bir boş sayfa olur, etiketi `0–0 / 0`.",
+    "en": "Write `getPageInfo(requestedPage, totalItems, pageSize)` for the product list's pagination bar. `requestedPage` is an integer from the URL; if it is out of range, move it to the nearest valid page. `pageSize` is a positive integer. Return the current page, the total number of pages, a label like `11–20 / 45`, whether there is a previous and a next page, and at most 5 page numbers (with the current page in the middle where possible). With no products there is one empty page, labeled `0–0 / 0`."
+  },
+  "deliveryNote": {
+    "tr": "Sayfa numarası her zaman geçerli aralığa çekiliyor, boş liste de ele alındı. Etiket ve sayfa numaraları her durumda doğru.",
+    "en": "The page number is always moved into the valid range, and the empty list is handled. The label and the page numbers are right in every case."
+  },
+  "bugs": [
+    {
+      "id": "last-page-dropped",
+      "lines": [18, 18],
+      "fixedLines": [18, 18],
+      "severity": "major",
+      "explanation": {
+        "tr": "Toplam sayfa `Math.floor` ile hesaplanıyor, yani yarım kalan son sayfa sayılmıyor. 45 ürün ve sayfa başına 10 ile toplam 4 sayfa çıkıyor; 5. sayfa istenince 4. sayfaya çekiliyor, 4. sayfada \"sonraki\" yok. 41–45 arası ürünler hiçbir sayfada görünmüyor. Düzeltme: `Math.ceil`.",
+        "en": "The total number of pages uses `Math.floor`, so a last page that is only partly full is not counted. With 45 products and 10 per page there are 4 pages; asking for page 5 moves to page 4, and page 4 has no \"next\". Products 41–45 never appear on any page. Fix: `Math.ceil`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "last-page-dropped",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "45 ürün, sayfa başına 10: 1. sayfanın etiketi `1–10 / 45` olur.",
+          "en": "45 products, 10 per page: page 1 is labeled `1–10 / 45`."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "45 ürün, sayfa başına 10: 5. sayfanın etiketi `41–45 / 45` olur.",
+          "en": "45 products, 10 per page: page 5 is labeled `41–45 / 45`."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "40 ürün, sayfa başına 10: 99. sayfa istenince geçerli sayfa 4 olur.",
+          "en": "40 products, 10 per page: asking for page 99 gives page 4."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Ürün yokken etiket `0–0 / 0` olur ve sonraki sayfa yoktur.",
+          "en": "With no products the label is `0–0 / 0` and there is no next page."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Toplam sayfa aşağı yuvarlanıyor; 45 ürün ve sayfa başına 10 ile son 5 ürün hiçbir sayfada görünmüyor, beşinci sayfa istenince dördüncü sayfa açılıyor. Kullanıcı ürünlerin bir kısmını hiç göremediği için Önemli derdim. Tam bölünmeyen bir sayıyla (45 / 10) son sayfanın etiketini `41–45 / 45` diye kontrol eden bir testle gösterir, `Math.ceil` kullanırdım.",
+    "en": "The page count is rounded down, so with 45 products and 10 per page the last 5 products are on no page, and asking for page 5 opens page 4. The user never sees some of the products, so I'd mark it major. I'd show it with a test that uses a count that does not divide evenly (45 / 10) and checks that the last page is labeled `41–45 / 45`, and use `Math.ceil`."
+  },
+  "checklist": [
+    {
+      "tr": "Hangi sayıda ürünün kaybolduğunu söyledim (tam bölünmeyen toplam, örneğin 45 / 10)",
+      "en": "I named the product count that loses items (a total that does not divide evenly, e.g. 45 / 10)"
+    },
+    {
+      "tr": "Kullanıcıya etkisini söyledim: son ürünler hiçbir sayfada yok",
+      "en": "I said the effect on the user: the last products are on no page"
+    },
+    {
+      "tr": "Son sayfayı kontrol eden bir test önerdim",
+      "en": "I proposed a test that checks the last page"
+    }
+  ]
+}

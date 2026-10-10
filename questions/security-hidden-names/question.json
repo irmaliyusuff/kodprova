@@ -1,0 +1,83 @@
+{
+  "id": "security-hidden-names",
+  "title": {
+    "tr": "Adların gizlendiği akış",
+    "en": "A feed with hidden names"
+  },
+  "topic": "security",
+  "difficulty": 3,
+  "language": "python",
+  "origin": "real",
+  "task": {
+    "tr": "Topluluk sitesinin herkese açık `GET /feed` uç noktası için yayımlanmış gönderileri en yeniden eskiye döndüren kodu yaz. Gönderiler üyelerin adını başlıkta ve metinde geçirebilir. Site ayarı `hide_names` açıkken akışta hiçbir üyenin adı görünmemeli: yazar \"A member\" olarak gösterilir ve gönderinin `anonymous` sürümü (adsız yazılmış `title` ve `body`) kullanılır. `anonymous` isteğe bağlı bir alandır; eski gönderilerde var, yenilerde olmayabilir.",
+    "en": "Write the code behind the community site's public `GET /feed` endpoint that returns published posts, newest first. Posts can mention members by name in the title and the body. While the site setting `hide_names` is on, no member's name may appear in the feed: the author is shown as \"A member\" and the post's `anonymous` version (a `title` and `body` written without names) is used. `anonymous` is an optional field: older posts have it, newer ones may not."
+  },
+  "deliveryNote": {
+    "tr": "Gizlilik kipi hazır: adlar gizliyken yazar \"A member\" olarak gösteriliyor ve gönderinin adsız sürümü kullanılıyor. Adsız sürümü olmayan eski kayıtlar da hata vermeden çalışıyor.",
+    "en": "Privacy mode is in place: while names are hidden, the author shows as \"A member\" and the anonymous version of the post is used. Records without an anonymous version still work without errors."
+  },
+  "bugs": [
+    {
+      "id": "name-fallback",
+      "lines": [17, 18],
+      "fixedLines": [14, 20],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Adsız sürüm yoksa `anonymous.get(\"title\", post[\"title\"])` sessizce adlı başlığa, `body` de adlı metne döner. Adlar gizliyken `anonymous` alanı olmayan (ya da yalnız başlığı olan) yeni bir gönderi, metnindeki adı herkese açık akışta gösterir: gizlenmesi istenen kişisel veri sızar. Düzeltme: adlar gizliyken adsız sürümü eksik olan gönderiyi akışa hiç koymamak; adlı metne geri dönmemek.",
+        "en": "When there is no anonymous version, `anonymous.get(\"title\", post[\"title\"])` silently falls back to the title with names, and `body` to the body with names. While names are hidden, a new post without an `anonymous` field (or with only a title in it) shows the name from its text in the public feed: personal data that should be hidden leaks. Fix: while names are hidden, leave a post with an incomplete anonymous version out of the feed; never fall back to the text with names."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "name-fallback",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Adlar açıkken yazarın adı akışta görünür.",
+          "en": "With names shown, the author's name is in the feed."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Adlar gizliyken akıştaki her gönderinin yazarı \"A member\" olur.",
+          "en": "With names hidden, every post in the feed has \"A member\" as its author."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Adlar gizliyken adsız sürümü olmayan bir gönderinin yazarının adı akışın hiçbir yerinde geçmez.",
+          "en": "With names hidden, the name of a post's author appears nowhere in the feed when the post has no anonymous version."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Yayımlanmamış gönderiler akışta yer almaz.",
+          "en": "Unpublished posts are not in the feed."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "Adsız sürüm eksikse kod adlı başlığa ve metne geri dönüyor; yazar alanı gizlense de metindeki ad herkese açık akışta görünüyor. Gizlenmesi istenen kişisel veri sızdığı için Kritik derdim. Adlar gizliyken adsız sürümü eksik gönderiyi akıştan çıkarır, `anonymous` alanı olmayan bir gönderiyle akışta adın hiç geçmediğini kontrol eden bir testle gösterirdim.",
+    "en": "When the anonymous version is missing, the code falls back to the title and body with names, so even though the author field is hidden, the name in the text shows up in the public feed. Personal data that should be hidden leaks, so I would mark it critical. While names are hidden I would leave such posts out of the feed, and prove it with a test that uses a post without an `anonymous` field and checks that the name appears nowhere in the feed."
+  },
+  "checklist": [
+    {
+      "tr": "Adın sızdığı durumu söyledim (adsız sürümü olmayan yeni gönderi)",
+      "en": "I named the case that leaks a name (a new post without an anonymous version)"
+    },
+    {
+      "tr": "Nedenini söyledim: `get` varsayılanı adlı metne dönüyor",
+      "en": "I said why: the `get` default falls back to the text with names"
+    },
+    {
+      "tr": "Etkisini söyledim: gizlenmesi gereken kişisel veri herkese açık",
+      "en": "I said the impact: personal data that should be hidden is public"
+    }
+  ]
+}

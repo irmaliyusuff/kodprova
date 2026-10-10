@@ -1,0 +1,97 @@
+{
+  "id": "api-card-charge",
+  "title": {
+    "tr": "Kartla ödeme uç noktası",
+    "en": "Card payment endpoint"
+  },
+  "topic": "api",
+  "difficulty": 5,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "`POST /charges` uç noktasının işleyicisini yaz: hesabın kayıtlı kartından `amountCents` tutarını çek. İstemci zaman aşımında aynı isteği aynı `Idempotency-Key` ile yeniden gönderir; aynı anahtarla gelen tekrar istek kartı yeniden çekmeden ilk cevabı alır. Anahtarı istemci seçer. `accountId` oturumdan gelir, anahtar yönlendiricide kontrol edildi (boş değil, en çok 255 karakter). Tutar pozitif bir tam sayı değilse 400, kart reddedilirse 402, başarıda 201 dön. Servis tek bir Node.js sürecinde çalışır; `answers` bütün isteklerce paylaşılır.",
+    "en": "Write the handler for the `POST /charges` endpoint: charge `amountCents` to the account's saved card. On a timeout the client sends the same request again with the same `Idempotency-Key`; a repeated request with the same key gets the first answer back without charging the card again. The client chooses the key. `accountId` comes from the session, and the router has already checked the key (not empty, at most 255 characters). Answer 400 if the amount is not a positive integer, 402 if the card is declined and 201 on success. The service runs as a single Node.js process; `answers` is shared by all requests."
+  },
+  "deliveryNote": {
+    "tr": "Tekrar istekler güvenli: her cevap `Idempotency-Key` ile saklanıyor ve aynı anahtar geldiğinde kart yeniden çekilmeden saklanan cevap dönüyor. Reddedilen ödemeler de saklanıyor, tutar doğrulanıyor.",
+    "en": "Retries are safe: every answer is stored under its idempotency key, and when the same key comes back the stored answer is returned without charging the card again. Declined payments are stored too, and the amount is validated."
+  },
+  "bugs": [
+    {
+      "id": "concurrent-double-charge",
+      "lines": [35, 43],
+      "fixedLines": [36, 54],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Saklanan cevaba bakmak ile cevabı saklamak arasında iki `await` var. Aynı anahtarla iki istek aynı anda gelirse (ilk istek yavaşken istemcinin yeniden denemesi) ikisi de `get` ile boş sonuç alır ve ikisi de kartı çeker: müşteriden iki kez para alınır. Düzeltme: süren isteği anahtarla tutmak (bir `Map`'te bekleyen `Promise`) ve aynı anahtarla gelen ikinci isteğe aynı `Promise`'i döndürmek; tek süreç olduğu için bu yeterli.",
+        "en": "There are two `await`s between looking up the stored answer and storing it. When two requests with the same key arrive together (the client retrying while the first one is slow), both get nothing from `get` and both charge the card, so the customer pays twice. Fix: keep the running request under its key (a pending `Promise` in a `Map`) and hand the same `Promise` to a second request with that key; with a single process that is enough."
+      }
+    },
+    {
+      "id": "key-not-per-account",
+      "lines": [33, 33],
+      "fixedLines": [34, 34],
+      "severity": "critical",
+      "explanation": {
+        "tr": "Anahtarı istemci seçiyor ama saklama anahtarı hesabı içermiyor. B hesabı, A hesabının kullandığı anahtarla istek gönderirse kartı hiç çekilmez ve A'nın ödeme cevabını (ödeme kimliği dahil) alır: hem para kaybı hem başka hesabın verisi. Düzeltme: anahtarı hesapla birlikte kurmak, `charge:${accountId}:${idempotencyKey}`.",
+        "en": "The client chooses the key, but the storage key does not include the account. If account B sends a request with a key that account A used, B's card is never charged and B gets A's payment answer, charge id included: lost money and another account's data. Fix: build the key with the account, `charge:${accountId}:${idempotencyKey}`."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "concurrent-double-charge",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Aynı anahtarla art arda gelen iki istek kartı bir kez çeker ve aynı cevabı alır.",
+          "en": "Two requests with the same key, one after the other, charge the card once and get the same answer."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Aynı anahtarla aynı anda gönderilen iki istek kartı bir kez çeker.",
+          "en": "Two requests with the same key sent at the same time charge the card once."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "0 tutarı 400 alır ve kart çekilmez.",
+          "en": "An amount of 0 gets a 400 and nothing is charged."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Reddedilen kart 402 alır.",
+          "en": "A declined card gets a 402."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Kontrol ile kayıt arasında `await` olduğu için aynı anahtarla aynı anda gelen iki istek ikisi de saklı cevap bulamıyor ve kart iki kez çekiliyor; bu para kaybı, Kritik derdim. Süren isteği anahtarla bir `Map`'te tutup ikinci isteğe aynı `Promise`'i verirdim ve iki isteği `Promise.all` ile gönderip tek ödeme bekleyen bir testle gösterirdim. Ayrıca saklama anahtarı hesabı içermiyor; başka bir hesap aynı anahtarla gelirse ödemesiz kalıp ilk hesabın cevabını alıyor, bu da Kritik.",
+    "en": "Because there is an `await` between the check and the save, two requests with the same key that arrive together both find no stored answer and the card is charged twice; that is lost money, so I would mark it critical. I would keep the running request in a `Map` under its key and give the second request the same `Promise`, and prove it with a test that sends both requests with `Promise.all` and expects one charge. The storage key also leaves the account out, so another account using the same key is never charged and gets the first account's answer, which is critical too."
+  },
+  "checklist": [
+    {
+      "tr": "Çift ödemenin olduğu durumu söyledim (aynı anahtarla aynı anda iki istek)",
+      "en": "I named the case that charges twice (two requests with the same key at the same time)"
+    },
+    {
+      "tr": "Nedenini söyledim: kontrol ile kayıt arasında `await` var",
+      "en": "I said why: there is an `await` between the check and the save"
+    },
+    {
+      "tr": "Anahtarın hesaba bağlı olmadığını söyledim",
+      "en": "I said the key is not tied to the account"
+    },
+    {
+      "tr": "İki isteği aynı anda gönderen bir test önerdim",
+      "en": "I proposed a test that sends both requests at the same time"
+    }
+  ]
+}

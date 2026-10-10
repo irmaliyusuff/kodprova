@@ -1,0 +1,87 @@
+{
+  "id": "testing-active-users",
+  "title": {
+    "tr": "Aktif kullanıcı testleri",
+    "en": "Active user tests"
+  },
+  "topic": "testing",
+  "difficulty": 1,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "`activeUsers(users)` için birim testleri yaz. Fonksiyon yalnız aktif kullanıcıları, sıralarını koruyarak döndürür ve girdi listesini değiştirmez.",
+    "en": "Write unit tests for `activeUsers(users)`. The function returns only the active users, keeping their order, and leaves the input list unchanged."
+  },
+  "deliveryNote": {
+    "tr": "Üç test: dönen her kullanıcının aktif olduğu, boş liste ve girdinin değişmediği. Fonksiyonun sözleşmesinin tamamı kapsandı.",
+    "en": "Three tests: every user returned is active, the empty list, and the input staying unchanged. The function's whole contract is covered."
+  },
+  "bugs": [
+    {
+      "id": "loop-assertion",
+      "lines": [11, 13],
+      "fixedLines": [11, 12],
+      "severity": "major",
+      "explanation": {
+        "tr": "Döngüdeki beklenti yalnız dönen kullanıcılara bakıyor; aktif kullanıcıların hepsinin döndüğünü ve sırasını hiç doğrulamıyor. Dönen liste eksikse eksik fark edilmez, boşsa döngü hiç çalışmaz ve test tek bir beklenti çalıştırmadan geçer. Düzeltme: sonucu beklenen listeyle (`[\"Ada\", \"Grace\"]`) tam karşılaştırmak.",
+        "en": "The assertion in the loop only looks at the users that come back; it never checks that every active user comes back, or their order. A short list goes unnoticed, and with an empty list the loop never runs and the test passes without a single assertion. Fix: compare the result with the exact expected list (`[\"Ada\", \"Grace\"]`)."
+      },
+      "flawedImplementation": {
+        "tr": "Yalnız ilk aktif kullanıcıyı döndüren (`filter` yerine `find`) bir uygulama.",
+        "en": "An implementation that returns only the first active user (`find` instead of `filter`)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "loop-assertion",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`activeUsers([])` boş liste döndürür.",
+          "en": "`activeUsers([])` returns an empty list."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Dönen her kullanıcının `active` değeri `true`'dur.",
+          "en": "Every user returned has `active` set to `true`."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Sonuç tam olarak Ada ve Grace'tir, bu sırayla.",
+          "en": "The result is exactly Ada and Grace, in that order."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Fonksiyon çağrıldıktan sonra girdi listesi aynı kalır.",
+          "en": "The input list is the same after the call."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "İlk test yalnız dönen kullanıcıların aktif olduğuna bakıyor; aktif kullanıcıların hepsinin döndüğünü doğrulamıyor, liste boşsa hiçbir şey doğrulamıyor. Yalnız ilk aktif kullanıcıyı döndüren bir uygulama bu testten geçer ve kullanıcılar listede eksik görünür. Sonucu Ada ve Grace ile, sırasıyla, tam karşılaştırırdım.",
+    "en": "The first test only checks that the users that come back are active; it never checks that every active user comes back, and with an empty result it checks nothing at all. An implementation that returns only the first active user passes, and users go missing from the list. I'd compare the result with exactly Ada and Grace, in order."
+  },
+  "checklist": [
+    {
+      "tr": "Testin hangi hatalı uygulamayı geçirdiğini söyledim (eksik ya da boş liste)",
+      "en": "I said which broken implementation the test lets through (a short or empty list)"
+    },
+    {
+      "tr": "Boş sonuçta döngünün hiçbir şey doğrulamadığını söyledim",
+      "en": "I said the loop checks nothing when the result is empty"
+    },
+    {
+      "tr": "Sonucu beklenen listeyle tam karşılaştırmayı önerdim",
+      "en": "I proposed comparing the result with the exact expected list"
+    }
+  ]
+}

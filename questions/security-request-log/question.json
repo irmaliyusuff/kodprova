@@ -1,0 +1,93 @@
+{
+  "id": "security-request-log",
+  "title": {
+    "tr": "İstekleri günlüğe yazma",
+    "en": "Logging requests"
+  },
+  "topic": "security",
+  "difficulty": 4,
+  "language": "ts",
+  "origin": "fictional",
+  "task": {
+    "tr": "Entegrasyon API'miz için hata ayıklamaya yarayan bir istek günlüğü yaz. Günlükçü işleyiciden önce çalışır ve aynı istek nesnesini alır. Her istek için tek satır JSON yaz: zaman, yöntem, yol, sorgu ve gövde. Adında password, token, secret ya da apikey geçen her alan (büyük-küçük harf, `_` ve `-` yok sayılır) hangi derinlikte olursa olsun \"[redacted]\" ile değiştirilmeli. Gövdeler entegrasyon ayarlarıdır, kişisel veri taşımaz; yollarda gizli bilgi yoktur.",
+    "en": "Write a request logger for our integrations API, used for debugging. The logger runs before the handler and receives the same request object. For each request write one JSON line: time, method, path, query and body. Every field whose name contains password, token, secret or apikey (ignoring letter case, `_` and `-`) must be replaced with \"[redacted]\" at any depth. Bodies are integration settings with no personal data, and paths hold no secrets."
+  },
+  "deliveryNote": {
+    "tr": "Gizli alanlar her derinlikte maskeleniyor; `apiKey`, `api_key` ve `API-KEY` gibi yazımlar da yakalanıyor. Sorgu ve gövde aynı fonksiyondan geçiyor, saat parametreyle geliyor.",
+    "en": "Secret fields are masked at any depth, and spellings such as `apiKey`, `api_key` and `API-KEY` are caught too. Query and body go through the same function, and the clock is passed in."
+  },
+  "bugs": [
+    {
+      "id": "array-not-redacted",
+      "lines": [20, 21],
+      "fixedLines": [20, 25],
+      "severity": "critical",
+      "explanation": {
+        "tr": "`redact` diziyi görünce olduğu gibi döndürüyor; dizinin içindeki nesnelere hiç inmiyor. `{\"credentials\": [{\"token\": \"…\"}]}` gibi bir gövdede token düz metin olarak günlüğe yazılır: gizli bilgi, günlüğü okuyabilen herkese açılır. Düzeltme: dizide her elemanı `redact` ile işlemek (`value.map(redact)`).",
+        "en": "`redact` returns an array as it is and never goes into the objects inside it. With a body such as `{\"credentials\": [{\"token\": \"…\"}]}` the token is written to the log in plain text, so the secret is open to anyone who can read the log. Fix: run `redact` on every element of an array (`value.map(redact)`)."
+      }
+    },
+    {
+      "id": "request-modified",
+      "lines": [23, 30],
+      "fixedLines": [26, 30],
+      "severity": "major",
+      "explanation": {
+        "tr": "`redact` gelen nesneyi yerinde değiştiriyor: maskeyi isteğin kendi gövdesine ve sorgusuna yazıyor. Günlükçü işleyiciden önce çalıştığı için işleyici `apiKey` olarak gerçek anahtarı değil \"[redacted]\" metnini alır; entegrasyonu kaydetmek ya da sınamak yanlış anahtarla yapılır. Düzeltme: maskelenmiş bir kopya döndürmek, gelen nesneye dokunmamak.",
+        "en": "`redact` changes the object it gets in place: it writes the mask into the request's own body and query. Because the logger runs before the handler, the handler gets the text \"[redacted]\" as `apiKey` instead of the real key, so the integration is saved or tested with the wrong key. Fix: return a masked copy and leave the incoming object alone."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "array-not-redacted",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "Gövdenin en üstündeki `password` günlüğe \"[redacted]\" olarak yazılır.",
+          "en": "A `password` at the top of the body is written to the log as \"[redacted]\"."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "İç içe bir nesnedeki `api_key` günlükte görünmez.",
+          "en": "An `api_key` inside a nested object does not appear in the log."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "Bir nesne dizisinin içindeki `token` günlükte görünmez.",
+          "en": "A `token` inside an array of objects does not appear in the log."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Günlük satırında yöntem ve yol bulunur.",
+          "en": "The log line holds the method and the path."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "`redact` dizileri olduğu gibi bırakıyor, yani `credentials` gibi bir nesne dizisindeki token düz metin olarak günlüğe yazılıyor; gizli bilgi sızdığı için Kritik derdim. Dizide her elemanı `redact` ile işler, dizi içinde token olan bir gövdeyi günlüğe yazıp token'ın satırda geçmediğini kontrol eden bir testle gösterirdim. Ayrıca `redact` isteği yerinde değiştiriyor; işleyici gerçek anahtar yerine \"[redacted]\" aldığı için bu da Önemli bir hata.",
+    "en": "`redact` leaves arrays as they are, so a token inside an array of objects such as `credentials` is written to the log in plain text; a secret leaks, so I would mark it critical. I would run `redact` on every element of an array and prove it with a test that logs a body with a token inside an array and checks that the token is not in the line. `redact` also changes the request in place, so the handler gets \"[redacted]\" instead of the real key, which is a major bug as well."
+  },
+  "checklist": [
+    {
+      "tr": "Sızan bir girdi söyledim (dizi içindeki bir `token`)",
+      "en": "I named an input that leaks (a `token` inside an array)"
+    },
+    {
+      "tr": "Etkisini söyledim: gizli bilgi günlüğü okuyan herkese açık",
+      "en": "I said the impact: the secret is open to anyone who reads the log"
+    },
+    {
+      "tr": "İsteğin yerinde değiştirildiğini ve işleyicinin yanlış değer aldığını söyledim",
+      "en": "I said the request is changed in place and the handler gets the wrong value"
+    }
+  ]
+}

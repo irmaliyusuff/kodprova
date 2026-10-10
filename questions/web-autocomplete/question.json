@@ -1,0 +1,83 @@
+{
+  "id": "web-autocomplete",
+  "title": {
+    "tr": "Arama önerileri listesi",
+    "en": "Search suggestion list"
+  },
+  "topic": "web",
+  "difficulty": 3,
+  "language": "ts",
+  "origin": "real",
+  "task": {
+    "tr": "Arama kutusunun altındaki öneri listesinin durumunu yöneten `createAutocomplete(options)` yaz. Yazdıkça `options` içinden yazılanla başlayanları göster (büyük/küçük harf duyarsız, baştaki ve sondaki boşluk yok sayılır, en çok 5). Öneriye fareyle tıklanınca öneri kutuya yazılsın ve liste kapansın; basılı tutulan öneri basılı görünsün. Kutudan çıkınca (`blur`) liste kapansın. Sayfa kutunun `input` ve `blur` olaylarını, her önerinin `pointerdown` ve `click` olaylarını bu fonksiyonlara iletir. Liste yalnız `suggestions()` doluyken çizilir. Klavyeyle gezinme ayrı bir görev.",
+    "en": "Write `createAutocomplete(options)`, which manages the state of the suggestion list under a search input. As the user types, show the `options` that start with the typed text (case-insensitive, ignoring leading and trailing spaces, at most 5). Clicking a suggestion with the mouse puts it into the input and closes the list; a suggestion that is being pressed looks pressed. Leaving the input (`blur`) closes the list. The page forwards the input's `input` and `blur` events and each suggestion's `pointerdown` and `click` events to these functions. The list is drawn only while `suggestions()` is not empty. Keyboard navigation is a separate task."
+  },
+  "deliveryNote": {
+    "tr": "Öneriler yazdıkça süzülüyor, tıklanan öneri kutuya yazılıp liste kapanıyor, kutudan çıkınca da liste kapanıyor. Basılı öneri için ayrı bir durum var.",
+    "en": "Suggestions are filtered as the user types, a clicked suggestion goes into the input and closes the list, and leaving the input closes it too. There is a separate state for the pressed suggestion."
+  },
+  "bugs": [
+    {
+      "id": "click-after-blur",
+      "lines": [34, 43],
+      "fixedLines": [38, 42],
+      "severity": "major",
+      "explanation": {
+        "tr": "Tarayıcı bir öğeye fareyle tıklamayı şu sırayla gönderir: `pointerdown`, sonra odağı kaybeden kutunun `blur`'u, en son `click`. `blur` listeyi hemen kapattığı için öneri sayfadan kalkar ve `click` hiçbir zaman öneriye ulaşmaz; seçim yalnız `click`'te yapıldığından öneri fareyle hiç seçilemez. Kutuda kullanıcının yarım yazdığı metin kalır. Düzeltme: seçimi `pointerdown`'da yapmak (ya da basış süresince kutunun odağını korumak).",
+        "en": "A browser sends a mouse click on an element in this order: `pointerdown`, then `blur` on the input that loses focus, and `click` last. Because `blur` closes the list at once, the suggestion leaves the page and the `click` never reaches it; since choosing happens only on `click`, a suggestion can never be chosen with the mouse. The input keeps the half-typed text. Fix: choose on `pointerdown` (or keep the focus in the input during the press)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "click-after-blur",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`\" AP\"` yazınca öneriler `Apple` ve `Apricot` olur.",
+          "en": "Typing `\" AP\"` suggests `Apple` and `Apricot`."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "Kutudan çıkınca öneri listesi boşalır.",
+          "en": "Leaving the input empties the suggestion list."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "İkinci öneriye fareyle tıklama tarayıcının sırasıyla gönderilince (`pointerdown`, `blur`, `click`) kutuya `Apricot` yazılır.",
+          "en": "When a mouse click on the second suggestion is sent in the browser's order (`pointerdown`, `blur`, `click`), the input holds `Apricot`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "İkinci önerinin `click` işleyicisi doğrudan çağrılınca kutuya `Apricot` yazılır.",
+          "en": "Calling the second suggestion's `click` handler directly puts `Apricot` in the input."
+        }
+      }
+    ],
+    "correct": "c"
+  },
+  "sampleAnswer": {
+    "tr": "Fareyle tıklamada tarayıcı `blur`'u `click`'ten önce gönderiyor; `blur` listeyi kapattığı için `click` öneriye hiç ulaşmıyor ve öneri fareyle seçilemiyor. Kullanıcı istediği sonucu alamadığı için Önemli derdim. Olayları tarayıcının sırasıyla gönderen bir testle gösterirdim; `click` işleyicisini doğrudan çağıran bir test bu hatayı kaçırır. Seçimi `pointerdown`'a taşırdım.",
+    "en": "On a mouse click the browser sends `blur` before `click`; because `blur` closes the list, the `click` never reaches the suggestion and it cannot be chosen with the mouse. The user cannot get the result they want, so I'd mark it major. I'd show it with a test that sends the events in the browser's order, since a test that calls the `click` handler directly misses this bug. I'd move the choice to `pointerdown`."
+  },
+  "checklist": [
+    {
+      "tr": "Olay sırasını söyledim: `pointerdown`, `blur`, `click`",
+      "en": "I named the event order: `pointerdown`, `blur`, `click`"
+    },
+    {
+      "tr": "Kullanıcıya etkisini söyledim: öneri fareyle seçilemiyor",
+      "en": "I said the effect on the user: a suggestion cannot be chosen with the mouse"
+    },
+    {
+      "tr": "Olayları gerçek sırasıyla gönderen bir test önerdim",
+      "en": "I proposed a test that sends the events in their real order"
+    }
+  ]
+}

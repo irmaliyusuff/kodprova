@@ -1,0 +1,83 @@
+{
+  "id": "api-product-price",
+  "title": {
+    "tr": "Ürün fiyatını kaydetme",
+    "en": "Saving a product price"
+  },
+  "topic": "api",
+  "difficulty": 1,
+  "language": "python",
+  "origin": "fictional",
+  "task": {
+    "tr": "`POST /products` uç noktasının işleyicisini yaz. Gövde ayrıştırılmış bir JSON nesnesidir: `name` 1–100 karakterlik bir metin (baştaki ve sondaki boşluklar sayılmaz), `price` en çok iki ondalık basamaklı bir metin, örneğin \"19.99\" (ücretsiz ürün için \"0\" olabilir). Fiyatı tam sayı kuruş olarak `save(name, price_cents)` ile kaydet, 201 ve ürünü döndür; geçersiz alanda 400 ve hata kodu döndür.",
+    "en": "Write the handler for the `POST /products` endpoint. The body is a parsed JSON object: `name` is a string of 1–100 characters (leading and trailing spaces do not count) and `price` is a string with at most two decimals, such as \"19.99\" (\"0\" is allowed for free products). Store the price as integer cents with `save(name, price_cents)` and answer 201 with the product; answer 400 with an error code when a field is invalid."
+  },
+  "deliveryNote": {
+    "tr": "Fiyat kuruşa çevrilip tam sayı olarak saklanıyor, yani ondalık sayı sorunları yok. Ad ve fiyat doğrulanıyor; hatalı istekler 400 alıyor.",
+    "en": "Prices are converted to cents and stored as integers, so there are no floating-point issues. Name and price are validated, and bad requests get a 400."
+  },
+  "bugs": [
+    {
+      "id": "cents-truncated",
+      "lines": [11, 11],
+      "fixedLines": [11, 11],
+      "severity": "critical",
+      "explanation": {
+        "tr": "`19.99` ikili kayan noktada tam olarak gösterilemez: `float(\"19.99\") * 100` 1999 değil 1998.9999999999998 olur ve `int()` ondalığı keserek 1998 kuruş kaydeder. \"0.29\" ve \"1.15\" gibi pek çok fiyat bir kuruş eksik saklanır; her satışta para kaybı. Düzeltme: `int()` yerine `round()` ile en yakın tam sayıya yuvarlamak (ya da hesabı `Decimal` ile yapmak).",
+        "en": "`19.99` has no exact binary floating-point form: `float(\"19.99\") * 100` is 1998.9999999999998, not 1999, and `int()` cuts the decimals off and stores 1998 cents. Many prices, such as \"0.29\" and \"1.15\", are stored one cent short, which loses money on every sale. Fix: round to the nearest integer with `round()` instead of `int()` (or do the math with `Decimal`)."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "cents-truncated",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`parse_price(\"12.50\")` 1250 döndürür.",
+          "en": "`parse_price(\"12.50\")` returns 1250."
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`parse_price(\"19.99\")` 1999 döndürür.",
+          "en": "`parse_price(\"19.99\")` returns 1999."
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`parse_price(\"1.999\")` `None` döndürür.",
+          "en": "`parse_price(\"1.999\")` returns `None`."
+        }
+      },
+      {
+        "id": "d",
+        "text": {
+          "tr": "Yalnız boşluktan oluşan bir ad 400 alır ve hiçbir şey kaydedilmez.",
+          "en": "A name made only of spaces gets a 400 and nothing is stored."
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Fiyat önce `float`'a çevriliyor, 100 ile çarpılıyor ve `int()` ile kesiliyor; \"19.99\" bu yolla 1998 kuruş oluyor. Pek çok fiyat bir kuruş eksik saklandığı için bu bir para hatası, Kritik derdim. `int()` yerine `round()` kullanır ya da `Decimal` ile hesaplar, `parse_price(\"19.99\") == 1999` bekleyen bir testle gösterirdim.",
+    "en": "The price goes through `float`, is multiplied by 100 and then cut with `int()`, so \"19.99\" becomes 1998 cents. Many prices are stored one cent short, which is a money bug, so I'd mark it critical. I'd use `round()` instead of `int()` or compute with `Decimal`, and prove it with a test that expects `parse_price(\"19.99\") == 1999`."
+  },
+  "checklist": [
+    {
+      "tr": "Yanlış saklanan bir fiyat söyledim (\"19.99\" → 1998)",
+      "en": "I named a price that is stored wrong (\"19.99\" → 1998)"
+    },
+    {
+      "tr": "Nedenini söyledim: kayan nokta sonucu `int()` ile aşağı kesiliyor",
+      "en": "I said why: `int()` cuts the floating-point result down"
+    },
+    {
+      "tr": "Etkisini söyledim: fiyat bir kuruş eksik kaydedilir, para kaybı",
+      "en": "I said the impact: the price is stored one cent short, losing money"
+    }
+  ]
+}
