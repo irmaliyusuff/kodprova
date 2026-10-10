@@ -1,7 +1,7 @@
 // npm run proof [-- --lang ts,js,python --only <question id> --dir questions]
-// The proof gate: validates every question, then proves each one by running
-// its checks against its code (TypeScript/JavaScript in Node, Python through
-// uv or PYTHON). The rules are in scripts/lib/gate.ts.
+// The proof gate: validates every question (with --only, just that one), then
+// proves each one by running its checks against its code (TypeScript/JavaScript
+// in Node, Python through uv or PYTHON). The rules are in scripts/lib/gate.ts.
 //
 // Every question runs once per time zone in TIME_ZONES, and all runs must
 // agree, so a proof that depends on the clock, the time zone or randomness
@@ -52,7 +52,9 @@ if (unknown.length > 0) {
   process.exit(1);
 }
 
-const { questions, errors } = await loadQuestions(values.dir);
+// With --only, only that folder is validated: other authors' unfinished
+// folders do not block the check of a single question.
+const { questions, errors } = await loadQuestions(values.dir, values.only);
 if (errors.length > 0) {
   console.error(
     `Proof gate stopped: ${errors.length} problem(s) in the question files.\n`,
@@ -73,13 +75,17 @@ if (selected.length === 0) {
   process.exit(1);
 }
 
-const filtered = selected.length !== questions.length;
+const filtered =
+  values.only !== undefined || selected.length !== questions.length;
+const filterNote =
+  values.only !== undefined
+    ? "; filtered with --only, other folders not validated or checked"
+    : filtered
+      ? `; filtered, ${questions.length - selected.length} not checked`
+      : "";
 console.log(
   `Proof gate: ${selected.length} question(s), ${TIME_ZONES.length} runs each` +
-    ` (time zones ${TIME_ZONES.join(", ")})` +
-    (filtered
-      ? `; filtered, ${questions.length - selected.length} not checked`
-      : ""),
+    ` (time zones ${TIME_ZONES.join(", ")})${filterNote}`,
 );
 
 let python: PythonSearch | undefined;

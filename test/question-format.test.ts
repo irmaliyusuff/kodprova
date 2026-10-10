@@ -249,4 +249,15 @@ describe("countSentences", () => {
     assert.equal(countSentences("Ends with an ellipsis… Then more."), 2);
     assert.equal(countSentences("  "), 0);
   });
+
+  test("ignores punctuation inside inline code", () => {
+    assert.equal(countSentences("It asks `ok? yes` once. Then stops."), 2);
+    assert.equal(countSentences("Page `5. ` and `a! b` are code. Done."), 2);
+    assert.equal(countSentences("It returns `null`. Then more."), 2);
+    assert.equal(countSentences("No end outside the code `x.` Then more."), 1);
+  });
+
+  test("an unpaired backtick is plain text", () => {
+    assert.equal(countSentences("A lone ` mark. Then? more."), 3);
+  });
 });

@@ -67,8 +67,8 @@
     "correct": "c"
   },
   "sampleAnswer": {
-    "tr": "İlk test yalnız dönen kullanıcıların aktif olduğuna bakıyor; aktif kullanıcıların hepsinin döndüğünü doğrulamıyor, liste boşsa hiçbir şey doğrulamıyor. Yalnız ilk aktif kullanıcıyı döndüren bir uygulama bu testten geçer ve kullanıcılar listede eksik görünür. Sonucu Ada ve Grace ile, sırasıyla, tam karşılaştırırdım.",
-    "en": "The first test only checks that the users that come back are active; it never checks that every active user comes back, and with an empty result it checks nothing at all. An implementation that returns only the first active user passes, and users go missing from the list. I'd compare the result with exactly Ada and Grace, in order."
+    "tr": "İlk test yalnız dönen kullanıcıların aktif olduğuna bakıyor; aktif kullanıcıların hepsinin döndüğünü doğrulamıyor, liste boşsa hiçbir şey doğrulamıyor. Yalnız ilk aktif kullanıcıyı döndüren bir uygulama bu testten geçer ve kullanıcılar listede eksik görünür; bu yanlış sonuç, Önemli derdim. Sonucu Ada ve Grace ile, sırasıyla, tam karşılaştırırdım.",
+    "en": "The first test only checks that the users that come back are active; it never checks that every active user comes back, and with an empty result it checks nothing at all. An implementation that returns only the first active user passes, and users go missing from the list; that is a wrong result, so I'd mark it Major. I'd compare the result with exactly Ada and Grace, in order."
   },
   "checklist": [
     {

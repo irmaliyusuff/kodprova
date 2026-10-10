@@ -23,7 +23,7 @@
       "fixedLines": [30, 34],
       "severity": "major",
       "explanation": {
-        "tr": "`to`, bitiş gününün gece yarısıdır (00:00). `createdAt < to` o günün yalnız ilk anından öncesini alır; bitiş gününde verilen siparişlerin hepsi rapordan düşer. `from` ile `to` aynı gün olunca liste hep boş gelir. Düzeltme: bitişi bir gün ileri almak (`to` + 1 gün) ve ondan küçük olanları almak.",
+        "tr": "`to`, bitiş gününün başladığı andır (00:00). `createdAt < to` o günün yalnız ilk anından öncesini alır; bitiş gününde verilen siparişlerin hepsi rapordan düşer. `from` ile `to` aynı gün olunca liste hep boş gelir. Düzeltme: bitişi bir gün ileri almak (`to` + 1 gün) ve ondan küçük olanları almak.",
         "en": "`to` is midnight (00:00) at the start of the last day. `createdAt < to` only keeps what came before that moment, so every order placed on the last day is missing from the report. When `from` and `to` are the same day the list is always empty. Fix: move the end one day forward (`to` + 1 day) and keep what is before it."
       }
     }
@@ -63,8 +63,8 @@
     "correct": "c"
   },
   "sampleAnswer": {
-    "tr": "`to` bitiş gününün gece yarısı ve kod `createdAt < to` diyor; bitiş günündeki bütün siparişler rapordan düşüyor, tek günlük aralık hep boş geliyor. Kullanıcı yanlış rapor aldığı için Önemli derdim. Bitişi bir gün ileri alarak düzeltir, `from` ve `to` aynı günken o gün öğleden sonra verilen siparişin listede olduğunu kontrol eden bir testle gösterirdim.",
-    "en": "`to` is midnight at the start of the last day and the code checks `createdAt < to`, so every order from the last day is missing and a one-day range is always empty. The user gets a wrong report, so I'd mark it major. I'd fix it by moving the end one day forward, and prove it with a test where `from` and `to` are the same day and an afternoon order from that day must be in the list."
+    "tr": "`to` bitiş gününün başlangıcı (00:00) ve kod `createdAt < to` diyor; bitiş günündeki bütün siparişler rapordan düşüyor, tek günlük aralık hep boş geliyor. Kullanıcı yanlış rapor aldığı için Önemli derdim. Bitişi bir gün ileri alarak düzeltir, `from` ve `to` aynı günken o gün öğleden sonra verilen siparişin listede olduğunu kontrol eden bir testle gösterirdim.",
+    "en": "`to` is midnight at the start of the last day and the code checks `createdAt < to`, so every order from the last day is missing and a one-day range is always empty. The user gets a wrong report, so I'd mark it Major. I'd fix it by moving the end one day forward, and prove it with a test where `from` and `to` are the same day and an afternoon order from that day must be in the list."
   },
   "checklist": [
     {

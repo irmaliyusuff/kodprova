@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "Arama metni adrese kodlanmadan yazılıyor; `R&B` aranınca `q` yalnız `R` olarak okunuyor ve kullanıcı başka bir aramanın sonuçlarını görüyor. Kullanıcı yanlış sonuç aldığı için Önemli derdim. `R&B` arayıp adresten `q` değerini `URLSearchParams` ile geri okuyan bir testle gösterir, değeri `encodeURIComponent` ile kodlardım.",
-    "en": "The search text goes into the URL without encoding, so searching for `R&B` reads back as `q` = `R` and the user sees results for a different search. The user gets a wrong result, so I'd mark it major. I'd show it with a test that searches for `R&B` and reads `q` back with `URLSearchParams`, and encode the value with `encodeURIComponent`."
+    "en": "The search text goes into the URL without encoding, so searching for `R&B` reads back as `q` = `R` and the user sees results for a different search. The user gets a wrong result, so I'd mark it Major. I'd show it with a test that searches for `R&B` and reads `q` back with `URLSearchParams`, and encode the value with `encodeURIComponent`."
   },
   "checklist": [
     {

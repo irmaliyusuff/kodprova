@@ -244,9 +244,14 @@ function join(path: string, key: string): string {
   return path === "" ? key : `${path}.${key}`;
 }
 
-/** Counts sentences ending in . ! ? or … followed by a space or the end. */
+/**
+ * Counts sentences ending in . ! ? or … followed by a space or the end.
+ * Inline code (`a? b`, `5. `) is not text, so its punctuation never ends a
+ * sentence.
+ */
 export function countSentences(text: string): number {
   return text
+    .replace(/`[^`]*`/g, "code")
     .trim()
     .split(/(?<=[.!?…])\s+/)
     .filter((part) => part.trim() !== "").length;

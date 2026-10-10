@@ -23,7 +23,7 @@
       "fixedLines": [35, 38],
       "severity": "major",
       "explanation": {
-        "tr": "Beklenti sahte nesnenin içinde: doğrulanmamış Bob'a gönderim olursa `assert.notEqual` hata fırlatır, ama bu hatayı test değil, `sendWelcomeEmails`'in kendi `try/catch`'i yakalar. Fonksiyon gönderim hatası sanıp Bob'u `failed`'a yazar ve normal biçimde biter; test geçer. Doğrulamayı hiç yapmayan bir uygulama böylece fark edilmez ve doğrulanmamış adreslere e-posta gider. Düzeltme: alıcıları sahte nesnede kaydedip beklentiyi çağrıdan sonra, testin kendisinde yazmak.",
+        "tr": "Beklenti sahte nesnenin içinde: doğrulanmamış Bob'a gönderim olursa `assert.notEqual` hata fırlatır, ama bu hatayı test değil, `sendWelcomeEmails`'in kendi `try/catch`'i yakalar. Fonksiyon gönderim hatası sanıp Bob'u `failed`'a yazar ve normal biçimde biter; test geçer. Kullanıcının doğrulanmış olup olmadığına hiç bakmayan bir uygulama böylece fark edilmez ve doğrulanmamış adreslere e-posta gider. Düzeltme: alıcıları sahte nesnede kaydedip beklentiyi çağrıdan sonra, testin kendisinde yazmak.",
         "en": "The assertion is inside the mock: if unverified Bob is emailed, `assert.notEqual` throws, but the error is caught by `sendWelcomeEmails`' own `try/catch`, not by the test. The function takes it for a failed send, puts Bob in `failed` and returns normally, so the test passes. An implementation that never checks verification goes unnoticed, and email goes to unverified addresses. Fix: record the recipients in the mock and assert in the test itself, after the call."
       },
       "flawedImplementation": {
@@ -37,8 +37,8 @@
       "fixedLines": [50, 50],
       "severity": "critical",
       "explanation": {
-        "tr": "Başarısız gönderim testi yalnız `failed` listesine bakıyor. İlk hatada döngüden çıkan bir uygulama da Ada'yı `failed`'a yazdığı için geçer; oysa Cy'ye hiç gönderilmez ve Cy ne `sent` ne `failed` listesinde görünür, yani kimse yeniden denemez. Teslim notu bunun kapsandığını söylüyor ama hiçbir test devam edildiğini doğrulamıyor. Düzeltme: raporun tamamını karşılaştırmak (`{ sent: [CY], failed: [ADA] }`).",
-        "en": "The failed send test only looks at the `failed` list. An implementation that leaves the loop at the first failure also puts Ada in `failed` and passes, yet Cy is never emailed and appears in neither `sent` nor `failed`, so nobody retries. The handoff note says this is covered, but no test checks that sending goes on. Fix: compare the whole report (`{ sent: [CY], failed: [ADA] }`)."
+        "tr": "Başarısız gönderim testi yalnız `failed` listesine bakıyor. İlk hatada döngüden çıkan bir uygulama da Ada'yı `failed`'a yazdığı için geçer; oysa Cy'ye hiç gönderilmez ve Cy ne `sent` ne `failed` listesinde görünür, yani kimse yeniden denemez. Cy'nin e-postası iz bırakmadan kaybolur; bu veri kaybıdır. Teslim notu bunun kapsandığını söylüyor ama hiçbir test devam edildiğini doğrulamıyor. Düzeltme: raporun tamamını karşılaştırmak (`{ sent: [CY], failed: [ADA] }`).",
+        "en": "The failed send test only looks at the `failed` list. An implementation that leaves the loop at the first failure also puts Ada in `failed` and passes, yet Cy is never emailed and appears in neither `sent` nor `failed`, so nobody retries. Cy's email is lost without a trace, which is data loss. The handoff note says this is covered, but no test checks that sending goes on. Fix: compare the whole report (`{ sent: [CY], failed: [ADA] }`)."
       },
       "flawedImplementation": {
         "tr": "İlk başarısız gönderimde döngüden çıkan, kalan kullanıcılara hiç göndermeyen bir uygulama.",
@@ -81,8 +81,8 @@
     "correct": "b"
   },
   "sampleAnswer": {
-    "tr": "Doğrulanmamış kullanıcı testi beklentiyi sahte nesnenin içine koymuş; fırlatılan hatayı fonksiyonun kendi `try/catch`'i yutuyor, yani doğrulamayı hiç yapmayan bir uygulama da geçiyor. Alıcıları kaydedip çağrıdan sonra tam olarak Ada ve Cy olduklarını kontrol ederdim, bunu Önemli derdim. Ayrıca başarısız gönderim testi yalnız `failed`'a bakıyor: ilk hatada duran bir uygulama Cy'yi sessizce atlıyor, bu veri kaybı olduğu için Kritik.",
-    "en": "The unverified user test puts its assertion inside the mock, and the function's own `try/catch` swallows the error it throws, so an implementation that never checks verification passes too. I'd record the recipients and check after the call that they are exactly Ada and Cy, and mark it major. The failed send test also looks only at `failed`: an implementation that stops at the first failure silently skips Cy, which is data loss and so critical."
+    "tr": "Doğrulanmamış kullanıcı testi beklentiyi sahte nesnenin içine koymuş; fırlatılan hatayı fonksiyonun kendi `try/catch`'i yutuyor, yani kullanıcının doğrulanmış olup olmadığına hiç bakmayan bir uygulama da geçiyor. Doğrulanmamış adreslere e-posta gidebildiği için Önemli derdim; alıcıları kaydedip çağrıdan sonra tam olarak Ada ve Cy olduklarını kontrol ederdim. Ayrıca başarısız gönderim testi yalnız `failed`'a bakıyor: ilk hatada duran bir uygulama Cy'yi sessizce atlıyor, bu veri kaybı olduğu için Kritik.",
+    "en": "The unverified user test puts its assertion inside the mock, and the function's own `try/catch` swallows the error it throws, so an implementation that never checks verification passes too. Email can reach unverified addresses, so I'd mark it Major; I'd record the recipients and check after the call that they are exactly Ada and Cy. The failed send test also looks only at `failed`: an implementation that stops at the first failure silently skips Cy, which is data loss and so Critical."
   },
   "checklist": [
     {

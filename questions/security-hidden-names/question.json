@@ -13,7 +13,7 @@
     "en": "Write the code behind the community site's public `GET /feed` endpoint that returns published posts, newest first. Posts can mention members by name in the title and the body. While the site setting `hide_names` is on, no member's name may appear in the feed: the author is shown as \"A member\" and the post's `anonymous` version (a `title` and `body` written without names) is used. `anonymous` is an optional field: older posts have it, newer ones may not."
   },
   "deliveryNote": {
-    "tr": "Gizlilik kipi hazır: adlar gizliyken yazar \"A member\" olarak gösteriliyor ve gönderinin adsız sürümü kullanılıyor. Adsız sürümü olmayan eski kayıtlar da hata vermeden çalışıyor.",
+    "tr": "Gizlilik kipi hazır: adlar gizliyken yazar \"A member\" olarak gösteriliyor ve gönderinin adsız sürümü kullanılıyor. Adsız sürümü olmayan kayıtlar da hata vermeden çalışıyor.",
     "en": "Privacy mode is in place: while names are hidden, the author shows as \"A member\" and the anonymous version of the post is used. Records without an anonymous version still work without errors."
   },
   "bugs": [
@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "Adsız sürüm eksikse kod adlı başlığa ve metne geri dönüyor; yazar alanı gizlense de metindeki ad herkese açık akışta görünüyor. Gizlenmesi istenen kişisel veri sızdığı için Kritik derdim. Adlar gizliyken adsız sürümü eksik gönderiyi akıştan çıkarır, `anonymous` alanı olmayan bir gönderiyle akışta adın hiç geçmediğini kontrol eden bir testle gösterirdim.",
-    "en": "When the anonymous version is missing, the code falls back to the title and body with names, so even though the author field is hidden, the name in the text shows up in the public feed. Personal data that should be hidden leaks, so I would mark it critical. While names are hidden I would leave such posts out of the feed, and prove it with a test that uses a post without an `anonymous` field and checks that the name appears nowhere in the feed."
+    "en": "When the anonymous version is missing, the code falls back to the title and body with names, so even though the author field is hidden, the name in the text shows up in the public feed. Personal data that should be hidden leaks, so I'd mark it Critical. While names are hidden I'd leave such posts out of the feed, and prove it with a test that uses a post without an `anonymous` field and checks that the name appears nowhere in the feed."
   },
   "checklist": [
     {

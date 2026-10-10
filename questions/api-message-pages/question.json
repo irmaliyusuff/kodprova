@@ -63,8 +63,8 @@
     "correct": "b"
   },
   "sampleAnswer": {
-    "tr": "İmleç `sent_at` ve `id` taşıyor ama sorgu yalnız `sent_at` ile filtreliyor; sayfa sınırındaki saniyede birden fazla mesaj varsa kalanlar atlanıyor. Kullanıcı bazı mesajları hiç görmüyor, bu yanlış sonuç, Önemli derdim. Koşula, aynı `sent_at` için `id` karşılaştırmasını ekler, aynı saniyede gönderilmiş üç mesajı `limit` 2 ile okuyup üçünün de geldiğini kontrol eden bir testle gösterirdim.",
-    "en": "The cursor carries `sent_at` and `id`, but the query only filters on `sent_at`, so when several messages share the second at a page boundary the rest are skipped. The user never sees some messages, which is a wrong result, so I would mark it major. I would add an `id` comparison for the same `sent_at` to the condition, and prove it with a test that reads three messages from the same second with `limit` 2 and expects all three."
+    "tr": "İmleç `sent_at` ve `id` taşıyor ama sorgu yalnız `sent_at` ile filtreliyor; sayfa sınırındaki saniyede birden fazla mesaj varsa kalanlar atlanıyor. Kullanıcı bazı mesajları hiç görmüyor, bu yanlış sonuç, Önemli derdim. Koşula aynı `sent_at` için `id` karşılaştırmasını ekler, aynı saniyede gönderilmiş üç mesajı `limit` 2 ile okuyup üçünün de geldiğini kontrol eden bir testle gösterirdim.",
+    "en": "The cursor carries `sent_at` and `id`, but the query only filters on `sent_at`, so when several messages share the second at a page boundary the rest are skipped. The user never sees some messages, which is a wrong result, so I'd mark it Major. I'd add an `id` comparison for the same `sent_at` to the condition, and prove it with a test that reads three messages from the same second with `limit` 2 and expects all three."
   },
   "checklist": [
     {

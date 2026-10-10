@@ -68,7 +68,7 @@
   },
   "sampleAnswer": {
     "tr": "Sahte kur servisi argümanlarına bakmadan hep 1,25 dönüyor; kuru ters yönde isteyen bir uygulama da aynı cevabı alıp testlerden geçiyor. Gerçekte bu yanlış tutar, yani para kaybı demek, bu yüzden Kritik derdim. Sahte nesneyi yalnız bilinen çiftlere cevap verecek biçimde yazar, `EUR>USD` ve `USD>EUR` için farklı kur verip 10 EUR'nun 12,5 USD olduğunu kontrol ederdim.",
-    "en": "The mock rate service ignores its arguments and always answers 1.25, so an implementation that asks for the rate the wrong way round gets the same answer and passes. In real use that is a wrong amount, which means lost money, so I'd mark it critical. I'd make the mock answer only known pairs, give `EUR>USD` and `USD>EUR` different rates and check that 10 EUR becomes 12.5 USD."
+    "en": "The mock rate service ignores its arguments and always answers 1.25, so an implementation that asks for the rate the wrong way round gets the same answer and passes. In real use that is a wrong amount, which means lost money, so I'd mark it Critical. I'd make the mock answer only known pairs, give `EUR>USD` and `USD>EUR` different rates and check that 10 EUR becomes 12.5 USD."
   },
   "checklist": [
     {

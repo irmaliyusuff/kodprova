@@ -74,7 +74,7 @@
   },
   "sampleAnswer": {
     "tr": "Yeniden deneme yalnız `send` hata fırlatınca oluyor; ama `fetch` 500'de normal çözülüyor, yani sunucu hatası alan her olay gönderilmiş sayılıp kayboluyor. Bu veri kaybı, Kritik derdim ve 503 dönen sahte bir sunucuyla olayın hâlâ beklediğini kontrol eden bir testle gösterirdim. Ayrıca sınırda bir fazlalık var: `attempts > MAX_ATTEMPTS` olayı üç yerine dört kez gönderiyor.",
-    "en": "The retry only happens when `send` throws, but `fetch` resolves normally on a 500, so every event that hits a server error counts as delivered and is lost. That is data loss, so I'd mark it critical and prove it with a fake server that answers 503 and a check that the event is still pending. There is also an off-by-one in the limit: `attempts > MAX_ATTEMPTS` lets an event go out four times instead of three."
+    "en": "The retry only happens when `send` throws, but `fetch` resolves normally on a 500, so every event that hits a server error counts as delivered and is lost. That is data loss, so I'd mark it Critical and prove it with a fake server that answers 503 and a check that the event is still pending. There is also an off-by-one in the limit: `attempts > MAX_ATTEMPTS` lets an event go out four times instead of three."
   },
   "checklist": [
     {

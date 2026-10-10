@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "`pageLeft` bekleyenleri çalıştırıyor ama basışı bitirmiyor; kullanıcı tuş basılıyken sekme değiştirip dönerse sonraki Tab doğrulamaları bir tıklamaya kadar bekliyor ve ekranda eski hata mesajı kalıyor. Tetikleyici nadir ve bir tıklama durumu düzelttiği için Küçük derdim. Basış, `pageLeft`, ardından `focusOut` gönderip doğrulamanın hemen çalıştığını kontrol eden bir testle gösterir, `pageLeft`'te `endPress` çağırırdım.",
-    "en": "`pageLeft` runs the held checks but does not end the press, so if the user switches tabs with the button down and comes back, later Tab checks wait for a click and the old error message stays on screen. The trigger is rare and a click puts it right, so I'd mark it minor. I'd show it with a test that sends a press, `pageLeft` and then `focusOut` and checks that validation runs at once, and call `endPress` in `pageLeft`."
+    "en": "`pageLeft` runs the held checks but does not end the press, so if the user switches tabs with the button down and comes back, later Tab checks wait for a click and the old error message stays on screen. The trigger is rare and a click puts it right, so I'd mark it Minor. I'd show it with a test that sends a press, `pageLeft` and then `focusOut` and checks that validation runs at once, and call `endPress` in `pageLeft`."
   },
   "checklist": [
     {

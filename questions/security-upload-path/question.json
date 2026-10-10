@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "Kapsama kontrolü metin karşılaştırıyor; adı `uploads` ile başlayan kardeş bir klasör, örneğin `uploads-old`, kontrolü geçiyor ve `../uploads-old/a.txt` sunuluyor. Bu bir dizin aşımı; yükleme klasörü dışındaki dosyalar indirilebildiği için Kritik derdim. `root + os.sep` ile karşılaştırarak düzeltir, `../uploads-old/a.txt` isteyip `None` bekleyen bir testle gösterirdim.",
-    "en": "The containment check compares strings, so a sibling folder whose name starts with `uploads`, such as `uploads-old`, passes it and `../uploads-old/a.txt` is served. That is path traversal and I'd mark it critical, because files outside the upload folder can be downloaded. I'd fix it by comparing against `root + os.sep` and prove it with a test that asks for `../uploads-old/a.txt` and expects `None`."
+    "en": "The containment check compares strings, so a sibling folder whose name starts with `uploads`, such as `uploads-old`, passes it and `../uploads-old/a.txt` is served. That is path traversal and I'd mark it Critical, because files outside the upload folder can be downloaded. I'd fix it by comparing against `root + os.sep` and prove it with a test that asks for `../uploads-old/a.txt` and expects `None`."
   },
   "checklist": [
     {

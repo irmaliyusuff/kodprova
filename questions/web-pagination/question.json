@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "Toplam sayfa aşağı yuvarlanıyor; 45 ürün ve sayfa başına 10 ile son 5 ürün hiçbir sayfada görünmüyor, beşinci sayfa istenince dördüncü sayfa açılıyor. Kullanıcı ürünlerin bir kısmını hiç göremediği için Önemli derdim. Tam bölünmeyen bir sayıyla (45 / 10) son sayfanın etiketini `41–45 / 45` diye kontrol eden bir testle gösterir, `Math.ceil` kullanırdım.",
-    "en": "The page count is rounded down, so with 45 products and 10 per page the last 5 products are on no page, and asking for page 5 opens page 4. The user never sees some of the products, so I'd mark it major. I'd show it with a test that uses a count that does not divide evenly (45 / 10) and checks that the last page is labeled `41–45 / 45`, and use `Math.ceil`."
+    "en": "The page count is rounded down, so with 45 products and 10 per page the last 5 products are on no page, and asking for page 5 opens page 4. The user never sees some of the products, so I'd mark it Major. I'd show it with a test that uses a count that does not divide evenly (45 / 10) and checks that the last page is labeled `41–45 / 45`, and use `Math.ceil`."
   },
   "checklist": [
     {

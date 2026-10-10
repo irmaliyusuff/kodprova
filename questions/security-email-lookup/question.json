@@ -64,7 +64,7 @@
   },
   "sampleAnswer": {
     "tr": "E-posta sorgunun içine f-string ile yazılıyor, yani girdideki bir tırnak sorgunun anlamını değiştirebiliyor: bu SQL enjeksiyonu. Hiçbir hesaba ait olmayan bir girdi başka birinin hesabını döndürebildiği için güvenlik açığı, Kritik derdim. Değeri parametreyle verir, tırnak ve OR içeren bir girdinin `None` döndürdüğünü kontrol eden bir testle gösterirdim.",
-    "en": "The email is written into the query with an f-string, so a quote in the input can change what the query means: that is SQL injection. Input that belongs to no account can return someone else's account, which is a security hole, so I would mark it critical. I would pass the value as a parameter and prove it with a test that sends input with a quote and OR and expects `None`."
+    "en": "The email is written into the query with an f-string, so a quote in the input can change what the query means: that is SQL injection. Input that belongs to no account can return someone else's account, which is a security hole, so I'd mark it Critical. I'd pass the value as a parameter and prove it with a test that sends input with a quote and OR and expects `None`."
   },
   "checklist": [
     {

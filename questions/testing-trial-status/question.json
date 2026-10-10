@@ -68,7 +68,7 @@
   },
   "sampleAnswer": {
     "tr": "Testler `now` olarak gerçek saati veriyor; `now`'ı yok sayıp saati kendisi okuyan bir uygulama da neredeyse aynı anı gördüğü için geçiyor. Böyle bir uygulama başka bir zamanla çağrıldığında yanlış gün sayısı gösterir, bu yüzden Önemli derdim. `now`'ı 2020-01-01 gibi sabit bir tarihe bağlar, iki gün sonra bitecek denemede `daysLeft`'in 2 döndüğünü kontrol ederdim.",
-    "en": "The tests pass the real clock as `now`, so an implementation that ignores `now` and reads the clock itself sees almost the same moment and passes. Called with any other time it shows the wrong number of days, so I'd mark it major. I'd pin `now` to a fixed date such as 2020-01-01 and check that a trial ending two days later gives `daysLeft` 2."
+    "en": "The tests pass the real clock as `now`, so an implementation that ignores `now` and reads the clock itself sees almost the same moment and passes. Called with any other time it shows the wrong number of days, so I'd mark it Major. I'd pin `now` to a fixed date such as 2020-01-01 and check that a trial ending two days later gives `daysLeft` 2."
   },
   "checklist": [
     {

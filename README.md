@@ -1,4 +1,4 @@
-# inceleme-antrenoru (working title)
+# Kodprova
 
 Practice finding the hidden bugs in AI-written code, and explaining them the way an interviewer
 expects: how severe the bug is, why, and which test proves it. Turkish and English.
@@ -9,7 +9,7 @@ expects: how severe the bug is, why, and which test proves it. Turkish and Engli
 ## How it works
 
 Each question shows three things: the **task** an AI assistant was given, the **code** it wrote
-(15–60 lines) and its confident **delivery note**. The code hides one or two bugs. You mark the
+(15–60 lines) and its confident **handoff note**. The code hides one or two bugs. You mark the
 lines you think are wrong, pick a severity for each mark, write one sentence on why, and choose
 the test that would catch the bug. Then you see what you found, what you missed, the fixed code
 and a sample interview answer.
@@ -41,7 +41,8 @@ npm install
 | `npm run scan-names`      | Looks for private names in every file and in the git history (see below)    |
 
 Proof gate options: `-- --lang ts,js` (or `python`) checks only those languages,
-`-- --only <question id>` a single question. A filtered run says so in its result line.
+`-- --only <question id>` a single question (only that folder is validated, so an unfinished
+folder elsewhere does not stop it). A filtered run says so in its result line.
 
 ## Adding a question
 
@@ -100,7 +101,7 @@ In the testing topic each bug also has `flawedImplementation`: what the implemen
 past the test gets wrong. Ranges of two bugs must not overlap. Unknown fields are errors, so a typo
 cannot pass silently.
 
-Severity uses one scale: **critical** = data loss, a security hole or money; **major** = the user
+Severity uses one scale: **critical** = data loss, a security hole or lost money; **major** = the user
 gets a wrong result; **minor** = an edge case or readability.
 
 There is no field for where a question came from: the repository is public, so that record is kept
@@ -248,6 +249,9 @@ interpreter all count as a failure.
 - Code that depends on the clock or on randomness takes them as parameters (`now`, `random`), and
   proofs pass fixed values. As a safety net the runners reseed `Math.random` / `random` with the
   same seed before every check.
+- A sample answer is counted as 2–4 sentences: `.` `!` `?` or `…` followed by a space ends one.
+  Punctuation inside inline code (`` `a?` ``, `` `5.` ``) does not, but plain text does: write
+  Turkish ordinals as words ("beşinci sayfa", not "5. sayfa") and avoid "e.g.".
 - The fixed code should change only what the bugs need. Anything else a careful reviewer could
   show to be a real bug, with a concrete input (wrong result for the task, security, data or
   money), is a bug in the question. Readability issues may stay.

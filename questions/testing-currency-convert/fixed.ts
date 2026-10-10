@@ -18,6 +18,7 @@ export async function testConvertsWithRate({ convertPrice }: typeof Pricing) {
 
 export async function testRoundsToCents({ convertPrice }: typeof Pricing) {
   assert.equal(await convertPrice(0.99, "EUR", "USD", rates), 1.24);
+  assert.equal(await convertPrice(10.01, "EUR", "USD", rates), 12.51);
 }
 
 export async function testSameCurrency({ convertPrice }: typeof Pricing) {

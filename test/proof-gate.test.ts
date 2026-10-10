@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, test } from "node:test";
 import { findPython } from "../scripts/lib/python.ts";
@@ -191,6 +192,53 @@ describe("proof gate", () => {
       run.output,
       /results change between runs: check \d+ passes with TZ=UTC but fails with TZ=/,
     );
+  });
+});
+
+describe("proof gate, --only", () => {
+  /** The fixtures plus an empty folder, like a question still being written. */
+  async function withHalfWrittenFolder(): Promise<string> {
+    const dir = await copyQuestions(FIXTURE_QUESTIONS);
+    await mkdir(join(dir, "half-written"));
+    return dir;
+  }
+
+  test("a half-written folder stops the full run", async () => {
+    const run = gate(await withHalfWrittenFolder());
+    assert.equal(run.status, 1);
+    assert.match(run.output, /Proof gate stopped: 1 problem\(s\)/);
+    assert.match(run.output, /half-written: missing file question\.json/);
+  });
+
+  test("validates and proves only the chosen folder", async () => {
+    const run = gate(await withHalfWrittenFolder(), "--only", "age-check");
+    assert.equal(run.status, 0, run.output);
+    assert.doesNotMatch(run.output, /half-written/);
+    assert.match(run.output, /1 question\(s\).*filtered with --only/);
+    assert.match(
+      run.output,
+      /Gate: PASSED \(for the filtered questions only\)/,
+    );
+  });
+
+  test("still validates the chosen folder", async () => {
+    const dir = await withHalfWrittenFolder();
+    await editFile(
+      join(dir, "age-check", "question.json"),
+      '"difficulty": 1',
+      '"difficulty": 9',
+    );
+    const run = gate(dir, "--only", "age-check");
+    assert.equal(run.status, 1);
+    assert.match(run.output, /Proof gate stopped: 1 problem\(s\)/);
+    assert.match(run.output, /age-check: .*"difficulty"/);
+    assert.doesNotMatch(run.output, /half-written/);
+  });
+
+  test("fails when no folder has that id", () => {
+    const run = gate(FIXTURE_QUESTIONS, "--only", "no-such-question");
+    assert.equal(run.status, 1);
+    assert.match(run.output, /no questions matched/);
   });
 });
 

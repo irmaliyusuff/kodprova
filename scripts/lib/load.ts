@@ -47,11 +47,19 @@ export function codePath(dir: string, name: string, extension: string): string {
   return join(dir, `${name}${extension}`);
 }
 
-export async function loadQuestions(questionsDir: string): Promise<LoadResult> {
+/**
+ * Loads and validates the question folders. With `only`, just that folder is
+ * read, so a half-written question elsewhere does not stop the run.
+ */
+export async function loadQuestions(
+  questionsDir: string,
+  only?: string,
+): Promise<LoadResult> {
   const entries = await readdir(questionsDir, { withFileTypes: true });
   const folders = entries
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
     .map((entry) => entry.name)
+    .filter((name) => only === undefined || name === only)
     .sort();
 
   const questions: LoadedQuestion[] = [];

@@ -9,8 +9,8 @@
   "language": "python",
   "origin": "fictional",
   "task": {
-    "tr": "`POST /products` uç noktasının işleyicisini yaz. Gövde ayrıştırılmış bir JSON nesnesidir: `name` 1–100 karakterlik bir metin (baştaki ve sondaki boşluklar sayılmaz), `price` en çok iki ondalık basamaklı bir metin, örneğin \"19.99\" (ücretsiz ürün için \"0\" olabilir). Fiyatı tam sayı kuruş olarak `save(name, price_cents)` ile kaydet, 201 ve ürünü döndür; geçersiz alanda 400 ve hata kodu döndür.",
-    "en": "Write the handler for the `POST /products` endpoint. The body is a parsed JSON object: `name` is a string of 1–100 characters (leading and trailing spaces do not count) and `price` is a string with at most two decimals, such as \"19.99\" (\"0\" is allowed for free products). Store the price as integer cents with `save(name, price_cents)` and answer 201 with the product; answer 400 with an error code when a field is invalid."
+    "tr": "`POST /products` uç noktasının işleyicisini yaz. Gövde ayrıştırılmış bir JSON nesnesidir: `name` 1–100 karakterlik bir metin (baştaki ve sondaki boşluklar sayılmaz), `price` en çok iki ondalık basamaklı, en fazla 999999.99 olan bir metin, örneğin \"19.99\" (ücretsiz ürün için \"0\" olabilir). Fiyatı tam sayı kuruş olarak `save(name, price_cents)` ile kaydet, 201 ve ürünü döndür; geçersiz alanda 400 ve hata kodu döndür.",
+    "en": "Write the handler for the `POST /products` endpoint. The body is a parsed JSON object: `name` is a string of 1–100 characters (leading and trailing spaces do not count) and `price` is a string with at most two decimals and a value of at most 999999.99, such as \"19.99\" (\"0\" is allowed for free products). Store the price as integer cents with `save(name, price_cents)` and answer 201 with the product; answer 400 with an error code when a field is invalid."
   },
   "deliveryNote": {
     "tr": "Fiyat kuruşa çevrilip tam sayı olarak saklanıyor, yani ondalık sayı sorunları yok. Ad ve fiyat doğrulanıyor; hatalı istekler 400 alıyor.",
@@ -63,8 +63,8 @@
     "correct": "b"
   },
   "sampleAnswer": {
-    "tr": "Fiyat önce `float`'a çevriliyor, 100 ile çarpılıyor ve `int()` ile kesiliyor; \"19.99\" bu yolla 1998 kuruş oluyor. Pek çok fiyat bir kuruş eksik saklandığı için bu bir para hatası, Kritik derdim. `int()` yerine `round()` kullanır ya da `Decimal` ile hesaplar, `parse_price(\"19.99\") == 1999` bekleyen bir testle gösterirdim.",
-    "en": "The price goes through `float`, is multiplied by 100 and then cut with `int()`, so \"19.99\" becomes 1998 cents. Many prices are stored one cent short, which is a money bug, so I'd mark it critical. I'd use `round()` instead of `int()` or compute with `Decimal`, and prove it with a test that expects `parse_price(\"19.99\") == 1999`."
+    "tr": "Fiyat önce `float`'a çevriliyor, 100 ile çarpılıyor ve `int()` ile kesiliyor; \"19.99\" bu yolla 1998 kuruş oluyor. Pek çok fiyat bir kuruş eksik saklandığı için bu para kaybı, Kritik derdim. `int()` yerine `round()` kullanır ya da `Decimal` ile hesaplar, `parse_price(\"19.99\") == 1999` bekleyen bir testle gösterirdim.",
+    "en": "The price goes through `float`, is multiplied by 100 and then cut with `int()`, so \"19.99\" becomes 1998 cents. Many prices are stored one cent short, which loses money, so I'd mark it Critical. I'd use `round()` instead of `int()` or compute with `Decimal`, and prove it with a test that expects `parse_price(\"19.99\") == 1999`."
   },
   "checklist": [
     {

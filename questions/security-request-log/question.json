@@ -74,7 +74,7 @@
   },
   "sampleAnswer": {
     "tr": "`redact` dizileri olduğu gibi bırakıyor, yani `credentials` gibi bir nesne dizisindeki token düz metin olarak günlüğe yazılıyor; gizli bilgi sızdığı için Kritik derdim. Dizide her elemanı `redact` ile işler, dizi içinde token olan bir gövdeyi günlüğe yazıp token'ın satırda geçmediğini kontrol eden bir testle gösterirdim. Ayrıca `redact` isteği yerinde değiştiriyor; işleyici gerçek anahtar yerine \"[redacted]\" aldığı için bu da Önemli bir hata.",
-    "en": "`redact` leaves arrays as they are, so a token inside an array of objects such as `credentials` is written to the log in plain text; a secret leaks, so I would mark it critical. I would run `redact` on every element of an array and prove it with a test that logs a body with a token inside an array and checks that the token is not in the line. `redact` also changes the request in place, so the handler gets \"[redacted]\" instead of the real key, which is a major bug as well."
+    "en": "`redact` leaves arrays as they are, so a token inside an array of objects such as `credentials` is written to the log in plain text; a secret leaks, so I'd mark it Critical. I'd run `redact` on every element of an array and prove it with a test that logs a body with a token inside an array and checks that the token is not in the line. `redact` also changes the request in place, so the handler gets \"[redacted]\" instead of the real key, which is a Major bug as well."
   },
   "checklist": [
     {
