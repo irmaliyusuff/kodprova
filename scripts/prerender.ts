@@ -14,7 +14,12 @@ import { formatMarkup } from "./lib/format-markup.ts";
 
 const DIST = "dist";
 const SERVER_ENTRY = "generated/ssr/entry-server.js";
-/** The two font files on the first screen (design spec §3). */
+/**
+ * The two font files on the first screen (design spec §3). Preloading the
+ * Turkish latin-ext files too was measured (G15b, Lighthouse mobile, 5 runs):
+ * it helped the Turkish home page a little and slowed other Turkish pages
+ * more, so it is not done.
+ */
 const PRELOAD_FONTS = [
   /ibm-plex-sans-latin-400-normal-.*\.woff2$/,
   /source-serif-4-latin-opsz-normal-.*\.woff2$/,
@@ -128,7 +133,7 @@ const outputFile = (path: string) =>
 const template = await readFile(join(DIST, "index.html"), "utf8");
 const server = (await import(pathToFileURL(SERVER_ENTRY).href)) as ServerEntry;
 const preloads = await fontPreloads();
-const paths = ["/", "/404.html", ...server.listPaths()];
+const paths = ["/", ...server.notFoundPaths(), ...server.listPaths()];
 
 for (const path of paths) {
   await server.prepare(path);

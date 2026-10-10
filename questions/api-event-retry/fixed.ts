@@ -22,8 +22,7 @@ async function trySend(
   send: Send,
 ): Promise<PendingEvent | null> {
   try {
-    const response = await send(item.event);
-    if (response.status < 500) {
+    if ((await send(item.event)).status < 500) {
       return null;
     }
   } catch {

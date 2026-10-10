@@ -8,6 +8,12 @@ export const RESULT_MARKER = "PROOF_RESULT ";
 export const CHECK_TIMEOUT_MS = 5_000;
 /** Runners reseed the language's random generator with this before each check. */
 export const RANDOM_SEED = 20261010;
+/**
+ * Runners report their UTC offset at this instant (2026-01-15T00:00:00Z), so
+ * the gate can see that the time zone it set was really applied. No gate time
+ * zone is on daylight saving time then.
+ */
+export const OFFSET_PROBE_SECONDS = 1_768_435_200;
 
 export interface RunPlan {
   /** Module name -> file path. The proof file is always named "proof". */
@@ -34,6 +40,10 @@ export interface CheckResult {
   error: string | null;
 }
 
-export type RunnerOutput =
+export type RunnerOutput = (
   | { loadError: string }
-  | { proofKeys: string[]; optionKeys: string[]; results: CheckResult[] };
+  | { proofKeys: string[]; optionKeys: string[]; results: CheckResult[] }
+) & {
+  /** Local time minus UTC at OFFSET_PROBE_SECONDS, in minutes. */
+  utcOffsetMinutes: number;
+};

@@ -20,7 +20,7 @@
     {
       "id": "server-error-dropped",
       "lines": [25, 28],
-      "fixedLines": [25, 32],
+      "fixedLines": [25, 31],
       "severity": "critical",
       "explanation": {
         "tr": "`fetch` yalnız ağ hatasında hata fırlatır; sunucu 500 dönünce Promise normal biçimde çözülür. `trySend` yanıtın durum koduna bakmadığı için 5xx alan olay gönderilmiş sayılır, kuyruğa girmez ve kalıcı olarak kaybolur. Düzeltme: yanıtı okuyup 5xx'te olayı bekleyenlere eklemek.",
@@ -30,7 +30,7 @@
     {
       "id": "attempt-limit",
       "lines": [49, 49],
-      "fixedLines": [52, 52],
+      "fixedLines": [51, 51],
       "severity": "minor",
       "explanation": {
         "tr": "`attempts` yapılmış deneme sayısıdır. `attempts > MAX_ATTEMPTS` koşulu üçüncü denemeden sonra olayı bir kez daha gönderir; olay 3 yerine 4 kez denenir. Düzeltme: `>=`.",

@@ -4,6 +4,11 @@ import { join } from "node:path";
 import { describe, test } from "node:test";
 import { findPython } from "../scripts/lib/python.ts";
 import {
+  TIME_ZONES,
+  tzValue,
+  zonesNotApplied,
+} from "../scripts/lib/time-zones.ts";
+import {
   copyQuestions,
   editFile,
   FIXTURE_QUESTIONS,
@@ -159,7 +164,28 @@ describe("proof gate", () => {
   test("proves the Python questions", { skip: noPython }, () => {
     const run = runScript(GATE, ["--lang", "python"]);
     assert.equal(run.status, 0, run.stdout + run.stderr);
+    // Python got every time zone (on Windows through the C runtime form).
+    assert.doesNotMatch(run.stdout, /SKIPPED/);
   });
+
+  test(
+    "fails when a Python result depends on the time zone",
+    { skip: noPython },
+    async () => {
+      const dir = await copyQuestions(REAL_QUESTIONS, ["security-upload-path"]);
+      await editFile(
+        join(dir, "security-upload-path", "proof.py"),
+        "def option_a(code):\n",
+        'def option_a(code):\n    assert __import__("time").localtime(0).tm_hour == 0\n',
+      );
+      const run = gate(dir);
+      assert.equal(run.status, 1, run.output);
+      assert.match(
+        run.output,
+        /results change between runs: check \d+ passes with TZ=UTC but fails with TZ=/,
+      );
+    },
+  );
 
   test(
     "fails when a Python question's fix is undone",
@@ -192,6 +218,34 @@ describe("proof gate", () => {
       run.output,
       /results change between runs: check \d+ passes with TZ=UTC but fails with TZ=/,
     );
+  });
+});
+
+describe("proof gate, time zones", () => {
+  test("Python on Windows gets the C runtime form, everything else the IANA name", () => {
+    const zone = TIME_ZONES.find((item) => item.name === "Asia/Kolkata")!;
+    assert.equal(tzValue(zone, "python", "win32"), "IST-5:30");
+    assert.equal(tzValue(zone, "python", "linux"), "Asia/Kolkata");
+    assert.equal(tzValue(zone, "ts", "win32"), "Asia/Kolkata");
+  });
+
+  test("says nothing when every run had its offset", () => {
+    const runs = TIME_ZONES.map((zone) => ({
+      zone: zone.name,
+      utcOffsetMinutes: zone.offsetMinutes,
+    }));
+    assert.equal(zonesNotApplied(runs), undefined);
+  });
+
+  test("says the check was skipped when a run stayed at UTC", () => {
+    const runs = TIME_ZONES.map((zone) => ({
+      zone: zone.name,
+      utcOffsetMinutes: 0,
+    }));
+    const warning = zonesNotApplied(runs);
+    assert.match(warning ?? "", /time-zone check SKIPPED/);
+    assert.match(warning ?? "", /Asia\/Kolkata ran at UTC\+0/);
+    assert.doesNotMatch(warning ?? "", /UTC ran at/);
   });
 });
 
@@ -281,8 +335,8 @@ describe("proof gate, testing topic", () => {
   test("fails when the fixed test still misses the flaw", async () => {
     const dir = await brokenTestingFixture(
       "fixed.ts",
-      "assert.equal(applyDiscount(200, 10), 180);",
-      "assert.ok(applyDiscount(200, 10) <= 200);",
+      "assert.equal(result, 180);",
+      "assert.ok(result < 201);",
     );
     const run = gate(dir);
     assert.equal(run.status, 1);
@@ -295,8 +349,8 @@ describe("proof gate, testing topic", () => {
   test("fails when the fixed test rejects the correct implementation", async () => {
     const dir = await brokenTestingFixture(
       "fixed.ts",
-      "assert.equal(applyDiscount(200, 10), 180);",
-      "assert.equal(applyDiscount(200, 10), 190);",
+      "assert.equal(result, 180);",
+      "assert.equal(result, 190);",
     );
     const run = gate(dir);
     assert.equal(run.status, 1);

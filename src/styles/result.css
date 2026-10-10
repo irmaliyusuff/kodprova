@@ -141,6 +141,7 @@
 }
 
 .not .durum {
+  display: flex;
   font: var(--t-kucuk);
   font-weight: 600;
 }

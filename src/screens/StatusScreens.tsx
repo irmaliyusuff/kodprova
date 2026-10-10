@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useLanguage } from "../i18n/language-context.tsx";
-import { pathFor } from "../lib/routes.ts";
+import { NOT_FOUND_FILE, pathFor } from "../lib/routes.ts";
 import { Link, useRouter } from "../router.tsx";
 
-/** The address that led nowhere, struck through like an editor's delete mark. */
+/**
+ * The address that led nowhere, struck through like an editor's delete mark.
+ * The prerendered not-found pages do not know the address, so they leave it out.
+ */
 function StruckPath() {
   const { path } = useRouter();
+  if (path === NOT_FOUND_FILE) return null;
   return (
     <span className="yol-cizik" aria-hidden="true">
       {path}

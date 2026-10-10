@@ -26,11 +26,14 @@ loadSavedState();
 // A Question or Result page needs its whole question before the app can take
 // over the prerendered HTML; a failure shows the load error screen instead.
 const { route } = parsePath(window.location.pathname);
+let questionFailed = false;
 if (
   (route.name === "question" || route.name === "result") &&
   findQuestion(route.id)
 ) {
-  await loadQuestion(route.id).catch(() => {});
+  await loadQuestion(route.id).catch(() => {
+    questionFailed = true;
+  });
 }
 
 const root = document.getElementById("root")!;
@@ -43,8 +46,9 @@ const app = (
 );
 // The prerendered HTML is kept and brought to life (hydrated) when it was
 // made for this address. The 404 page is shared by every unknown address,
-// so it is rendered afresh instead.
-if (root.dataset.path === window.location.pathname) {
+// so it is rendered afresh instead, and so is a question that failed to load
+// (the load error screen is not what the HTML shows).
+if (root.dataset.path === window.location.pathname && !questionFailed) {
   hydrateRoot(root, app);
 } else {
   createRoot(root).render(app);

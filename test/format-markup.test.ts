@@ -38,4 +38,17 @@ describe("prerendered markup formatting", () => {
       ),
     );
   });
+
+  test("puts the attributes of a long tag on their own lines", () => {
+    const link =
+      '<p>See <a href="https://github.com/example/project/blob/main/LICENSE" ' +
+      'class="dugme ikincil" target="_blank" rel="noopener">the license' +
+      '<span class="gizli"> (opens in a new tab)</span></a>.</p>';
+    const result = formatMarkup(link, "  ");
+    assert.equal(squeezed(result.replace(/\n\s+(?=[a-z]+=)/g, " ")), link);
+    assert.deepEqual(texts(result), texts(link));
+    assert.ok(result.includes('<a\n      href="https://github.com/'), result);
+    assert.ok(result.includes('\n      rel="noopener">the license'), result);
+    assert.ok(result.split("\n").every((line) => line.length <= 100));
+  });
 });

@@ -21,6 +21,12 @@ export interface Location {
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/**
+ * The address the not-found pages are prerendered for: it has no language
+ * part, so their language links lead to each language's home page.
+ */
+export const NOT_FOUND_FILE = "/404.html";
+
 export function parsePath(pathname: string): Location {
   const parts = pathname.split("/").filter(Boolean);
   const [first, ...rest] = parts;

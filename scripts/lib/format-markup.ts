@@ -9,6 +9,17 @@
 //     ><nav class="menu" aria-label="Menü"
 //       ><a href="/tr/questions/">Sorular</a
 //
+// A tag longer than LONG_TAG characters (a link with its address, class,
+// target and rel) also puts each attribute on its own line, which is the same
+// kind of whitespace inside a tag:
+//
+//   <a
+//     href="https://github.com/…"
+//     class="dugme"
+//     target="_blank"
+//     rel="noopener"
+//     >…
+//
 // Text is never touched, so a line holding a long sentence or a line of code
 // (<pre>) stays as long as the content.
 
@@ -29,6 +40,18 @@ const VOID_ELEMENTS = new Set([
 ]);
 
 const TOKEN = /<!--[\s\S]*?-->|<\/?([a-zA-Z][\w-]*)[^>]*>|[^<]+/g;
+const ATTRIBUTE = /[^\s"'=<>/]+(?:=(?:"[^"]*"|'[^']*'|[^\s"'>]+))?/g;
+export const LONG_TAG = 80;
+
+/** "<a href=… class=…>" as "<a" and one attribute per line, same ending. */
+function splitAttributes(token: string, indent: string): string {
+  const end = token.endsWith("/>") ? "/>" : ">";
+  const nameEnd = token.search(/[\s/>]/);
+  const attributes = token.slice(nameEnd, -end.length).match(ATTRIBUTE) ?? [];
+  if (attributes.length < 2) return token;
+  const lines = attributes.map((attribute) => `\n${indent}${attribute}`);
+  return `${token.slice(0, nameEnd)}${lines.join("")}${end}`;
+}
 
 export function formatMarkup(html: string, indent = "", step = "  "): string {
   let out = "";
@@ -54,7 +77,10 @@ export function formatMarkup(html: string, indent = "", step = "  "): string {
       const end = out.endsWith("/>") ? 2 : 1;
       out = `${out.slice(0, -end)}\n${indent}${step.repeat(depth)}${out.slice(-end)}`;
     }
-    out += token;
+    out +=
+      !closing && preDepth === 0 && token.length > LONG_TAG
+        ? splitAttributes(token, indent + step.repeat(depth + 1))
+        : token;
     previousWasTag = true;
 
     if (tag === "pre") preDepth += closing ? -1 : 1;

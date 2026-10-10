@@ -12,6 +12,11 @@ main {
   padding-bottom: var(--b-9);
 }
 
+/* Programla odaklanan main'e halka çizilmez; genel :focus-visible kuralını aynı sözde sınıfla yener (0,1,1). */
+main:focus-visible {
+  outline: none;
+}
+
 /* Geniş ızgara: ana sütun + kenar sütunu (300 px). Dar ekranda tek sütun. */
 .izgara {
   display: grid;

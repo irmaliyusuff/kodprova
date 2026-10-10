@@ -6,12 +6,25 @@ import { renderToString } from "react-dom/server";
 import { App } from "./App.tsx";
 import { config } from "./config.ts";
 import { loadQuestion, questions } from "./data/questions.ts";
-import { LANGUAGES, translate } from "./i18n/translate.ts";
+import { LANGUAGES, translate, type Lang } from "./i18n/translate.ts";
 import { startLanguageScript } from "./lib/language.ts";
 import type { RenderedPage } from "./lib/page.ts";
-import { parsePath, pathFor, type Route } from "./lib/routes.ts";
+import {
+  NOT_FOUND_FILE,
+  parsePath,
+  pathFor,
+  type Route,
+} from "./lib/routes.ts";
 import { pageDescription, pageTitle } from "./page-meta.ts";
 import { StaticRouter } from "./router.tsx";
+
+/** The not-found files the host serves, and the language of each. */
+const NOT_FOUND_PAGES: Record<string, Lang | undefined> = {
+  [NOT_FOUND_FILE]: "tr",
+  [`/en${NOT_FOUND_FILE}`]: "en",
+};
+
+export const notFoundPaths = () => Object.keys(NOT_FOUND_PAGES);
 
 /** Every address to write as dist/<path>index.html. */
 export function listPaths(): string[] {
@@ -40,20 +53,26 @@ export async function prepare(path: string): Promise<void> {
 
 /**
  * One page. "/" is the Turkish home page plus a script that moves visitors
- * to their language; "/404.html" is the not-found page the host serves for
- * unknown addresses (Turkish; the app switches language from the address).
+ * to their language. The not-found pages are the ones the host serves for
+ * unknown addresses, the nearest one up the folder tree: "/en/404.html" under
+ * /en/, "/404.html" (Turkish) everywhere else. They are made without knowing
+ * the address, so without JavaScript their language links lead to each
+ * language's home page; with it, the app renders them for the real address.
  */
 export function renderPage(path: string): RenderedPage {
   const isRoot = path === "/";
-  const isNotFound = path === "/404.html";
-  const appPath = isRoot ? "/tr/" : isNotFound ? "/tr/404/" : path;
-  const { lang, route } = parsePath(appPath);
+  const notFoundLang = NOT_FOUND_PAGES[path];
+  const isNotFound = notFoundLang !== undefined;
+  const appPath = isRoot ? "/tr/" : isNotFound ? NOT_FOUND_FILE : path;
+  const location = parsePath(appPath);
+  const lang = location.lang ?? notFoundLang;
+  const { route } = location;
   if (!lang) throw new Error(`Cannot prerender ${path}`);
 
   const body = renderToString(
     <StrictMode>
       <StaticRouter path={appPath}>
-        <App />
+        <App fallbackLang={lang} />
       </StaticRouter>
     </StrictMode>,
   );

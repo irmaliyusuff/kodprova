@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import type * as Pricing from "./subject.ts";
 
 export function testTenPercentOff({ applyDiscount }: typeof Pricing) {
-  assert.equal(applyDiscount(200, 10), 180);
+  const result = applyDiscount(200, 10);
+  assert.equal(result, 180);
 }
 
 export function testZeroPercent({ applyDiscount }: typeof Pricing) {

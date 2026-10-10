@@ -5,8 +5,10 @@
 //
 // Every question runs once per time zone in TIME_ZONES, and all runs must
 // agree, so a proof that depends on the clock, the time zone or randomness
-// fails here rather than on someone else's machine. Exits with 1 if any
-// question is not proven.
+// fails here rather than on someone else's machine. Each run reports the UTC
+// offset it really had; if a time zone was not applied, the gate says that
+// the time-zone check was skipped instead of passing quietly. Exits with 1 if
+// any question is not proven.
 
 import { spawn } from "node:child_process";
 import { join } from "node:path";
@@ -20,14 +22,13 @@ import {
   type RunnerOutput,
   type RunPlan,
 } from "./lib/runner-protocol.ts";
+import {
+  TIME_ZONES,
+  tzValue,
+  zonesNotApplied,
+  type TimeZone,
+} from "./lib/time-zones.ts";
 
-const TIME_ZONES = [
-  "UTC",
-  "Europe/Istanbul",
-  "America/Los_Angeles",
-  "Asia/Kolkata",
-  "Pacific/Kiritimati",
-];
 const RUN_TIMEOUT_MS = 60_000;
 const RUNNERS_DIR = join(import.meta.dirname, "runners");
 
@@ -85,19 +86,26 @@ const filterNote =
       : "";
 console.log(
   `Proof gate: ${selected.length} question(s), ${TIME_ZONES.length} runs each` +
-    ` (time zones ${TIME_ZONES.join(", ")})${filterNote}`,
+    ` (time zones ${TIME_ZONES.map((zone) => zone.name).join(", ")})${filterNote}`,
 );
 
 let python: PythonSearch | undefined;
 let passed = 0;
+let zoneSkipped = 0;
 for (const loaded of selected) {
   const { id, language, topic } = loaded.question;
-  const lines = await proveQuestion(loaded);
+  const { lines, warning } = await proveQuestion(loaded);
   const ok = lines.length > 0 && lines.every((line) => line.ok);
   if (ok) {
     passed += 1;
   }
+  if (warning) {
+    zoneSkipped += 1;
+  }
   console.log(`\n${ok ? "✔" : "✖"} ${id} (${language}, ${topic})`);
+  if (warning) {
+    console.log(`    ⚠ ${warning}`);
+  }
   for (const line of lines) {
     console.log(`    ${line.ok ? "✔" : "✖"} ${line.text}`);
   }
@@ -107,18 +115,28 @@ const allPassed = passed === selected.length;
 console.log(
   `\n${passed} of ${selected.length} question(s) proven. ` +
     `Gate: ${allPassed ? "PASSED" : "FAILED"}` +
-    (filtered && allPassed ? " (for the filtered questions only)" : ""),
+    (filtered && allPassed ? " (for the filtered questions only)" : "") +
+    (zoneSkipped > 0
+      ? `. Time-zone check SKIPPED for ${zoneSkipped} question(s): ` +
+        "the time zone was not applied (see ⚠ above)"
+      : ""),
 );
 process.exit(allPassed ? 0 : 1);
 
-async function proveQuestion(loaded: LoadedQuestion): Promise<GateLine[]> {
+interface Proven {
+  lines: GateLine[];
+  /** Set when a run did not get its time zone; the check was then skipped. */
+  warning?: string;
+}
+
+async function proveQuestion(loaded: LoadedQuestion): Promise<Proven> {
   const { question } = loaded;
   let command: string;
   let args: string[];
   if (question.language === "python") {
     python ??= findPython();
     if (!python.python) {
-      return [
+      const lines = [
         {
           ok: false,
           text:
@@ -128,6 +146,7 @@ async function proveQuestion(loaded: LoadedQuestion): Promise<GateLine[]> {
             "To check only the other questions: npm run proof -- --lang ts,js",
         },
       ];
+      return { lines };
     }
     command = python.python.command;
     args = [
@@ -143,18 +162,26 @@ async function proveQuestion(loaded: LoadedQuestion): Promise<GateLine[]> {
 
   const gatePlan = buildPlan(loaded);
   const runs = await Promise.all(
-    TIME_ZONES.map((zone) => runOnce(command, args, gatePlan.plan, zone)),
+    TIME_ZONES.map((zone) =>
+      runOnce(command, args, gatePlan.plan, zone, question.language),
+    ),
   );
   const failure = runs.find((run) => "problem" in run);
   if (failure && "problem" in failure) {
-    return [{ ok: false, text: failure.problem }];
+    return { lines: [{ ok: false, text: failure.problem }] };
   }
   const outputs = runs as Array<{ zone: string; output: RunnerOutput }>;
+  const warning = zonesNotApplied(
+    outputs.map(({ zone, output }) => ({
+      zone,
+      utcOffsetMinutes: output.utcOffsetMinutes,
+    })),
+  );
   const changed = findChange(outputs);
   if (changed) {
-    return [{ ok: false, text: changed }];
+    return { lines: [{ ok: false, text: changed }], warning };
   }
-  return evaluate(question, gatePlan, outputs[0]!.output);
+  return { lines: evaluate(question, gatePlan, outputs[0]!.output), warning };
 }
 
 /** Describes the first check whose result differs between runs, if any. */
@@ -198,11 +225,12 @@ async function runOnce(
   command: string,
   args: string[],
   plan: RunPlan,
-  zone: string,
+  zone: TimeZone,
+  language: string,
 ): Promise<{ zone: string; output: RunnerOutput } | { problem: string }> {
   const run = await runProcess(command, args, JSON.stringify(plan), {
     ...process.env,
-    TZ: zone,
+    TZ: tzValue(zone, language),
   });
   if (run.timedOut) {
     return { problem: `stopped after ${RUN_TIMEOUT_MS} ms (endless loop?)` };
@@ -216,7 +244,7 @@ async function runOnce(
     return { problem: `runner gave no result (exit ${run.code}): ${detail}` };
   }
   return {
-    zone,
+    zone: zone.name,
     output: JSON.parse(resultLine.slice(RESULT_MARKER.length)) as RunnerOutput,
   };
 }

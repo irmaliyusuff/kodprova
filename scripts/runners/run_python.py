@@ -19,12 +19,16 @@ import inspect
 import json
 import random
 import sys
+import time
 
 RESULT_MARKER = "PROOF_RESULT "
 RANDOM_SEED = 20261010
+OFFSET_PROBE_SECONDS = 1_768_435_200
 
 
 def emit(payload):
+    offset = time.localtime(OFFSET_PROBE_SECONDS).tm_gmtoff // 60
+    payload = {**payload, "utcOffsetMinutes": offset}
     print(RESULT_MARKER + json.dumps(payload), flush=True)
 
 

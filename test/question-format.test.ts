@@ -261,6 +261,14 @@ describe("question format", () => {
     );
     assert.ok(long.some((error) => error.includes("(has 61)")));
   });
+
+  test("the fixed code must be 15 to 60 lines too", async () => {
+    const short = await errorsAfter(() => {}, { fixedLineCount: 14 });
+    const long = await errorsAfter(() => {}, { fixedLineCount: 61 });
+    assert.deepEqual(short, ["fixed code must have 15 to 60 lines (has 14)"]);
+    assert.deepEqual(long, ["fixed code must have 15 to 60 lines (has 61)"]);
+    assert.deepEqual(await errorsAfter(() => {}, { fixedLineCount: 60 }), []);
+  });
 });
 
 describe("countSentences", () => {

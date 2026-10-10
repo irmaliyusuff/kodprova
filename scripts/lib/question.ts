@@ -289,11 +289,16 @@ export function validateQuestion(
   }
 
   const { min: minLines, max: maxLines } = LIMITS.codeLines;
-  const lineCount = context.originalLineCount;
-  if (lineCount !== null && (lineCount < minLines || lineCount > maxLines)) {
-    check.errors.push(
-      `original code must have ${minLines} to ${maxLines} lines (has ${lineCount})`,
-    );
+  const lineCounts = [
+    ["original", context.originalLineCount],
+    ["fixed", context.fixedLineCount],
+  ] as const;
+  for (const [file, lineCount] of lineCounts) {
+    if (lineCount !== null && (lineCount < minLines || lineCount > maxLines)) {
+      check.errors.push(
+        `${file} code must have ${minLines} to ${maxLines} lines (has ${lineCount})`,
+      );
+    }
   }
 
   const field = <T>(

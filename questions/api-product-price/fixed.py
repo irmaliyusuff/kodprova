@@ -19,8 +19,7 @@ def create_product(body: dict, save) -> tuple[int, dict]:
     name = name.strip()
     if len(name) > MAX_NAME_LENGTH:
         return 400, {"error": "invalid_name"}
-    price = parse_price(body.get("price"))
-    if price is None:
+    if (price := parse_price(body.get("price"))) is None:
         return 400, {"error": "invalid_price"}
     product_id = save(name, price)
     return 201, {"id": product_id, "name": name, "price_cents": price}

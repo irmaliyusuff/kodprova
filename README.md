@@ -15,7 +15,8 @@ the test that would catch the bug. Then you see what you found, what you missed,
 and a sample interview answer.
 
 Every question is checked by a **proof gate** before it can ship: each bug is shown by a test that
-fails where the bug is and passes where it is fixed.
+fails where the bug is and passes where it is fixed. It is also **solved blind** by a reviewer
+who has not seen the answer key, to check that no real bug is left besides the defined ones.
 
 ## Requirements
 
@@ -271,6 +272,22 @@ For both: proof and option ids match `question.json` exactly, and every question
 time zones (UTC, Istanbul, Los Angeles, Kolkata, Kiritimati) whose results must agree. Code that
 does not load, a check that hangs, results that change between runs or a missing Python
 interpreter all count as a failure.
+
+Each run reports the UTC offset it really had. Python on Windows ignores time zone names such as
+`Europe/Istanbul`, so there the gate passes the same offsets in the form Windows understands
+(`TRT-3`, `PST8PDT`, `IST-5:30`, `LIN-14`). If a run still does not get its time zone, the gate
+prints "time-zone check SKIPPED" for that question instead of passing it quietly; the gate on
+Linux (CI) is the one that counts.
+
+### Blind solve
+
+The proof gate shows that the defined bugs are real; it cannot show that they are the only ones.
+So every question is also solved blind before it ships: a reviewer who did not write it (the
+testing agent, separate from the agents that write the questions) gets only what a user sees,
+the task, the code and the handoff note, and reviews it without the answer key. If the reviewer
+finds a real bug that is not defined, the question is fixed and solved again. Each blind solve is
+recorded with its date, outside this repository. A question added in a pull request goes through
+the same step before it is merged.
 
 ### Writing rules
 

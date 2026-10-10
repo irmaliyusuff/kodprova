@@ -5,6 +5,7 @@
 import { pathToFileURL } from "node:url";
 import {
   CHECK_TIMEOUT_MS,
+  OFFSET_PROBE_SECONDS,
   RANDOM_SEED,
   RESULT_MARKER,
   type CheckResult,
@@ -19,8 +20,13 @@ type Check = (code: unknown) => unknown;
 /** In a test file, every exported function whose name starts with "test" is a test. */
 const TEST_NAME = /^test/;
 
-function emit(output: RunnerOutput): void {
-  console.log(`${RESULT_MARKER}${JSON.stringify(output)}`);
+function emit(output: Omit<RunnerOutput, "utcOffsetMinutes">): void {
+  const utcOffsetMinutes = -new Date(
+    OFFSET_PROBE_SECONDS * 1000,
+  ).getTimezoneOffset();
+  console.log(
+    `${RESULT_MARKER}${JSON.stringify({ ...output, utcOffsetMinutes })}`,
+  );
 }
 
 function errorText(error: unknown): string {
