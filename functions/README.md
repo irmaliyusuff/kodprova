@@ -81,6 +81,12 @@ Field problems: `required`, `type`, `range`, `unknown_question`, `mismatch`,
   (`_migrations/0001_submission_counts.sql`). A row is a combination of the
   fields above plus how many submissions had it. There is no row per
   submission.
+- Counts are kept for 25 months (`RETENTION_MONTHS` in `_lib/store.ts`).
+  Every count and every summary first deletes the days before the same day
+  25 months earlier (UTC); that day itself stays. Pages Functions have no
+  scheduled trigger, so nothing else runs and nothing needs setting up. With
+  no traffic at all old rows wait for the next request, but no summary ever
+  shows them.
 - Nothing from a request is logged; the only log lines are three fixed texts
   (missing database binding, database error on count or on summary).
 
@@ -109,7 +115,7 @@ touches a live database: no command uses `--remote`.
 | `_lib/submission.ts`            | Body validation                                             |
 | `_lib/catalog.ts`               | Question ids and bug counts from the published data         |
 | `_lib/published-questions.js`   | Imports `generated/questions.json` (bundled at deploy time) |
-| `_lib/store.ts`                 | SQL: count with daily cap, read sums                        |
+| `_lib/store.ts`                 | SQL: count with daily cap, 25-month retention, read sums    |
 | `_lib/summary.ts`               | Summary shape                                               |
 | `_lib/key.ts`                   | Summary key check (SHA-256, constant time)                  |
 | `_lib/request.ts`               | Content type, body size limit                               |

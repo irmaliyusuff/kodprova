@@ -13,6 +13,14 @@ export const config = {
   repositoryUrl: env.VITE_REPOSITORY_URL || null,
   /** Where the site is published, for canonical and language alternate links. */
   siteUrl: env.VITE_SITE_URL || null,
+  /**
+   * The contact address on the Data page. A release build stops without it
+   * (scripts/lib/release.ts); a local build shows CONTACT_EMAIL_PLACEHOLDER.
+   */
+  contactEmail: env.VITE_CONTACT_EMAIL || null,
+  /** The counter deletes daily totals older than this (functions/). */
+  retentionMonths: 25,
+  cloudflarePrivacyUrl: "https://www.cloudflare.com/privacypolicy/",
   profileUrl: "https://github.com/irmaliyusuff",
   proofCommand: "npm run proof",
   /**
@@ -22,7 +30,10 @@ export const config = {
   secondModelBlindSolveDone: false,
 } as const;
 
-/** Linked to the profile wherever the copy names the author. */
+/** Shown by local builds made without VITE_CONTACT_EMAIL; never released. */
+export const CONTACT_EMAIL_PLACEHOLDER = "[iletisim.eposta]";
+
+/** Linked to the profile wherever the copy names the author; also the site owner on the Data page. */
 export const PRODUCT_AUTHOR = "Yusuf Irmalı";
 
 export const licenseUrl = (repositoryUrl: string) =>

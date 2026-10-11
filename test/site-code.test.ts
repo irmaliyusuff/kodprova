@@ -104,6 +104,7 @@ describe("addresses (PRD K2)", () => {
     { name: "result", id: "api-event-retry" },
     { name: "progress" },
     { name: "howItsMade" },
+    { name: "data" },
   ];
 
   test("every screen's address reads back as the same screen and language", () => {

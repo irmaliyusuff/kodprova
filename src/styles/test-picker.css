@@ -61,6 +61,14 @@
   font: var(--t-kucuk);
 }
 
+/* Under the submit row: what submitting sends (copy deck gonder.veri.not). */
+.gonder-not {
+  max-width: var(--olcu);
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
 .test-uyari {
   margin-top: var(--b-3);
 }

@@ -44,11 +44,25 @@ const PRERENDER_STATE: AppState = {
 };
 
 let state = PRERENDER_STATE;
+const SAVE = { save: true };
 const listeners = new Set<() => void>();
 
-function setState(change: (current: AppState) => AppState): void {
+/**
+ * Changes the state. Progress is written to the browser only with `save`,
+ * which only the user's own actions pass (submitting, ticking the checklist,
+ * resetting). Reading it never writes, so a visitor who submits nothing has
+ * no progress record (the Data page says so).
+ */
+function setState(
+  change: (current: AppState) => AppState,
+  { save = false } = {},
+): void {
   const next = change(state);
-  if (next.progress !== state.progress && next.storage === "available") {
+  if (
+    save &&
+    next.progress !== state.progress &&
+    next.storage === "available"
+  ) {
     if (!writeItem(PROGRESS_KEY, serializeProgress(next.progress))) {
       next.storage = "unavailable";
     }
@@ -75,7 +89,10 @@ export function useAppState<T>(select: (state: AppState) => T): T {
   );
 }
 
-/** Reads what this browser has kept. Called once, before the first render. */
+/**
+ * Reads what this browser has kept. Called once, before the first render.
+ * Nothing is written here: not even an empty record on a first visit.
+ */
 export function loadSavedState(): void {
   const available = isStorageAvailable();
   setState((current) => ({
@@ -149,7 +166,7 @@ export function submitAnswer(question: SiteQuestion, lang: Lang): boolean {
         results: { ...current.progress.results, [question.id]: answer },
       },
     };
-  });
+  }, SAVE);
   if (config.counterEnabled) {
     sendSubmission(
       buildSubmission(question.id, lang, scoreAnswer(question, answer)),
@@ -179,16 +196,15 @@ export function setChecklistItem(
         },
       },
     };
-  });
+  }, SAVE);
 }
 
 /** Deletes every result, reason and checklist tick (PRD K13). The language stays. */
 export function resetProgress(): void {
-  setState((current) => ({
-    ...current,
-    progress: emptyProgress(),
-    drafts: {},
-  }));
+  setState(
+    (current) => ({ ...current, progress: emptyProgress(), drafts: {} }),
+    SAVE,
+  );
 }
 
 export function dismissStorageNotice(): void {

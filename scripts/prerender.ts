@@ -11,6 +11,7 @@ import { pathToFileURL } from "node:url";
 import { format } from "prettier";
 import type { RenderedPage, ServerEntry } from "../src/lib/page.ts";
 import { formatMarkup } from "./lib/format-markup.ts";
+import { isReleaseBuild, releaseProblems } from "./lib/release.ts";
 
 const DIST = "dist";
 const SERVER_ENTRY = "generated/ssr/entry-server.js";
@@ -129,6 +130,19 @@ async function formatPage(html: string, page: RenderedPage): Promise<string> {
 
 const outputFile = (path: string) =>
   path.endsWith(".html") ? join(DIST, path) : join(DIST, path, "index.html");
+
+// A release (or any Cloudflare Pages build) stops before writing a page that
+// would state something untrue; a local build only says what is missing.
+const problems = releaseProblems(process.env);
+if (problems.length > 0 && isReleaseBuild(process.env)) {
+  const list = problems.map((problem) => `- ${problem}`).join("\n");
+  throw new Error(`Release build stopped:\n${list}`);
+}
+if (!process.env.VITE_CONTACT_EMAIL) {
+  console.warn(
+    "VITE_CONTACT_EMAIL is not set: the Data page shows a placeholder (a release build stops).",
+  );
+}
 
 const template = await readFile(join(DIST, "index.html"), "utf8");
 const server = (await import(pathToFileURL(SERVER_ENTRY).href)) as ServerEntry;

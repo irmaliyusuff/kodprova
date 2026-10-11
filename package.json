@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "npm run build:questions && npm run build:site-data && vite",
     "build": "npm run build:questions && npm run build:site-data && vite build && vite build --ssr src/entry-server.tsx --outDir generated/ssr && node scripts/prerender.ts",
+    "build:release": "node scripts/build-release.ts",
     "preview": "wrangler pages dev dist --port 8788",
     "build:questions": "node scripts/build-questions.ts",
     "build:site-data": "node scripts/build-site-data.ts",

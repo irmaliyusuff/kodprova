@@ -15,6 +15,8 @@ export function pageTitle(route: Route, lang: Lang): string {
       return translate(lang, "sekme.ilerleme");
     case "howItsMade":
       return translate(lang, "sekme.hazirlandi");
+    case "data":
+      return translate(lang, "sekme.veri");
     case "question":
     case "result": {
       const question = findQuestion(route.id);

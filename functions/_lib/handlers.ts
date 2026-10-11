@@ -10,8 +10,10 @@ import { error, json, noContent } from "./responses.ts";
 import { RATE_WINDOW_MS, rateLimiter, type RateLimiter } from "./rate.ts";
 import {
   DAILY_CAP,
+  deleteBefore,
   readSums,
   recordSubmission,
+  retentionCutoff,
   utcDay,
   type DateRange,
 } from "./store.ts";
@@ -33,7 +35,8 @@ export interface Options {
  * POST /api/submissions: counts one submitted question.
  *
  * Order: method -> database binding -> content type -> body size -> JSON ->
- * fields -> rate limit -> count. Nothing from the request is logged.
+ * fields -> rate limit -> delete days past retention -> count. Nothing from
+ * the request is logged.
  */
 export function submissionsHandler(options: Options): Handler {
   const now = options.now ?? Date.now;
@@ -74,6 +77,7 @@ export function submissionsHandler(options: Options): Handler {
     }
 
     try {
+      await deleteBefore(env.DB, retentionCutoff(time));
       const outcome = await recordSubmission(
         env.DB,
         result.submission,
@@ -118,9 +122,11 @@ function rangeFrom(url: URL): RangeResult {
  * GET /api/summary: sums for Yusuf, behind the `SUMMARY_KEY` secret.
  *
  * No key: 401. Wrong key, or no usable key configured on the server: 403.
- * The key is checked before anything else, and before the database.
+ * The key is checked before anything else, and before the database. Days
+ * past retention are deleted before reading, so the summary never shows them.
  */
 export function summaryHandler(options: Options): Handler {
+  const now = options.now ?? Date.now;
   const dailyCap = options.dailyCap ?? DAILY_CAP;
 
   return async ({ request, env }) => {
@@ -144,6 +150,7 @@ export function summaryHandler(options: Options): Handler {
     }
 
     try {
+      await deleteBefore(env.DB, retentionCutoff(now()));
       const sums = await readSums(env.DB, range.range);
       return json(200, {
         ok: true,

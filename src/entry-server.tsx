@@ -33,6 +33,7 @@ export function listPaths(): string[] {
     { name: "list" },
     { name: "progress" },
     { name: "howItsMade" },
+    { name: "data" },
     ...questions.flatMap((question): Route[] => [
       { name: "question", id: question.id },
       { name: "result", id: question.id },

@@ -1,55 +1,18 @@
 // E6 How it's made: where the questions come from and why they can be
 // trusted. Sections are articles with margin notes (B33).
 
-import type { ReactNode } from "react";
+import { ArticleSection } from "../components/ArticleSection.tsx";
 import { OriginLabel } from "../components/markers.tsx";
 import { SeverityScale } from "../components/SeverityScale.tsx";
 import { ExternalLink } from "../components/text.tsx";
 import { config, licenseUrl, PRODUCT_AUTHOR } from "../config.ts";
 import { questions, realOriginCount } from "../data/questions.ts";
 import { useLanguage } from "../i18n/language-context.tsx";
-import type { MessageKey } from "../i18n/messages.ts";
-
-interface SectionProps {
-  id: string;
-  title: MessageKey;
-  paragraphs: (MessageKey | false)[];
-  margin?: ReactNode;
-  children?: ReactNode;
-}
-
-function ArticleSection({
-  id,
-  title,
-  paragraphs,
-  margin,
-  children,
-}: SectionProps) {
-  const { t } = useLanguage();
-  return (
-    <section
-      className="makale-bolum izgara"
-      id={id}
-      aria-labelledby={`${id}-baslik`}
-    >
-      <div>
-        <h2 id={`${id}-baslik`}>{t(title)}</h2>
-        <div className="okuma">
-          {paragraphs
-            .filter((key): key is MessageKey => key !== false)
-            .map((key) => (
-              <p key={key}>{t(key)}</p>
-            ))}
-        </div>
-        {children}
-      </div>
-      {margin && <aside className="kenar-not kenarda">{margin}</aside>}
-    </section>
-  );
-}
+import { pathFor } from "../lib/routes.ts";
+import { Link } from "../router.tsx";
 
 export function HowItsMadeScreen() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const repository = config.repositoryUrl;
   const repositoryButton = (className: string) =>
     repository && (
@@ -133,9 +96,12 @@ export function HowItsMadeScreen() {
         title="nasil.veri.baslik"
         paragraphs={[
           "nasil.veri.metin1",
-          config.counterEnabled
-            ? "nasil.veri.sayac.acik"
-            : "nasil.veri.sayac.kapali",
+          "nasil.veri.sayac.acik",
+          <p key="baglanti">
+            <Link to={pathFor(lang, { name: "data" })}>
+              {t("nasil.veri.baglanti")}
+            </Link>
+          </p>,
         ]}
       />
 

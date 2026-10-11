@@ -74,6 +74,8 @@ export interface SiteQuestion extends QuestionSummary {
 }
 
 export interface SiteIndex {
+  /** The day the site was built (YYYY-MM-DD, UTC): the Data page's "last updated". */
+  builtOn: string;
   questions: QuestionSummary[];
 }
 

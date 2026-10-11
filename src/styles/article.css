@@ -81,3 +81,31 @@
   color: var(--soluk);
   font: var(--t-kucuk);
 }
+
+/* Data page: the same article layout (copy deck "Veriler"). */
+.makale-bolum .okuma .veri-alanlar,
+.makale-bolum .okuma .veri-alanlar + p {
+  margin-top: var(--b-3);
+}
+
+.veri-alanlar {
+  border-top: var(--c-ince) solid var(--cizgi);
+}
+
+.veri-alanlar li {
+  padding: var(--b-2) 0;
+  border-bottom: var(--c-ince) solid var(--cizgi);
+}
+
+.makale-bolum .okuma .kucuk-not {
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
+/* The closing "last updated" line, without a heading. */
+.makale-son {
+  max-width: var(--olcu);
+  margin-top: var(--b-9);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}

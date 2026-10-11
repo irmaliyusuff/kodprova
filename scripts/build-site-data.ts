@@ -83,7 +83,11 @@ for (const question of questions) {
     JSON.stringify(question),
   );
 }
-const index: SiteIndex = { questions: questions.map(toSummary) };
+// One date for the client and the server build, which both read this file.
+const index: SiteIndex = {
+  builtOn: new Date().toISOString().slice(0, 10),
+  questions: questions.map(toSummary),
+};
 await writeFile(INDEX, `${JSON.stringify(index)}\n`);
 console.log(
   `Wrote ${questions.length} question(s) to ${INDEX} and ${QUESTIONS_DIR}/`,

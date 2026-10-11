@@ -35,6 +35,7 @@ npm install
 | ------------------------- | ------------------------------------------------------------------------------ |
 | `npm run dev`             | Builds the question data and starts the site on a local development server     |
 | `npm run build`           | Builds the site into `dist/`: question data, bundle, one HTML page per address |
+| `npm run build:release`   | The build that is published (see "Release build" below)                        |
 | `npm run preview`         | Serves `dist/` the way Cloudflare Pages does (404 page, the counter API)       |
 | `npm run proof`           | Proof gate: validates every question, then proves every question               |
 | `npm run build:questions` | Validates every question and writes `generated/questions.json` for the site    |
@@ -62,13 +63,13 @@ the language first: `/tr/questions/<id>/`, `/en/progress/` and so on. `npm run b
 4. `scripts/prerender.ts` renders every address to its own `index.html`, so each page has its
    content, title and description before any script runs. The browser then hydrates that HTML.
 
-| Folder            | What is in it                                                                      |
-| ----------------- | ---------------------------------------------------------------------------------- |
-| `src/screens/`    | One component per screen: home, list, question, result, progress, how it's made    |
-| `src/components/` | Pieces shared by screens: layout, code view, markers, margin notes                 |
-| `src/lib/`        | Logic without React (scoring, diff, routes, stored progress), tested by `npm test` |
-| `src/i18n/`       | Interface copy in Turkish and English, keyed by the copy deck's ids                |
-| `src/styles/`     | CSS, following the design spec section by section                                  |
+| Folder            | What is in it                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `src/screens/`    | One component per screen: home, list, question, result, progress, how it's made, data |
+| `src/components/` | Pieces shared by screens: layout, code view, markers, margin notes                    |
+| `src/lib/`        | Logic without React (scoring, diff, routes, stored progress), tested by `npm test`    |
+| `src/i18n/`       | Interface copy in Turkish and English, keyed by the copy deck's ids                   |
+| `src/styles/`     | CSS, following the design spec section by section                                     |
 
 Progress stays in the browser (`localStorage`); there are no accounts and no personal data is
 sent. Settings are read at build time from environment variables:
@@ -78,6 +79,22 @@ sent. Settings are read at build time from environment variables:
 | `VITE_COUNTER_ENABLED` | `true` turns on the anonymous counter, one request per submitted answer. Off by default, and then nothing is sent at all |
 | `VITE_REPOSITORY_URL`  | This repository's address; without it the source, license and "Report a problem" links are left out                      |
 | `VITE_SITE_URL`        | The published address, for canonical and language alternate links                                                        |
+| `VITE_CONTACT_EMAIL`   | The contact address on the Data page. Required for a release; a local build shows a placeholder                          |
+
+The Data page (`/en/data/`, `/tr/data/`) lists what stays on the device and what one submission
+sends to the counter. Its last-updated date is the build day.
+
+### Release build
+
+```sh
+VITE_CONTACT_EMAIL=<address> VITE_SITE_URL=<published address> npm run build:release
+```
+
+It turns the counter on (`VITE_COUNTER_ENABLED=true`), links the repository
+(`VITE_REPOSITORY_URL`, by default https://github.com/irmaliyusuff/kodprova) and stops before
+building if the contact address is missing, because the Data page would then state something
+untrue. Any build on Cloudflare Pages (`CF_PAGES=1`) is checked the same way, so set these
+variables there and use `npm run build:release` as the build command.
 
 ## Adding a question
 

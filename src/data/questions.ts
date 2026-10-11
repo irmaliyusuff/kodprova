@@ -8,6 +8,9 @@ import type { QuestionSummary, SiteQuestion, Topic } from "./types.ts";
 /** All questions in list order: topic by topic, easiest first. */
 export const questions: QuestionSummary[] = index.questions;
 
+/** The day the site was built (YYYY-MM-DD), shown on the Data page. */
+export const builtOn = index.builtOn;
+
 export const findQuestion = (id: string) =>
   questions.find((question) => question.id === id);
 

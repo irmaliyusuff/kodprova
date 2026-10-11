@@ -253,6 +253,12 @@ export function QuestionScreen({ question }: { question: SiteQuestion }) {
             </span>
           )}
         </div>
+        <p className="gonder-not">
+          {t("gonder.veri.not")}{" "}
+          <Link to={pathFor(lang, { name: "data" })}>
+            {t("ortak.alt.veri")}
+          </Link>
+        </p>
       </section>
     </>
   );

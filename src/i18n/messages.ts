@@ -1,6 +1,7 @@
 // Interface copy in Turkish and English, keyed by the copy deck's ids.
-// Generated from the approved copy deck (v1.1); the text is placed unchanged,
-// so fix wording in the deck and regenerate rather than editing here.
+// Generated from the approved copy decks (v1.1, and v1 of the Data page deck,
+// which also replaces two v1.1 lines); the text is placed unchanged, so fix
+// wording in the deck and regenerate rather than editing here.
 // {slot} placeholders are filled in by translate() (see translate.ts).
 
 export const messages = {
@@ -376,8 +377,8 @@ export const messages = {
   "sonuc.hepsi.dugme": { tr: "İlerlemeni gör", en: "See your progress" },
   "sorun.baglanti": { tr: "Sorun bildir", en: "Report a problem" },
   "sorun.not": {
-    tr: "Kod deposunun GitHub'daki sorun sayfası yeni sekmede açılır; bildirmek için GitHub hesabı gerekir. Bu site veri göndermez.",
-    en: "Opens the repository's issue page on GitHub in a new tab; you need a GitHub account to post. This site sends no data.",
+    tr: "Kod deposunun GitHub'daki sorun sayfası yeni sekmede açılır; bildirmek için GitHub hesabı gerekir. Site GitHub'a veri göndermez.",
+    en: "Opens the repository's issue page on GitHub in a new tab; you need a GitHub account to post. This site sends nothing to GitHub.",
   },
   "sorun.sablon.baslik": {
     tr: "Soru {no} ({dil}):",
@@ -526,12 +527,8 @@ export const messages = {
     en: "There are no accounts. Your progress, marks, reasons and checklist ticks are kept only in this browser; you can delete them on the Progress page.",
   },
   "nasil.veri.sayac.acik": {
-    tr: "Bir cevap gönderdiğinde siteye yalnız şu bilgiler gider: hangi soru, kaç hata bulundu, kaç yanlış alarm verildi, gerekçe yazılıp yazılmadığı (metni değil), test seçiminin doğru olup olmadığı ve arayüz dili. Kimlik, çerez ya da IP kaydı tutulmaz; gerekçe metni cihazından çıkmaz.",
-    en: "When you submit an answer, only this is sent: which question, how many bugs were found, how many false alarms, whether a reason was written (not the text), whether the test choice was right, and the interface language. No identity, cookies or IP records are kept; your reason text never leaves your device.",
-  },
-  "nasil.veri.sayac.kapali": {
-    tr: "Site, kullanım sayısı dahil hiçbir veri göndermez; gerekçe metni cihazından çıkmaz.",
-    en: "The site sends no data, not even usage counts; your reason text never leaves your device.",
+    tr: "Bir cevap gönderdiğinde sayaca yalnız şu bilgiler gider: hangi soru, arayüz dili, kaç hata bulunduğu ve soruda kaç hata olduğu, kaç yanlış alarm verildiği, gerekçe yazılıp yazılmadığı (metni değil) ve test seçiminin doğru olup olmadığı. Sayaç kimlik, çerez ya da IP adresi kaydetmez; gerekçe metni cihazından çıkmaz.",
+    en: "When you submit an answer, only this goes to the counter: which question, the interface language, how many bugs were found and how many the question has, how many false alarms, whether a reason was written (not the text), and whether the test choice was right. The counter doesn't record identity, cookies or IP addresses; your reason text never leaves your device.",
   },
   "nasil.lisans.baslik": {
     tr: "Lisans ve kaynak kodu",
@@ -581,6 +578,154 @@ export const messages = {
   "nasil.kor.metin2.yedek": {
     tr: "Bu incelemeyi soruları yazan agent'lardan ayrı olan test agent'ı (QA) yapar. Her kör çözümün tarihli kaydı tutulur.",
     en: "The testing agent (QA), separate from the agents that wrote the questions, does this review. Each blind solve is recorded with its date.",
+  },
+  "ortak.alt.veri": { tr: "Veriler", en: "Data" },
+  "sekme.veri": { tr: "Veriler · {urun.ad}", en: "Data · {urun.ad}" },
+  "veri.baslik": { tr: "Veriler", en: "Data" },
+  "veri.ozet": {
+    tr: "Bu sayfa, sitenin cihazında neyi tuttuğunu ve bir cevap gönderdiğinde sunucuya neyin gidip neyin gitmediğini anlatır. Kısaca: hesap ve çerez yok, ilerlemen bu tarayıcıda kalır, her gönderimde sayaca yedi bilgi gider; hiçbiri kim olduğunu göstermez.",
+    en: "This page explains what the site keeps on your device and what is and isn't sent to the server when you submit an answer. In short: there are no accounts or cookies, your progress stays in this browser, and each submission sends seven pieces of information to a counter; none of them says who you are.",
+  },
+  "veri.kim.baslik": { tr: "Siteyi kim yayımlıyor", en: "Who runs this site" },
+  "veri.kim.metin": {
+    tr: "{urun.ad} sitesini {site.sahibi} hazırlıyor ve yayımlıyor. Site ücretsizdir.",
+    en: "{urun.ad} is made and run by {site.sahibi}. The site is free.",
+  },
+  "veri.kim.iletisim": {
+    tr: "İletişim: {iletisim.eposta}",
+    en: "Contact: {iletisim.eposta}",
+  },
+  "veri.yok.baslik": {
+    tr: "Sitede olmayanlar",
+    en: "What the site doesn't have",
+  },
+  "veri.yok.metin": {
+    tr: "Hesap, giriş, çerez ve reklam yok. Üçüncü taraf analitik ya da takip betiği yok; sayfa açılırken başka bir siteden dosya yüklenmez, yazı tipleri de sitenin kendi sunucusundan gelir. Veriler satılmaz, kimse hakkında profil çıkarılmaz.",
+    en: "There are no accounts, sign-ins, cookies or ads. There are no third-party analytics or tracking scripts; nothing is loaded from another site when a page opens, and the fonts come from the site's own server too. No data is sold, and no profile is built about anyone.",
+  },
+  "veri.yok.github": {
+    tr: "“Kaynak kodu” ve “Sorun bildir” bağlantıları ile hazırlayanın adı GitHub'a gider; orada GitHub'ın kendi kuralları geçerlidir.",
+    en: "The “Source code” and “Report a problem” links and the author's name lead to GitHub, where GitHub's own terms apply.",
+  },
+  "veri.cihaz.baslik": {
+    tr: "Cihazında kalanlar",
+    en: "What stays on your device",
+  },
+  "veri.cihaz.metin1": {
+    tr: "Hesap olmadığı için ilerlemen sunucuda değil, bu tarayıcının yerel depolamasında (localStorage) tutulur. İki kayıt var: ilerleme (her soru için son gönderdiğin cevap: işaretlediğin satırlar, seçtiğin önemler, gerekçe metinlerin, test seçimin ve kontrol listesi işaretlerin) ve dil. Bu kayıtlar sunucuya gönderilmez.",
+    en: "Since there are no accounts, your progress is kept in this browser's local storage (localStorage), not on a server. There are two records: progress (for each question, the last answer you submitted: the lines you marked, the severities, your reason texts, your test choice and your checklist ticks) and language. These records are never sent to the server.",
+  },
+  "veri.cihaz.metin2": {
+    tr: "İlerleme kaydı ilk cevabını gönderdiğinde oluşur; sonra her gönderimde, kontrol listesinde bir maddeyi işaretlediğinde ve ilerlemeyi sıfırladığında güncellenir. Dil kaydı açtığın sayfanın dilini tutar; site bir dahaki gelişinde aynı dilde açılır. Göndermediğin işaretler kaydedilmez.",
+    en: "The progress record is created when you submit your first answer, then updated on each submission, when you tick a checklist item and when you reset your progress. The language record keeps the language of the page you open, so the site opens in that language next time. Marks you haven't submitted aren't saved.",
+  },
+  "veri.cihaz.sil": {
+    tr: "Silmek için İlerleme sayfasındaki “İlerlemeyi sıfırla” düğmesini kullan: cevapların, gerekçelerin ve kontrol listesi işaretlerin silinir. Dil kaydı dahil her şeyi silmek için tarayıcının bu siteye ait verilerini temizle.",
+    en: "To delete them, use “Reset progress” on the Progress page: your answers, reasons and checklist ticks are deleted. To delete everything, including the language record, clear this site's data in your browser.",
+  },
+  "veri.cihaz.dil": {
+    tr: "Ana adresi açtığında bu tarayıcıda dil kaydı yoksa, başlangıç dilini seçmek için tarayıcının dil ayarına bakılır: Türkçe ise site Türkçe, değilse İngilizce açılır. Bu ayar kaydedilmez ve sayaca gönderilmez; sayaca giden dil, o an kullandığın arayüz dilidir.",
+    en: "When you open the home address and this browser has no language record, the browser's language setting is checked to pick the starting language: Turkish if it's Turkish, English otherwise. That setting isn't saved or sent to the counter; the language sent to the counter is the interface language you're using.",
+  },
+  "veri.sayac.baslik": {
+    tr: "Cevap gönderdiğinde ne gider",
+    en: "What is sent when you submit",
+  },
+  "veri.sayac.metin": {
+    tr: "Bir cevabı gönderdiğinde site, kendi sunucusundaki kullanım sayacına tek bir istek yollar. Sayfa açarken, satır işaretlerken ya da gezinirken sayaç çalışmaz. İstekte yalnız şu yedi bilgi var:",
+    en: "When you submit an answer, the site sends a single request to the usage counter on its own server. The counter doesn't run while you open pages, mark lines or browse. The request holds only these seven pieces of information:",
+  },
+  "veri.sayac.alan.1": {
+    tr: "Hangi soru (adresindeki kısa adı)",
+    en: "Which question (the short name in its address)",
+  },
+  "veri.sayac.alan.2": {
+    tr: "Arayüz dili: Türkçe ya da İngilizce",
+    en: "Interface language: Turkish or English",
+  },
+  "veri.sayac.alan.3": {
+    tr: "Kaç hata bulduğun",
+    en: "How many bugs you found",
+  },
+  "veri.sayac.alan.4": {
+    tr: "Soruda kaç hata olduğu: bir ya da iki",
+    en: "How many bugs the question has: one or two",
+  },
+  "veri.sayac.alan.5": {
+    tr: "İşaretlerinden kaçının yanlış alarm olduğu",
+    en: "How many of your marks were false alarms",
+  },
+  "veri.sayac.alan.6": {
+    tr: "Hatayı bulan bir işarete gerekçe yazıp yazmadığın: evet ya da hayır, metin değil",
+    en: "Whether a mark that found a bug has a reason: yes or no, not the text",
+  },
+  "veri.sayac.alan.7": {
+    tr: "Test seçiminin doğru olup olmadığı: evet ya da hayır",
+    en: "Whether your test choice was right: yes or no",
+  },
+  "veri.sayac.yok": {
+    tr: "İstekte işaretlediğin satırlar, gerekçe metni, kontrol listesi, çerez ve geldiğin sayfanın adresi (referrer) yok; kim olduğunu gösteren bir kimlik ya da numara da yok. Sayacın sunucu kodu IP adresini, tarayıcı ve cihaz bilgisini, çerezleri ve geldiğin sayfayı okumaz; kod deposundaki otomatik bir test bunu denetler.",
+    en: "The request doesn't include the lines you marked, your reason text, the checklist, cookies or the page you came from (referrer), and there's no ID or number that says who you are. The counter's server code doesn't read your IP address, browser or device details, cookies or the page you came from; an automated test in the repository checks this.",
+  },
+  "veri.sayac.kapatma": {
+    tr: "Sayaç her gönderimde çalışır; sitede kapatma seçeneği yok. Yalnız yukarıdaki yedi bilgiyi gönderir. Tarayıcın ya da bir eklenti bu isteği engellerse site aynı şekilde çalışır.",
+    en: "The counter runs on every submission; the site has no option to turn it off. It sends only the seven pieces of information above. If your browser or an extension blocks the request, the site works the same.",
+  },
+  "veri.saklama.baslik": {
+    tr: "Sayılar nasıl saklanır",
+    en: "How the counts are kept",
+  },
+  "veri.saklama.metin1": {
+    tr: "Gönderimler tek tek kaydedilmez. Sunucu yalnız gün başına toplamları tutar: o gün aynı yedi bilgiyle kaç gönderim geldiği. Saat ve sıra tutulmaz.",
+    en: "Submissions aren't stored one by one. The server keeps only totals per day: how many submissions arrived that day with the same seven pieces of information. No time or order is kept.",
+  },
+  "veri.saklama.metin2": {
+    tr: "Toplamlar Cloudflare'in veritabanında (D1) durur, en fazla {veri.saklamaAy} ay saklanır ve sonra silinir. Onları yalnız {site.sahibi} gizli bir anahtarla görebilir.",
+    en: "The totals are stored in Cloudflare's database (D1), kept for up to {veri.saklamaAy} months and then deleted. Only {site.sahibi} can see them, with a secret key.",
+  },
+  "veri.amac": {
+    tr: "Toplamlar soruları ve siteyi düzeltmek için kullanılır: hatalı ya da gereğinden zor soruları bulmak, gerekçe adımının yapılıp yapılmadığını ve hangi dilin kullanıldığını görmek. Reklam ya da pazarlama için kullanılmaz.",
+    en: "The totals are used to fix the questions and the site: to find questions that are wrong or harder than they should be, and to see whether people write reasons and which language they use. They aren't used for ads or marketing.",
+  },
+  "veri.paylasim": {
+    tr: "Toplamlar satılmaz ve başkalarına verilmez. Kaç cevap gönderildiği gibi genel sayılar, sitenin nasıl yapıldığını anlatan bir yazıda yayımlanabilir; o zaman birini ayırt ettirebilecek küçük sayılar gizlenir ya da birleştirilir.",
+    en: "The totals aren't sold or given to anyone. General figures, such as how many answers were submitted, may be published in a write-up about how the site was built; small numbers that could single someone out are then hidden or combined.",
+  },
+  "veri.barindirma.baslik": {
+    tr: "Barındırma: Cloudflare",
+    en: "Hosting: Cloudflare",
+  },
+  "veri.barindirma.metin1": {
+    tr: "Site ve sayaç Cloudflare üzerinde çalışır. Bir sayfayı açtığında tarayıcın Cloudflare'in sunucularına bağlanır; Cloudflare bu sırada IP adresini teknik olarak işler ve kendi politikasına göre kayıt tutabilir. Bu, sayaçtan bağımsızdır: sayaç olmasa da her ziyarette olur.",
+    en: "The site and the counter run on Cloudflare. When you open a page, your browser connects to Cloudflare's servers; in doing so, Cloudflare technically processes your IP address and may keep records under its own policy. This is separate from the counter: it happens on every visit, counter or not.",
+  },
+  "veri.barindirma.metin2": {
+    tr: "Cloudflare'in sunucuları Türkiye dışında olabilir. Ayrıntılar Cloudflare'in gizlilik politikasında (İngilizce).",
+    en: "Cloudflare's servers may be outside Türkiye. Details are in Cloudflare's privacy policy.",
+  },
+  "veri.barindirma.baglanti": {
+    tr: "Cloudflare gizlilik politikası",
+    en: "Cloudflare privacy policy",
+  },
+  "veri.hukuk.baslik": {
+    tr: "Kişisel veriler ve iletişim",
+    en: "Personal data and contact",
+  },
+  "veri.hukuk.metin": {
+    tr: "Kişisel verilerinle ilgili soruların için {iletisim.eposta} adresine yazabilirsin.",
+    en: "If you have questions about your personal data, write to {iletisim.eposta}.",
+  },
+  "veri.surum": {
+    tr: "Son güncelleme: {veri.tarih}. Sayaç ya da barındırma değişirse bu sayfa da güncellenir.",
+    en: "Last updated: {veri.tarih}. If the counter or the hosting changes, this page is updated too.",
+  },
+  "nasil.veri.baglanti": {
+    tr: "Ayrıntılar Veriler sayfasında",
+    en: "Details are on the Data page",
+  },
+  "gonder.veri.not": {
+    tr: "Gönderince sayaca yedi bilgi gider; gerekçe metnin cihazında kalır.",
+    en: "Submitting sends seven pieces of information to a counter; your reason text stays on your device.",
   },
 } as const satisfies Record<string, { tr: string; en: string }>;
 

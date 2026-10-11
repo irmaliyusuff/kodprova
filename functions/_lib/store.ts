@@ -21,6 +21,44 @@ export function utcDay(ms: number): string {
   return new Date(ms).toISOString().slice(0, 10);
 }
 
+/**
+ * Counts are kept for this many months, then deleted (the site's "Data"
+ * page says so). Pages Functions have no scheduled trigger, so the delete
+ * runs with every count and before every summary: one cheap statement on
+ * the first key column, nothing to set up in Cloudflare.
+ */
+export const RETENTION_MONTHS = 25;
+
+/**
+ * Oldest day still kept at `ms`: the same day of the month, `months`
+ * earlier (UTC). A day that month does not have rolls over to the next
+ * month (31 May -> 31 April = 1 May), so no row stays longer than
+ * `months` months.
+ */
+export function retentionCutoff(
+  ms: number,
+  months: number = RETENTION_MONTHS,
+): string {
+  const now = new Date(ms);
+  return utcDay(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth() - months,
+      now.getUTCDate(),
+    ),
+  );
+}
+
+const PRUNE_SQL = "DELETE FROM submission_counts WHERE day < ?1";
+
+/** Deletes every row of a day before `cutoff`; the cutoff day stays. */
+export async function deleteBefore(
+  db: D1Database,
+  cutoff: string,
+): Promise<void> {
+  await db.prepare(PRUNE_SQL).bind(cutoff).all();
+}
+
 const RECORD_SQL = `INSERT INTO submission_counts
   (day, question_id, lang, found, total, false_alarms, reason_given, test_correct, submissions)
 SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 1

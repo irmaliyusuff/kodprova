@@ -308,3 +308,28 @@ test("the database holds only counts: no header value, no time of day", () => {
   ).map((row) => row.name);
   assert.deepEqual(tables, ["d1_migrations", "submission_counts"]);
 });
+
+test("a count deletes days older than 25 months (real local D1)", async () => {
+  const question = questions[0]!;
+  query(
+    `INSERT INTO submission_counts VALUES ('2020-01-01', '${question.id}', 'tr', 0, ${question.bugs.length}, 1, 0, 0, 5)`,
+  );
+  assert.equal(
+    query("SELECT day FROM submission_counts WHERE day = '2020-01-01'").length,
+    1,
+  );
+  const response = await submit({
+    questionId: question.id,
+    lang: "en",
+    found: 0,
+    total: question.bugs.length,
+    falseAlarms: 1,
+    reasonGiven: false,
+    testCorrect: false,
+  });
+  assert.equal(response.status, 204);
+  assert.deepEqual(
+    query("SELECT day FROM submission_counts WHERE day < '2024-01-01'"),
+    [],
+  );
+});

@@ -7,6 +7,7 @@ import { LANGUAGE_KEY } from "./lib/language.ts";
 import { parsePath, pathFor, type Route } from "./lib/routes.ts";
 import { pageTitle } from "./page-meta.ts";
 import { useRouter } from "./router.tsx";
+import { DataScreen } from "./screens/DataScreen.tsx";
 import { HomeScreen } from "./screens/HomeScreen.tsx";
 import { HowItsMadeScreen } from "./screens/HowItsMadeScreen.tsx";
 import { ProgressScreen } from "./screens/ProgressScreen.tsx";
@@ -64,6 +65,8 @@ function Screen({ route, lang }: { route: Route; lang: Lang }) {
       return <ProgressScreen />;
     case "howItsMade":
       return <HowItsMadeScreen />;
+    case "data":
+      return <DataScreen />;
     case "question":
     case "result":
       if (!findQuestion(route.id)) {

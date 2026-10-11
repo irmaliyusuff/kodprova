@@ -11,6 +11,7 @@ export type Route =
   | { name: "result"; id: string }
   | { name: "progress" }
   | { name: "howItsMade" }
+  | { name: "data" }
   | { name: "notFound" };
 
 export interface Location {
@@ -40,6 +41,7 @@ export function parsePath(pathname: string): Location {
     if (section === "progress" && id === undefined) return { name: "progress" };
     if (section === "how-its-made" && id === undefined)
       return { name: "howItsMade" };
+    if (section === "data" && id === undefined) return { name: "data" };
     if (section !== "questions") return { name: "notFound" };
     if (id === undefined) return { name: "list" };
     if (!ID.test(id)) return { name: "notFound" };
@@ -64,6 +66,8 @@ export function pathFor(lang: Lang, route: Route): string {
       return `/${lang}/progress/`;
     case "howItsMade":
       return `/${lang}/how-its-made/`;
+    case "data":
+      return `/${lang}/data/`;
     case "notFound":
       return `/${lang}/404/`;
   }

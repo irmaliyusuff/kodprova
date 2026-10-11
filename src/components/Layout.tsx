@@ -85,8 +85,8 @@ function StorageNotice() {
   );
 }
 
-function Footer() {
-  const { t } = useLanguage();
+function Footer({ route }: { route: Route }) {
+  const { lang, t } = useLanguage();
   const [beforeName, afterName] = t("ortak.alt.yapan").split(PRODUCT_AUTHOR);
   return (
     <footer className="alt">
@@ -96,6 +96,12 @@ function Footer() {
           {t("ortak.alt.kaynak")}
         </ExternalLink>
       )}
+      <Link
+        to={pathFor(lang, { name: "data" })}
+        aria-current={route.name === "data" ? "page" : undefined}
+      >
+        {t("ortak.alt.veri")}
+      </Link>
       <span>
         {beforeName}
         <a href={config.profileUrl}>{PRODUCT_AUTHOR}</a>
@@ -123,7 +129,7 @@ export function Layout({
       <main id="icerik" tabIndex={-1}>
         {children}
       </main>
-      <Footer />
+      <Footer route={route} />
     </div>
   );
 }

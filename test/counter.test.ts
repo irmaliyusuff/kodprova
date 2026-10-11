@@ -16,7 +16,13 @@ import {
 import { KEY_MIN_LENGTH } from "../functions/_lib/key.ts";
 import { rateLimiter } from "../functions/_lib/rate.ts";
 import { BODY_LIMIT_BYTES } from "../functions/_lib/request.ts";
-import { recordSubmission, utcDay } from "../functions/_lib/store.ts";
+import {
+  deleteBefore,
+  recordSubmission,
+  RETENTION_MONTHS,
+  retentionCutoff,
+  utcDay,
+} from "../functions/_lib/store.ts";
 import {
   validateSubmission,
   type Submission,
@@ -80,6 +86,19 @@ function summaryRequest(
   method = "GET",
 ): Request {
   return new Request(`${BASE}/api/summary${query}`, { method, headers });
+}
+
+/** One stored row per day (q-one, tr), for the retention tests. */
+function seedDays(store: MemoryD1, days: string[]): void {
+  for (const day of days) {
+    store.exec(
+      `INSERT INTO submission_counts VALUES ('${day}', 'q-one', 'tr', 1, 1, 0, 0, 0, 3)`,
+    );
+  }
+}
+
+function storedDays(store: MemoryD1): string[] {
+  return [...new Set(store.dump().map((row) => String(row.day)))];
 }
 
 async function errorOf(response: Response) {
@@ -306,6 +325,28 @@ describe("counter: storage", () => {
     assert.equal(total, 3);
   });
 
+  test("keeps counts for 25 months: the cutoff is the same day, 25 months back", () => {
+    assert.equal(RETENTION_MONTHS, 25);
+    for (const [now, cutoff] of [
+      [NOW, "2024-09-11"],
+      [Date.UTC(2026, 0, 1, 0, 0, 0), "2023-12-01"],
+      [Date.UTC(2028, 1, 29, 12), "2026-01-29"],
+      // A day the earlier month lacks rolls forward: never kept longer.
+      [Date.UTC(2028, 4, 31, 12), "2026-05-01"],
+      [Date.UTC(2028, 2, 30, 12), "2026-03-02"],
+    ] as const) {
+      assert.equal(retentionCutoff(now), cutoff, utcDay(now));
+    }
+  });
+
+  test("deletes days before the cutoff, keeps the cutoff day", async () => {
+    seedDays(store, ["2024-08-31", "2024-09-10", "2024-09-11", "2026-10-11"]);
+    await deleteBefore(store.d1, retentionCutoff(NOW));
+    assert.deepEqual(storedDays(store), ["2024-09-11", "2026-10-11"]);
+    await deleteBefore(store.d1, retentionCutoff(NOW));
+    assert.equal(store.dump().length, 2);
+  });
+
   test("the migration can run again and its rollback removes the table", async () => {
     store.exec(
       `INSERT INTO submission_counts VALUES ('2026-10-11', 'q-one', 'en', 1, 1, 0, 0, 1, 7)`,
@@ -460,6 +501,13 @@ describe("counter: POST /api/submissions", () => {
     assert.equal(response.status, 429);
     assert.equal(response.headers.get("Retry-After"), "60");
     assert.equal((await errorOf(response)).code, "TOO_MANY_REQUESTS");
+  });
+
+  test("a count deletes days older than 25 months, keeps the cutoff day", async () => {
+    seedDays(store, ["2024-09-10", "2024-09-11"]);
+    const response = await handlers().submit({ request: post(valid()), env });
+    assert.equal(response.status, 204);
+    assert.deepEqual(storedDays(store), ["2024-09-11", "2026-10-11"]);
   });
 
   test("stops at the daily cap: 429 DAILY_LIMIT", async () => {
@@ -745,6 +793,22 @@ describe("counter: GET /api/summary", () => {
       ],
     );
     assert.equal(body.firstDay, null);
+  });
+
+  test("deletes days older than 25 months before reading, never shows them", async () => {
+    seedDays(store, ["2024-09-10", "2024-09-11", "2026-10-11"]);
+    const response = await handlers().summary({
+      request: summaryRequest("?from=2024-01-01"),
+      env,
+    });
+    assert.equal(response.status, 200);
+    const body = (await response.json()) as {
+      firstDay: string;
+      totals: { submissions: number };
+    };
+    assert.equal(body.firstDay, "2024-09-11");
+    assert.equal(body.totals.submissions, 6);
+    assert.deepEqual(storedDays(store), ["2024-09-11", "2026-10-11"]);
   });
 
   test("marks days that reached the cap", async () => {
