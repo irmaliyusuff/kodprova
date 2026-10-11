@@ -1,5 +1,5 @@
 // Interface copy in Turkish and English, keyed by the copy deck's ids.
-// Generated from the approved copy decks (v1.1, and v1 of the Data page deck,
+// Generated from the approved copy decks (v1.1, and v1.1 of the Data page deck,
 // which also replaces two v1.1 lines); the text is placed unchanged, so fix
 // wording in the deck and regenerate rather than editing here.
 // {slot} placeholders are filled in by translate() (see translate.ts).
@@ -680,8 +680,8 @@ export const messages = {
     en: "Submissions aren't stored one by one. The server keeps only totals per day: how many submissions arrived that day with the same seven pieces of information. No time or order is kept.",
   },
   "veri.saklama.metin2": {
-    tr: "Toplamlar Cloudflare'in veritabanında (D1) durur, en fazla {veri.saklamaAy} ay saklanır ve sonra silinir. Onları yalnız {site.sahibi} gizli bir anahtarla görebilir.",
-    en: "The totals are stored in Cloudflare's database (D1), kept for up to {veri.saklamaAy} months and then deleted. Only {site.sahibi} can see them, with a secret key.",
+    tr: "Toplamlar Cloudflare'in veritabanında (D1) durur; onları yalnız {site.sahibi} gizli bir anahtarla görebilir. {veri.saklamaAy} aydan eski günlerin toplamları bir sonraki gönderimde ya da toplamlar okunurken silinir; o zamana kadar veritabanında kalsalar da hiç gösterilmezler. Silinenler bir süre Cloudflare'in yedeğinde kalabilir.",
+    en: "The totals are stored in Cloudflare's database (D1); only {site.sahibi} can see them, with a secret key. Totals older than {veri.saklamaAy} months are deleted at the next submission or when the totals are read; until then they stay in the database but are never shown. Deleted totals may remain in Cloudflare's backup for a while.",
   },
   "veri.amac": {
     tr: "Toplamlar soruları ve siteyi düzeltmek için kullanılır: hatalı ya da gereğinden zor soruları bulmak, gerekçe adımının yapılıp yapılmadığını ve hangi dilin kullanıldığını görmek. Reklam ya da pazarlama için kullanılmaz.",

@@ -78,6 +78,7 @@
 .alt {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: var(--b-2) var(--b-5);
   padding: var(--b-5) 0 var(--b-6);
   border-top: var(--c-ince) solid var(--cizgi);

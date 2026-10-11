@@ -105,7 +105,7 @@
 /* The closing "last updated" line, without a heading. */
 .makale-son {
   max-width: var(--olcu);
-  margin-top: var(--b-9);
+  margin-top: var(--b-6);
   color: var(--soluk);
   font: var(--t-kucuk);
 }
