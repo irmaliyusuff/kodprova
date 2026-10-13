@@ -31,10 +31,10 @@
       "id": "request-modified",
       "lines": [23, 30],
       "fixedLines": [26, 30],
-      "severity": "major",
+      "severity": "critical",
       "explanation": {
-        "tr": "`redact` gelen nesneyi yerinde değiştiriyor: maskeyi isteğin kendi gövdesine ve sorgusuna yazıyor. Günlükçü işleyiciden önce çalıştığı için işleyici `apiKey` olarak gerçek anahtarı değil \"[redacted]\" metnini alır; entegrasyonu kaydetmek ya da sınamak yanlış anahtarla yapılır. Düzeltme: maskelenmiş bir kopya döndürmek, gelen nesneye dokunmamak.",
-        "en": "`redact` changes the object it gets in place: it writes the mask into the request's own body and query. Because the logger runs before the handler, the handler gets the text \"[redacted]\" as `apiKey` instead of the real key, so the integration is saved or tested with the wrong key. Fix: return a masked copy and leave the incoming object alone."
+        "tr": "`redact` gelen nesneyi yerinde değiştiriyor: maskeyi isteğin kendi gövdesine ve sorgusuna yazıyor. Günlükçü işleyiciden önce çalıştığı için işleyici `apiKey` olarak gerçek anahtarı değil \"[redacted]\" metnini alır ve entegrasyon ayarı bu metinle kaydedilir: kullanıcının girdiği anahtar hiçbir yerde saklanmaz, entegrasyon da çalışmaz. Bu veri kaybıdır. Düzeltme: maskelenmiş bir kopya döndürmek, gelen nesneye dokunmamak.",
+        "en": "`redact` changes the object it gets in place: it writes the mask into the request's own body and query. Because the logger runs before the handler, the handler gets the text \"[redacted]\" as `apiKey` instead of the real key, and the integration settings are saved with that text: the key the user entered is stored nowhere, and the integration does not work. That is data loss. Fix: return a masked copy and leave the incoming object alone."
       }
     }
   ],
@@ -73,8 +73,8 @@
     "correct": "c"
   },
   "sampleAnswer": {
-    "tr": "`redact` dizileri olduğu gibi bırakıyor, yani `credentials` gibi bir nesne dizisindeki token düz metin olarak günlüğe yazılıyor; gizli bilgi sızdığı için Kritik derdim. Dizide her elemanı `redact` ile işler, dizi içinde token olan bir gövdeyi günlüğe yazıp token'ın satırda geçmediğini kontrol eden bir testle gösterirdim. Ayrıca `redact` isteği yerinde değiştiriyor; işleyici gerçek anahtar yerine \"[redacted]\" aldığı için bu da Önemli bir hata.",
-    "en": "`redact` leaves arrays as they are, so a token inside an array of objects such as `credentials` is written to the log in plain text; a secret leaks, so I'd mark it Critical. I'd run `redact` on every element of an array and prove it with a test that logs a body with a token inside an array and checks that the token is not in the line. `redact` also changes the request in place, so the handler gets \"[redacted]\" instead of the real key, which is a Major bug as well."
+    "tr": "`redact` dizileri olduğu gibi bırakıyor, yani `credentials` gibi bir nesne dizisindeki token düz metin olarak günlüğe yazılıyor; gizli bilgi sızdığı için Kritik derdim. Dizide her elemanı `redact` ile işler, dizi içinde token olan bir gövdeyi günlüğe yazıp token'ın satırda geçmediğini kontrol eden bir testle gösterirdim. Ayrıca `redact` isteği yerinde değiştiriyor; işleyici gerçek anahtar yerine \"[redacted]\" kaydettiği için kullanıcının girdiği anahtar kayboluyor, bu veri kaybı da Kritik.",
+    "en": "`redact` leaves arrays as they are, so a token inside an array of objects such as `credentials` is written to the log in plain text; a secret leaks, so I'd mark it Critical. I'd run `redact` on every element of an array and prove it with a test that logs a body with a token inside an array and checks that the token is not in the line. `redact` also changes the request in place, so the handler saves \"[redacted]\" instead of the real key and the key the user entered is lost; that data loss is Critical too."
   },
   "checklist": [
     {

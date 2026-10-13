@@ -35,10 +35,10 @@
       "id": "continue-unchecked",
       "lines": [52, 52],
       "fixedLines": [50, 50],
-      "severity": "critical",
+      "severity": "major",
       "explanation": {
-        "tr": "Başarısız gönderim testi yalnız `failed` listesine bakıyor. İlk hatada döngüden çıkan bir uygulama da Ada'yı `failed`'a yazdığı için geçer; oysa Cy'ye hiç gönderilmez ve Cy ne `sent` ne `failed` listesinde görünür, yani kimse yeniden denemez. Cy'nin e-postası iz bırakmadan kaybolur; bu veri kaybıdır. Teslim notu bunun kapsandığını söylüyor ama hiçbir test devam edildiğini doğrulamıyor. Düzeltme: raporun tamamını karşılaştırmak (`{ sent: [CY], failed: [ADA] }`).",
-        "en": "The failed send test only looks at the `failed` list. An implementation that leaves the loop at the first failure also puts Ada in `failed` and passes, yet Cy is never emailed and appears in neither `sent` nor `failed`, so nobody retries. Cy's email is lost without a trace, which is data loss. The handoff note says this is covered, but no test checks that sending goes on. Fix: compare the whole report (`{ sent: [CY], failed: [ADA] }`)."
+        "tr": "Başarısız gönderim testi yalnız `failed` listesine bakıyor. İlk hatada döngüden çıkan bir uygulama da Ada'yı `failed`'a yazdığı için geçer; oysa Cy'ye hiç gönderilmez ve Cy ne `sent` ne `failed` listesinde görünür, yani kimse yeniden denemez. Cy hoş geldin e-postasını almaz ve rapor bunu göstermez; bu yanlış sonuçtur, saklanan hiçbir veri kaybolmaz. Teslim notu bunun kapsandığını söylüyor ama hiçbir test devam edildiğini doğrulamıyor. Düzeltme: raporun tamamını karşılaştırmak (`{ sent: [CY], failed: [ADA] }`).",
+        "en": "The failed send test only looks at the `failed` list. An implementation that leaves the loop at the first failure also puts Ada in `failed` and passes, yet Cy is never emailed and appears in neither `sent` nor `failed`, so nobody retries. Cy never gets the welcome email and the report does not show it; that is a wrong result, and no stored data is lost. The handoff note says this is covered, but no test checks that sending goes on. Fix: compare the whole report (`{ sent: [CY], failed: [ADA] }`)."
       },
       "flawedImplementation": {
         "tr": "İlk başarısız gönderimde döngüden çıkan, kalan kullanıcılara hiç göndermeyen bir uygulama.",
@@ -81,8 +81,8 @@
     "correct": "b"
   },
   "sampleAnswer": {
-    "tr": "Doğrulanmamış kullanıcı testi beklentiyi sahte nesnenin içine koymuş; fırlatılan hatayı fonksiyonun kendi `try/catch`'i yutuyor, yani kullanıcının doğrulanmış olup olmadığına hiç bakmayan bir uygulama da geçiyor. Doğrulanmamış adreslere e-posta gidebildiği için Önemli derdim; alıcıları kaydedip çağrıdan sonra tam olarak Ada ve Cy olduklarını kontrol ederdim. Ayrıca başarısız gönderim testi yalnız `failed`'a bakıyor: ilk hatada duran bir uygulama Cy'yi sessizce atlıyor, bu veri kaybı olduğu için Kritik.",
-    "en": "The unverified user test puts its assertion inside the mock, and the function's own `try/catch` swallows the error it throws, so an implementation that never checks verification passes too. Email can reach unverified addresses, so I'd mark it Major; I'd record the recipients and check after the call that they are exactly Ada and Cy. The failed send test also looks only at `failed`: an implementation that stops at the first failure silently skips Cy, which is data loss and so Critical."
+    "tr": "Doğrulanmamış kullanıcı testi beklentiyi sahte nesnenin içine koymuş; fırlatılan hatayı fonksiyonun kendi `try/catch`'i yutuyor, yani kullanıcının doğrulanmış olup olmadığına hiç bakmayan bir uygulama da geçiyor. Doğrulanmamış adreslere e-posta gidebildiği için Önemli derdim; alıcıları kaydedip çağrıdan sonra tam olarak Ada ve Cy olduklarını kontrol ederdim. Ayrıca başarısız gönderim testi yalnız `failed`'a bakıyor: ilk hatada duran bir uygulama Cy'yi sessizce atlıyor ve Cy hoş geldin e-postasını almıyor; bu yanlış sonuç, onu da Önemli derdim.",
+    "en": "The unverified user test puts its assertion inside the mock, and the function's own `try/catch` swallows the error it throws, so an implementation that never checks verification passes too. Email can reach unverified addresses, so I'd mark it Major; I'd record the recipients and check after the call that they are exactly Ada and Cy. The failed send test also looks only at `failed`: an implementation that stops at the first failure silently skips Cy, who never gets the welcome email; that is a wrong result, so I'd mark it Major too."
   },
   "checklist": [
     {

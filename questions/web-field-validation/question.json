@@ -21,10 +21,10 @@
       "id": "press-left-open",
       "lines": [37, 41],
       "fixedLines": [37, 38],
-      "severity": "minor",
+      "severity": "major",
       "explanation": {
-        "tr": "`pageLeft` bekleyen doğrulamaları çalıştırıyor ama `pressed` bayrağını kapatmıyor. Basış bu sayfada hiç bitmeyeceği için bayrak bir sonraki tıklamaya kadar açık kalır: kullanıcı döner, alanı düzeltip Tab ile çıkar, ama doğrulama yine bekletilir ve eski hata mesajı ekranda kalır. Tetikleyici nadir (tuş basılıyken sekme değiştirmek), bir sonraki tıklama durumu düzeltir. Düzeltme: `pageLeft`'te de basışı bitirmek (`endPress`).",
-        "en": "`pageLeft` runs the held checks but never clears the `pressed` flag. Since the press will never end on this page, the flag stays on until the next click: the user comes back, fixes a field and leaves it with Tab, but the check is held again and the old error message stays on screen. The trigger is rare (switching tabs with the button down), and the next click puts things right. Fix: end the press in `pageLeft` too (`endPress`)."
+        "tr": "`pageLeft` bekleyen doğrulamaları çalıştırıyor ama `pressed` bayrağını kapatmıyor. Basış bu sayfada hiç bitmeyeceği için bayrak bir sonraki tıklamaya kadar açık kalır: kullanıcı döner, alanı düzeltip Tab ile çıkar, ama doğrulama yine bekletilir ve eski hata mesajı ekranda kalır. Tetikleyici nadir (fare tuşu basılıyken sekme değiştirmek) ve bir sonraki tıklama durumu düzeltir; ama görev bu durumu açıkça istiyor ve o ana kadar kullanıcının düzelttiği alan hata mesajını göstermeye devam eder, yani kullanıcı yanlış sonuç alır. Düzeltme: `pageLeft`'te de basışı bitirmek (`endPress`).",
+        "en": "`pageLeft` runs the held checks but never clears the `pressed` flag. Since the press will never end on this page, the flag stays on until the next click: the user comes back, fixes a field and leaves it with Tab, but the check is held again and the old error message stays on screen. The trigger is rare (switching tabs with the button down) and the next click puts things right, but the task asks for this case explicitly, and until then a field the user fixed still shows its error message, so the user gets a wrong result. Fix: end the press in `pageLeft` too (`endPress`)."
       }
     }
   ],
@@ -63,8 +63,8 @@
     "correct": "a"
   },
   "sampleAnswer": {
-    "tr": "`pageLeft` bekleyenleri çalıştırıyor ama basışı bitirmiyor; kullanıcı tuş basılıyken sekme değiştirip dönerse sonraki Tab doğrulamaları bir tıklamaya kadar bekliyor ve ekranda eski hata mesajı kalıyor. Tetikleyici nadir ve bir tıklama durumu düzelttiği için Küçük derdim. Basış, `pageLeft`, ardından `focusOut` gönderip doğrulamanın hemen çalıştığını kontrol eden bir testle gösterir, `pageLeft`'te `endPress` çağırırdım.",
-    "en": "`pageLeft` runs the held checks but does not end the press, so if the user switches tabs with the button down and comes back, later Tab checks wait for a click and the old error message stays on screen. The trigger is rare and a click puts it right, so I'd mark it Minor. I'd show it with a test that sends a press, `pageLeft` and then `focusOut` and checks that validation runs at once, and call `endPress` in `pageLeft`."
+    "tr": "`pageLeft` bekleyenleri çalıştırıyor ama basışı bitirmiyor; kullanıcı tuş basılıyken sekme değiştirip dönerse sonraki Tab doğrulamaları bir tıklamaya kadar bekliyor ve ekranda eski hata mesajı kalıyor. Tetikleyici nadir olsa da görev bu durumu açıkça istiyor ve kullanıcı düzelttiği alanda hata mesajını görmeye devam ediyor, yani yanlış sonuç alıyor; Önemli derdim. Basış, `pageLeft`, ardından `focusOut` gönderip doğrulamanın hemen çalıştığını kontrol eden bir testle gösterir, `pageLeft`'te `endPress` çağırırdım.",
+    "en": "`pageLeft` runs the held checks but does not end the press, so if the user switches tabs with the button down and comes back, later Tab checks wait for a click and the old error message stays on screen. The trigger is rare, but the task asks for this case explicitly and the user keeps seeing an error message on a field they fixed, which is a wrong result, so I'd mark it Major. I'd show it with a test that sends a press, `pageLeft` and then `focusOut` and checks that validation runs at once, and call `endPress` in `pageLeft`."
   },
   "checklist": [
     {

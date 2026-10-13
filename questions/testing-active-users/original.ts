@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import type * as Users from "./subject.ts";
 
-const USERS: Users.User[] = [
+const makeUsers = (): Users.User[] => [
   { name: "Ada", active: true },
   { name: "Linus", active: false },
   { name: "Grace", active: true },
 ];
 
 export function testReturnsOnlyActiveUsers({ activeUsers }: typeof Users) {
-  for (const user of activeUsers(USERS)) {
+  for (const user of activeUsers(makeUsers())) {
     assert.equal(user.active, true);
   }
 }
@@ -18,7 +18,7 @@ export function testEmptyList({ activeUsers }: typeof Users) {
 }
 
 export function testLeavesInputUnchanged({ activeUsers }: typeof Users) {
-  const before = structuredClone(USERS);
-  activeUsers(USERS);
-  assert.deepEqual(USERS, before);
+  const input = makeUsers();
+  activeUsers(input);
+  assert.deepEqual(input, makeUsers());
 }
