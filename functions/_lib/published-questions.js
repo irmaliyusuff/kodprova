@@ -5,6 +5,12 @@
 // published-questions.d.ts (`unknown`); catalog.ts checks the shape at start.
 // Cloudflare Pages runs the site build first and bundles the route files
 // after it, so the file exists when this import is bundled.
-import published from "../../generated/questions.json" with { type: "json" };
+//
+// Only the bundler (esbuild, inside wrangler) ever reads this file; Node never
+// runs it (the tests import the route files for their types only). So the
+// import has no `with { type: "json" }`: the Pages Git build uses wrangler 3,
+// whose esbuild cannot parse import attributes, and esbuild loads .json files
+// as JSON without one.
+import published from "../../generated/questions.json";
 
 export default published;

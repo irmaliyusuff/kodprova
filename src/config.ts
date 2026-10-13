@@ -27,7 +27,7 @@ export const config = {
    * Every question has also been blind-solved once by a different AI model.
    * Until then the "How it's made" page uses the copy deck's shorter text.
    */
-  secondModelBlindSolveDone: false,
+  secondModelBlindSolveDone: true,
 } as const;
 
 /** Shown by local builds made without VITE_CONTACT_EMAIL; never released. */

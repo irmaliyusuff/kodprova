@@ -878,3 +878,14 @@ describe("counter: what the code reads (K19, N-02)", () => {
     assert.deepEqual(routesFound, ["api/submissions.ts", "api/summary.ts"]);
   });
 });
+
+describe("counter: Cloudflare Pages build", () => {
+  // The Git build bundles functions/ with its own wrangler 3 (esbuild 0.17),
+  // which cannot parse import attributes; every file in functions/ is parsed.
+  test("uses no import attributes", async () => {
+    const attribute = /["']\s*(?:with|assert)\s*\{|\{\s*(?:with|assert)\s*:/;
+    for (const [file, code] of await serviceCode()) {
+      assert.doesNotMatch(code, attribute, file);
+    }
+  });
+});
