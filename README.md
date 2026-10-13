@@ -154,7 +154,10 @@ past the test gets wrong. Ranges of two bugs must not overlap. Unknown fields ar
 cannot pass silently.
 
 Severity uses one scale: **critical** = data loss, a security hole or lost money; **major** = the user
-gets a wrong result; **minor** = an edge case or readability.
+gets a wrong result in a case the task asks for, even a rare one; **minor** = a rare edge case
+outside the task, or readability. In the testing topic, severity is set by the realistic worst
+effect of the implementation that slips past the test, not by the flaw in the test itself, and
+the explanation names that effect.
 
 There is no field for where a question came from: the repository is public, so that record is kept
 outside it. A question that breaks any rule stops the build and the gate, naming the file and the
@@ -284,6 +287,15 @@ Testing topic (the question code is a test):
 2. Both tests pass on `subject`, the correct implementation.
 3. The correct option fails on the flawed implementation of its bug and passes on `subject`;
    every other option passes on `subject` and on every flawed implementation.
+4. **No test depends on another.** Test runners disagree on the order of tests (node:test,
+   Vitest and Jest use file order; the checks above run TypeScript tests alphabetically), so
+   both test files also run against `subject` and every flawed implementation in file order,
+   alphabetical order, reverse order and one test at a time, each in a fresh copy of the
+   file. Every test must give the same result in all four. And no two tests may hand the
+   implementation the same array, `Date` or plain object, or one inside it (Python: list,
+   dict, set): an implementation that changed its input in one test would change the other
+   test's data too. Fakes (objects with methods) may be shared. A failure reads
+   `order-dependent: …` or `tests share data: …`.
 
 For both: proof and option ids match `question.json` exactly, and every question is run in five
 time zones (UTC, Istanbul, Los Angeles, Kolkata, Kiritimati) whose results must agree. Code that
@@ -316,6 +328,9 @@ the same step before it is merged.
 - TypeScript questions run without a build step, so use erasable syntax only (no `enum`,
   `namespace` or constructor parameter properties).
 - Export functions or factories; avoid module-level state, since the proofs reuse one module.
+- In the testing topic, every test builds its own data: a factory such as `makeUsers()` or
+  `now()` returns a new array or `Date` on every call, where one module-level value would be
+  shared (see check 4 of the testing topic).
 - Code that depends on the clock or on randomness takes them as parameters (`now`, `random`), and
   proofs pass fixed values. As a safety net the runners reseed `Math.random` / `random` with the
   same seed before every check.

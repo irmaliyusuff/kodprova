@@ -31,10 +31,10 @@
       "id": "attempt-limit",
       "lines": [49, 49],
       "fixedLines": [51, 51],
-      "severity": "minor",
+      "severity": "major",
       "explanation": {
-        "tr": "`attempts` yapılmış deneme sayısıdır. `attempts > MAX_ATTEMPTS` koşulu üçüncü denemeden sonra olayı bir kez daha gönderir; olay 3 yerine 4 kez denenir. Düzeltme: `>=`.",
-        "en": "`attempts` counts the tries already made. With `attempts > MAX_ATTEMPTS` the event goes out once more after the third try, so it is tried 4 times instead of 3. Fix: `>=`."
+        "tr": "`attempts` yapılmış deneme sayısıdır. `attempts > MAX_ATTEMPTS` koşulu üçüncü denemeden sonra olayı bir kez daha gönderir; olay 3 yerine 4 kez denenir. Görev toplam 3 denemeden sonra vazgeçmeyi açıkça istiyor; sunucu hata verdikçe her olay için sunucuya fazladan bir istek gider. Bu yanlış sonuçtur, hiçbir olay kaybolmaz. Düzeltme: `>=`.",
+        "en": "`attempts` counts the tries already made. With `attempts > MAX_ATTEMPTS` the event goes out once more after the third try, so it is tried 4 times instead of 3. The task explicitly says to give up after 3 attempts in total, and while the server keeps failing every event sends one extra request. That is a wrong result, and no event is lost. Fix: `>=`."
       }
     }
   ],
@@ -73,8 +73,8 @@
     "correct": "c"
   },
   "sampleAnswer": {
-    "tr": "Yeniden deneme yalnız `send` hata fırlatınca oluyor; ama `fetch` 500'de normal çözülüyor, yani sunucu hatası alan her olay gönderilmiş sayılıp kayboluyor. Bu veri kaybı, Kritik derdim ve 503 dönen sahte bir sunucuyla olayın hâlâ beklediğini kontrol eden bir testle gösterirdim. Ayrıca sınırda bir fazlalık var: `attempts > MAX_ATTEMPTS` olayı üç yerine dört kez gönderiyor.",
-    "en": "The retry only happens when `send` throws, but `fetch` resolves normally on a 500, so every event that hits a server error counts as delivered and is lost. That is data loss, so I'd mark it Critical and prove it with a fake server that answers 503 and a check that the event is still pending. There is also an off-by-one in the limit: `attempts > MAX_ATTEMPTS` lets an event go out four times instead of three."
+    "tr": "Yeniden deneme yalnız `send` hata fırlatınca oluyor; ama `fetch` 500'de normal çözülüyor, yani sunucu hatası alan her olay gönderilmiş sayılıp kayboluyor. Bu veri kaybı, Kritik derdim ve 503 dönen sahte bir sunucuyla olayın hâlâ beklediğini kontrol eden bir testle gösterirdim. Ayrıca sınırda bir fazlalık var: `attempts > MAX_ATTEMPTS` olayı üç yerine dört kez gönderiyor; görev üç deneme dediği için bunu Önemli derdim.",
+    "en": "The retry only happens when `send` throws, but `fetch` resolves normally on a 500, so every event that hits a server error counts as delivered and is lost. That is data loss, so I'd mark it Critical and prove it with a fake server that answers 503 and a check that the event is still pending. There is also an off-by-one in the limit: `attempts > MAX_ATTEMPTS` lets an event go out four times instead of three, which I'd mark Major because the task asks for three."
   },
   "checklist": [
     {

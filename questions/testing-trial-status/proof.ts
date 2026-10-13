@@ -3,7 +3,8 @@ import type { ProofSuite } from "../../scripts/lib/proof-suite.ts";
 import type * as Trial from "./subject.ts";
 
 const DAY = 24 * 60 * 60 * 1000;
-const FIXED_NOW = new Date("2020-01-01T12:00:00Z");
+/** 2020-01-01 12:00 UTC; a new Date on every call, so no check shares one. */
+const fixedNow = () => new Date("2020-01-01T12:00:00Z");
 
 /** A time `days` days after `from`. */
 const plusDays = (from: Date, days: number) =>
@@ -16,11 +17,11 @@ export default {
     // a: With now fixed at 2020-01-01 12:00 UTC, a trial that ended two days
     // earlier has 0 days left.
     a: (code) =>
-      assert.equal(code.daysLeft(plusDays(FIXED_NOW, -2), FIXED_NOW), 0),
+      assert.equal(code.daysLeft(plusDays(fixedNow(), -2), fixedNow()), 0),
     // b (correct): With now fixed at 2020-01-01 12:00 UTC, a trial that ends
     // two days later has 2 days left.
     b: (code) =>
-      assert.equal(code.daysLeft(plusDays(FIXED_NOW, 2), FIXED_NOW), 2),
+      assert.equal(code.daysLeft(plusDays(fixedNow(), 2), fixedNow()), 2),
     // c: With now = new Date(), a trial ending in 2 days and 1 minute has 3
     // days left.
     c: (code) => {

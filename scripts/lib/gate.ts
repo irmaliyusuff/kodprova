@@ -12,6 +12,9 @@
 //   - Both tests pass on the correct implementation (subject).
 //   - The correct option fails on flawed-<its bug> and passes on subject; every
 //     other option passes on subject and on every flawed implementation.
+//   - Every test of both files gives the same result whatever order the tests
+//     run in, and no two tests hand the implementation the same data (see
+//     test-order.ts).
 
 import { codePath, type LoadedQuestion } from "./load.ts";
 import { TESTING_TOPIC, type Question } from "./question.ts";
@@ -21,6 +24,7 @@ import type {
   RunnerOutput,
   RunPlan,
 } from "./runner-protocol.ts";
+import { judgeOrder, planOrderClaim, type OrderClaim } from "./test-order.ts";
 
 export interface GateLine {
   ok: boolean;
@@ -50,6 +54,8 @@ interface Claim {
 export interface GatePlan {
   plan: RunPlan;
   claims: Claim[];
+  /** Testing topic only. */
+  orderClaims: OrderClaim[];
 }
 
 export function buildPlan(loaded: LoadedQuestion): GatePlan {
@@ -61,15 +67,16 @@ export function buildPlan(loaded: LoadedQuestion): GatePlan {
   };
   addModule("proof");
   const checks: PlannedCheck[] = [];
+  const add = <Check extends UnplannedCheck>(check: Check) => {
+    const planned = { ...check, id: String(checks.length) };
+    checks.push(planned as PlannedCheck);
+    return planned;
+  };
   const expect = (
     check: UnplannedCheck,
     pass: boolean,
     describe: string,
-  ): Expectation => {
-    const planned = { ...check, id: String(checks.length) } as PlannedCheck;
-    checks.push(planned);
-    return { check: planned, pass, describe };
-  };
+  ): Expectation => ({ check: add(check) as PlannedCheck, pass, describe });
   const option = (key: string, target: string) =>
     ({ kind: "check", group: "options", key, target }) as const;
   const { correct } = question.testQuestion;
@@ -116,7 +123,7 @@ export function buildPlan(loaded: LoadedQuestion): GatePlan {
             },
       );
     }
-    return { plan: { modules, checks }, claims };
+    return { plan: { modules, checks }, claims, orderClaims: [] };
   }
 
   const originalTest = addModule("original");
@@ -187,12 +194,17 @@ export function buildPlan(loaded: LoadedQuestion): GatePlan {
           },
     );
   }
-  return { plan: { modules, checks }, claims };
+  const implementations = [subject, ...flawed];
+  const orderClaims = [
+    planOrderClaim("original test", originalTest, implementations, add),
+    planOrderClaim("fixed test", fixedTest, implementations, add),
+  ];
+  return { plan: { modules, checks }, claims, orderClaims };
 }
 
 export function evaluate(
   question: Question,
-  { claims }: GatePlan,
+  { claims, orderClaims }: GatePlan,
   output: RunnerOutput,
 ): GateLine[] {
   if ("loadError" in output) {
@@ -223,6 +235,7 @@ export function evaluate(
       lines.push(judge(claim, results));
     }
   }
+  lines.push(...orderClaims.map((claim) => judgeOrder(claim, results)));
   return lines;
 }
 

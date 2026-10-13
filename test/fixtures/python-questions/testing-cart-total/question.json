@@ -1,0 +1,76 @@
+{
+  "id": "testing-cart-total",
+  "title": {
+    "tr": "Sepet toplamı testleri",
+    "en": "Cart total tests"
+  },
+  "topic": "testing",
+  "difficulty": 1,
+  "language": "python",
+  "origin": "fictional",
+  "task": {
+    "tr": "`cart_total(prices)` için birim testleri yaz.",
+    "en": "Write unit tests for `cart_total(prices)`."
+  },
+  "deliveryNote": {
+    "tr": "Boş sepet, tek ürün ve fiyat listesinin değişmediği test edildi.",
+    "en": "Tested an empty cart, a single item and that the price list stays the same."
+  },
+  "bugs": [
+    {
+      "id": "one-item-only",
+      "lines": [12, 13],
+      "fixedLines": [12, 13],
+      "severity": "major",
+      "explanation": {
+        "tr": "Tek ürünlü sepette toplam o ürünün fiyatıdır; yalnız ilk fiyatı döndüren kod da geçer.",
+        "en": "With one item the total is that item's price, so code that returns only the first price passes too."
+      },
+      "flawedImplementation": {
+        "tr": "Yalnız ilk fiyatı döndüren bir uygulama.",
+        "en": "An implementation that returns only the first price."
+      }
+    }
+  ],
+  "testQuestion": {
+    "bug": "one-item-only",
+    "options": [
+      {
+        "id": "a",
+        "text": {
+          "tr": "`cart_total([]) == 0`",
+          "en": "`cart_total([]) == 0`"
+        }
+      },
+      {
+        "id": "b",
+        "text": {
+          "tr": "`cart_total([1, 2]) == 3`",
+          "en": "`cart_total([1, 2]) == 3`"
+        }
+      },
+      {
+        "id": "c",
+        "text": {
+          "tr": "`cart_total([7]) == 7`",
+          "en": "`cart_total([7]) == 7`"
+        }
+      }
+    ],
+    "correct": "b"
+  },
+  "sampleAnswer": {
+    "tr": "Testler en çok bir ürünlü sepete bakıyor; yalnız ilk fiyatı döndüren kod da geçiyor. Birden çok ürünlü bir sepetin toplamını kontrol ederdim.",
+    "en": "The tests only look at carts with at most one item, so code that returns only the first price passes. I would check the total of a cart with several items."
+  },
+  "checklist": [
+    {
+      "tr": "Testin hangi hatalı kodu geçirdiğini söyledim",
+      "en": "I said which broken code the test lets through"
+    },
+    {
+      "tr": "Birden çok ürünlü bir sepet önerdim",
+      "en": "I proposed a cart with several items"
+    }
+  ]
+}

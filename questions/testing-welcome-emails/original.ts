@@ -4,7 +4,7 @@ import type * as Mail from "./subject.ts";
 const ADA = "ada@example.com";
 const BOB = "bob@example.com";
 const CY = "cy@example.com";
-const USERS: Mail.User[] = [
+const makeUsers = (): Mail.User[] => [
   { email: ADA, verified: true },
   { email: BOB, verified: false },
   { email: CY, verified: true },
@@ -22,7 +22,7 @@ function recordingMailer() {
 
 export async function testSendsWelcome({ sendWelcomeEmails }: typeof Mail) {
   const { mailer, sent } = recordingMailer();
-  const verified = USERS.filter((user) => user.verified);
+  const verified = makeUsers().filter((user) => user.verified);
   const report = await sendWelcomeEmails(verified, mailer);
   assert.deepEqual(sent, [
     [ADA, "welcome"],
@@ -37,7 +37,7 @@ export async function testSkipsUnverified({ sendWelcomeEmails }: typeof Mail) {
       assert.notEqual(to, BOB, "unverified users get no email");
     },
   };
-  await sendWelcomeEmails(USERS, mailer);
+  await sendWelcomeEmails(makeUsers(), mailer);
 }
 
 export async function testRecordsFailure({ sendWelcomeEmails }: typeof Mail) {
@@ -48,7 +48,7 @@ export async function testRecordsFailure({ sendWelcomeEmails }: typeof Mail) {
       }
     },
   };
-  const report = await sendWelcomeEmails(USERS, mailer);
+  const report = await sendWelcomeEmails(makeUsers(), mailer);
   assert.deepEqual(report.failed, [ADA]);
 }
 

@@ -192,12 +192,19 @@ function findChange(
   if (!first) {
     return null;
   }
-  const outcome = (output: RunnerOutput, id: string) =>
-    "loadError" in output
-      ? "load error"
-      : output.results.find((result) => result.id === id)?.passed
-        ? "passes"
-        : "fails";
+  const outcome = (output: RunnerOutput, id: string) => {
+    if ("loadError" in output) {
+      return "load error";
+    }
+    const result = output.results.find((item) => item.id === id);
+    if (result?.passed) {
+      return "passes";
+    }
+    // An order check names its failing tests: those must agree too.
+    return result?.failedTests
+      ? `fails (${result.failedTests.join(", ")})`
+      : "fails";
+  };
   const ids =
     "loadError" in first.output
       ? []

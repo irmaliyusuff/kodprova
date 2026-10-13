@@ -3,6 +3,10 @@
 // "PROOF_RESULT {json}" line. Runners only report what happened; the gate
 // decides what should have happened. Both runners follow this file:
 // scripts/runners/run-js.ts and scripts/runners/run_python.py.
+//
+// Test functions: in TypeScript and JavaScript every exported function whose
+// name starts with "test", in Python every function named "test_…". A test
+// takes the implementation module as its only argument.
 
 export const RESULT_MARKER = "PROOF_RESULT ";
 export const CHECK_TIMEOUT_MS = 5_000;
@@ -31,13 +35,46 @@ export type PlannedCheck =
       target: string;
     }
   /** Calls every test function of the suite module with the target module. */
-  | { id: string; kind: "suite"; suite: string; target: string };
+  | { id: string; kind: "suite"; suite: string; target: string }
+  /**
+   * Testing topic's order check (scripts/lib/test-order.ts): runs every test
+   * function of a fresh copy of the suite module, in this order, against a
+   * fresh copy of the target, goes on after a failure, and records the data
+   * the tests hand to the target.
+   */
+  | {
+      id: string;
+      kind: "order";
+      suite: string;
+      target: string;
+      order: TestOrder;
+    };
+
+/**
+ * file: the order the file declares the tests in; alphabetical: by name;
+ * reverse: the file order backwards; alone: each test in its own fresh copy.
+ */
+export type TestOrder = "file" | "alphabetical" | "reverse" | "alone";
+
+/** A value that two tests of one test file both handed to the target. */
+export interface SharedInput {
+  /** TypeScript and JavaScript: array, Date, object, Map, Set; Python: list, dict, set. */
+  kind: string;
+  /** The test that handed it over first, then the other one. */
+  tests: [string, string];
+  /** The target's function that received it. */
+  receiver: string;
+}
 
 export interface CheckResult {
   id: string;
   passed: boolean;
   /** First line of the failure, or null when the check passed. */
   error: string | null;
+  /** Order checks only: the tests that failed, in the order they ran. */
+  failedTests?: string[];
+  /** Order checks only. */
+  sharedInputs?: SharedInput[];
 }
 
 export type RunnerOutput = (

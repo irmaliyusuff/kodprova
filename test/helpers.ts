@@ -12,6 +12,20 @@ export const FIXTURE_QUESTIONS = join(
   "questions",
 );
 export const REAL_QUESTIONS = join(REPO_ROOT, "questions");
+/** A testing question whose tests share data: the gate must reject it. */
+export const SHARED_DATA_QUESTIONS = join(
+  REPO_ROOT,
+  "test",
+  "fixtures",
+  "shared-data-questions",
+);
+/** A Python testing question (needs Python 3.10+). */
+export const PYTHON_TESTING_QUESTIONS = join(
+  REPO_ROOT,
+  "test",
+  "fixtures",
+  "python-questions",
+);
 
 /** Copies question folders to a fresh temp folder so a test can break them. */
 export async function copyQuestions(

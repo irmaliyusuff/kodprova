@@ -212,6 +212,13 @@
   font-weight: 600;
 }
 
+/* Ölçünün son satırı: Test konusunda önemin okunuşu (paket v1.2, onem.test.not). */
+.onem-not {
+  margin-top: var(--b-3);
+  color: var(--soluk);
+  font: var(--t-kucuk);
+}
+
 @media (min-width: 48rem) {
   .adimlar {
     grid-template-columns: repeat(3, minmax(0, 1fr));

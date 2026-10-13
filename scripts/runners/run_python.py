@@ -14,12 +14,14 @@ fails by raising (a plain assert is enough).
 """
 
 import asyncio
+import functools
 import importlib.util
 import inspect
 import json
 import random
 import sys
 import time
+import types
 
 RESULT_MARKER = "PROOF_RESULT "
 RANDOM_SEED = 20261010
@@ -62,20 +64,26 @@ def call(function, argument):
         asyncio.run(result)
 
 
-def run_check(check, modules):
+def test_functions(suite):
+    """The test functions of a test module, in the order the file defines them."""
+    return [
+        (name, value)
+        for name, value in vars(suite).items()
+        if name.startswith("test_") and callable(value)
+    ]
+
+
+def run_check(check, modules, paths):
     random.seed(RANDOM_SEED)
-    target = modules[check["target"]]
     try:
+        if check["kind"] == "order":
+            return run_order(check, paths)
+        target = modules[check["target"]]
         if check["kind"] == "check":
             group = check_group(modules["proof"], check["group"].upper())
             call(group[check["key"]], target)
         else:
-            suite = modules[check["suite"]]
-            tests = [
-                (name, value)
-                for name, value in vars(suite).items()
-                if name.startswith("test_") and callable(value)
-            ]
+            tests = test_functions(modules[check["suite"]])
             if not tests:
                 raise AssertionError(f"{check['suite']} has no test functions")
             for name, test in tests:
@@ -86,6 +94,100 @@ def run_check(check, modules):
         return {"id": check["id"], "passed": True, "error": None}
     except Exception as error:  # Any failure fails the check.
         return {"id": check["id"], "passed": False, "error": error_text(error)}
+
+
+def run_order(check, paths):
+    """Runs every test of the suite in the check's order (see run-js.ts)."""
+
+    def fresh_suite():
+        return load("order_suite", paths[check["suite"]])
+
+    def fresh_target():
+        return InputWatch(load("order_target", paths[check["target"]]))
+
+    suite = fresh_suite()
+    names = [name for name, _ in test_functions(suite)]
+    if not names:
+        raise AssertionError(f"{check['suite']} has no test functions")
+    if check["order"] == "alphabetical":
+        names = sorted(names)
+    elif check["order"] == "reverse":
+        names = names[::-1]
+    target = fresh_target()
+    failed_tests = []
+    error = None
+    for index, name in enumerate(names):
+        if check["order"] == "alone" and index > 0:
+            suite = fresh_suite()
+            target = fresh_target()
+        target.test = name
+        random.seed(RANDOM_SEED)
+        try:
+            call(getattr(suite, name), target.module)
+        except Exception as failure:  # A failing test is a result here.
+            failed_tests.append(name)
+            error = error or f"{name}: {error_text(failure)}"
+    return {
+        "id": check["id"],
+        "passed": not failed_tests,
+        "error": error,
+        "failedTests": failed_tests,
+        "sharedInputs": target.shared,
+    }
+
+
+class InputWatch:
+    """Records which test hands which list, dict or set to the module.
+
+    The Python side of scripts/runners/shared-inputs.ts: a value two tests
+    both hand over is reported in `shared`. Dicts holding functions (fakes)
+    and other objects are not data and are not followed.
+    """
+
+    def __init__(self, module):
+        self.test = ""
+        self.shared = []
+        # id -> (value, first test); keeping the value keeps its id unique.
+        self._first = {}
+        self.module = types.SimpleNamespace(
+            **{
+                name: self._watched(value, name) if inspect.isfunction(value) else value
+                for name, value in vars(module).items()
+            }
+        )
+
+    def _watched(self, function, name):
+        @functools.wraps(function)
+        def watched(*args, **kwargs):
+            seen = set()
+            for value in (*args, *kwargs.values()):
+                self._record(value, name, seen)
+            return function(*args, **kwargs)
+
+        return watched
+
+    def _record(self, value, receiver, seen):
+        kind = data_kind(value)
+        if kind is None or id(value) in seen:
+            return
+        seen.add(id(value))
+        first = self._first.setdefault(id(value), (value, self.test))
+        item = {"kind": kind, "tests": [first[1], self.test], "receiver": receiver}
+        if first[1] != self.test and item not in self.shared:
+            self.shared.append(item)
+        for inner in value.values() if isinstance(value, dict) else value:
+            self._record(inner, receiver, seen)
+
+
+def data_kind(value):
+    """The kind of data a value is ("list", "dict" or "set"), or None."""
+    if isinstance(value, list):
+        return "list"
+    if isinstance(value, dict) and not any(map(callable, value.values())):
+        return "dict"
+    if isinstance(value, set):
+        return "set"
+    return None
 
 
 def main():
@@ -102,7 +204,7 @@ def main():
     except Exception as error:
         emit({"loadError": error_text(error)})
         return
-    results = [run_check(check, modules) for check in plan["checks"]]
+    results = [run_check(check, modules, plan["modules"]) for check in plan["checks"]]
     emit({"proofKeys": proof_keys, "optionKeys": option_keys, "results": results})
 
 

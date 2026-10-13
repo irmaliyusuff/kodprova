@@ -12,11 +12,17 @@ import {
   copyQuestions,
   editFile,
   FIXTURE_QUESTIONS,
+  PYTHON_TESTING_QUESTIONS,
   REAL_QUESTIONS,
   runScript,
+  SHARED_DATA_QUESTIONS,
 } from "./helpers.ts";
 
 const GATE = "scripts/proof-gate.ts";
+
+const noPython = findPython().python
+  ? false
+  : "Python 3.10+ is not installed on this machine";
 
 function gate(dir: string, ...args: string[]) {
   const run = runScript(GATE, ["--dir", dir, ...args]);
@@ -156,10 +162,6 @@ describe("proof gate", () => {
     assert.match(run.stdout, /Python 3\.10\+ not found/);
     assert.match(run.stdout, /Gate: FAILED/);
   });
-
-  const noPython = findPython().python
-    ? false
-    : "Python 3.10+ is not installed on this machine";
 
   test("proves the Python questions", { skip: noPython }, () => {
     const run = runScript(GATE, ["--lang", "python"]);
@@ -368,6 +370,95 @@ describe("proof gate, testing topic", () => {
     assert.match(
       run.output,
       /option a: should pass on flawed-weak-assertion but failed/,
+    );
+  });
+});
+
+describe("proof gate, testing topic, test order", () => {
+  test("passes tests that do not depend on each other", () => {
+    const run = gate(FIXTURE_QUESTIONS, "--only", "testing-discount");
+    assert.equal(run.status, 0, run.output);
+    for (const file of ["original", "fixed"]) {
+      assert.match(
+        run.output,
+        new RegExp(
+          `✔ ${file} test: same result for every test in file, ` +
+            "alphabetical and reverse order and alone; no data shared",
+        ),
+      );
+    }
+  });
+
+  test("fails when a test's result depends on the tests before it", async () => {
+    // testTenPercentOff leaves 180 in `price`; testZeroPercent then expects 200.
+    const dir = await copyQuestions(FIXTURE_QUESTIONS, ["testing-discount"]);
+    const fixed = join(dir, "testing-discount", "fixed.ts");
+    await editFile(
+      fixed,
+      'from "./subject.ts";\n',
+      'from "./subject.ts";\n\nlet price = 200;\n',
+    );
+    await editFile(
+      fixed,
+      "const result = applyDiscount(200, 10);",
+      "const result = applyDiscount(price, 10);\n  price = result;",
+    );
+    await editFile(fixed, "applyDiscount(200, 0)", "applyDiscount(price, 0)");
+    const run = gate(dir);
+    assert.equal(run.status, 1);
+    assert.match(
+      run.output,
+      /✖ fixed test: order-dependent: testZeroPercent passes alone but fails in file and alphabetical order on subject/,
+    );
+    assert.match(run.output, /✔ original test: same result/);
+  });
+
+  test("fails when two tests hand the same array to the implementation", () => {
+    // testing-active-users as first written: one module-level USERS list.
+    const run = gate(SHARED_DATA_QUESTIONS);
+    assert.equal(run.status, 1);
+    for (const file of ["original", "fixed"]) {
+      assert.match(
+        run.output,
+        new RegExp(
+          `✖ ${file} test: tests share data: testReturnsOnlyActiveUsers and ` +
+            "testLeavesInputUnchanged pass the same array and object to activeUsers",
+        ),
+      );
+    }
+  });
+
+  test("fails when two tests hand the same Date to the implementation", async () => {
+    const dir = await copyQuestions(REAL_QUESTIONS, ["testing-trial-status"]);
+    await editFile(
+      join(dir, "testing-trial-status", "fixed.ts"),
+      "const now = () => new Date(START);",
+      "const shared = new Date(START);\nconst now = () => shared;",
+    );
+    const run = gate(dir);
+    assert.equal(run.status, 1);
+    assert.match(
+      run.output,
+      /✖ fixed test: tests share data: testActive and testEndingSoon pass the same Date to trialState/,
+    );
+  });
+
+  test("checks the order of Python tests too", { skip: noPython }, async () => {
+    const passing = gate(PYTHON_TESTING_QUESTIONS);
+    assert.equal(passing.status, 0, passing.output);
+    assert.match(passing.output, /✔ fixed test: same result/);
+
+    const dir = await copyQuestions(PYTHON_TESTING_QUESTIONS);
+    await editFile(
+      join(dir, "testing-cart-total", "fixed.py"),
+      "def make_prices():\n    return [500, 250, 125]\n",
+      "PRICES = [500, 250, 125]\n\n\ndef make_prices():\n    return PRICES\n",
+    );
+    const sharing = gate(dir);
+    assert.equal(sharing.status, 1);
+    assert.match(
+      sharing.output,
+      /✖ fixed test: tests share data: test_several_items and test_leaves_prices_unchanged pass the same list to cart_total/,
     );
   });
 });

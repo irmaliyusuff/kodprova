@@ -1,6 +1,6 @@
 // Interface copy in Turkish and English, keyed by the copy deck's ids.
-// Generated from the approved copy decks (v1.1, and v1.1 of the Data page deck,
-// which also replaces two v1.1 lines); the text is placed unchanged, so fix
+// Generated from the approved copy decks (v1.2, and v1.1 of the Data page deck,
+// which replaces two lines of the first); the text is placed unchanged, so fix
 // wording in the deck and regenerate rather than editing here.
 // {slot} placeholders are filled in by translate() (see translate.ts).
 
@@ -120,13 +120,17 @@ export const messages = {
   },
   "onem.onemli.ad": { tr: "Önemli", en: "Major" },
   "onem.onemli.tanim": {
-    tr: "Kullanıcı yanlış sonuç alır",
-    en: "The user gets a wrong result",
+    tr: "Görevin istediği bir durumda kullanıcı yanlış sonuç alır",
+    en: "The user gets a wrong result in a case the task asks for",
   },
   "onem.kucuk.ad": { tr: "Küçük", en: "Minor" },
   "onem.kucuk.tanim": {
-    tr: "Uç durum ya da okunurluk",
-    en: "An edge case or readability",
+    tr: "Görevin dışında kalan nadir bir uç durum ya da okunurluk",
+    en: "A rare edge case outside the task, or readability",
+  },
+  "onem.test.not": {
+    tr: "Test konusunda önem, testin yakalamadığı hatalı uygulamanın etkisine göre belirlenir.",
+    en: "In the Testing topic, severity is set by the effect of the broken implementation the test doesn't catch.",
   },
   "liste.baslik": { tr: "Sorular", en: "Questions" },
   "liste.alt": {

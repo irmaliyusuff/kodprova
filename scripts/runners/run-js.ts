@@ -2,6 +2,7 @@
 // Runs a TypeScript or JavaScript question's checks (see
 // scripts/lib/runner-protocol.ts) and prints one "PROOF_RESULT {json}" line.
 
+import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import {
   CHECK_TIMEOUT_MS,
@@ -13,12 +14,21 @@ import {
   type RunnerOutput,
   type RunPlan,
 } from "../lib/runner-protocol.ts";
+import { watchInputs } from "./shared-inputs.ts";
 
 type Module = Record<string, unknown>;
 type Check = (code: unknown) => unknown;
+type OrderCheck = Extract<PlannedCheck, { kind: "order" }>;
 
 /** In a test file, every exported function whose name starts with "test" is a test. */
 const TEST_NAME = /^test/;
+
+/** The test functions of a test module, sorted by name (as a module lists its exports). */
+function testFunctions(suite: Module): Array<[string, Check]> {
+  return Object.entries(suite).filter(
+    ([name, value]) => TEST_NAME.test(name) && typeof value === "function",
+  ) as Array<[string, Check]>;
+}
 
 function emit(output: Omit<RunnerOutput, "utcOffsetMinutes">): void {
   const utcOffsetMinutes = -new Date(
@@ -78,24 +88,25 @@ async function withTimeout(work: () => unknown): Promise<void> {
 async function runCheck(
   check: PlannedCheck,
   modules: Record<string, Module>,
+  paths: Record<string, string>,
 ): Promise<CheckResult> {
   Math.random = seededRandom(RANDOM_SEED);
-  const target = modules[check.target];
   try {
+    if (check.kind === "order") {
+      return await runOrder(check, paths);
+    }
+    const target = modules[check.target];
     if (check.kind === "check") {
       const fn = checkGroup(modules.proof, check.group)[check.key] as Check;
       await withTimeout(() => fn(target));
     } else {
-      const suite = modules[check.suite] ?? {};
-      const tests = Object.entries(suite).filter(
-        ([name, value]) => TEST_NAME.test(name) && typeof value === "function",
-      );
+      const tests = testFunctions(modules[check.suite] ?? {});
       if (tests.length === 0) {
         throw new Error(`${check.suite} exports no test functions`);
       }
       for (const [name, test] of tests) {
         try {
-          await withTimeout(() => (test as Check)(target));
+          await withTimeout(() => test(target));
         } catch (error) {
           throw new Error(`${name}: ${errorText(error)}`);
         }
@@ -105,6 +116,86 @@ async function runCheck(
   } catch (error) {
     return { id: check.id, passed: false, error: errorText(error) };
   }
+}
+
+let copies = 0;
+
+/** A separate instance of a module, with its own module-level state. */
+function freshCopy(path: string): Promise<Module> {
+  copies += 1;
+  return import(`${pathToFileURL(path).href}?copy=${copies}`);
+}
+
+/**
+ * Runs every test of the suite in the check's order, going on after a
+ * failure, and reports which tests failed and which data they shared.
+ */
+async function runOrder(
+  check: OrderCheck,
+  paths: Record<string, string>,
+): Promise<CheckResult> {
+  const suitePath = paths[check.suite]!;
+  const freshTarget = async () =>
+    watchInputs(await freshCopy(paths[check.target]!));
+  let suite = await freshCopy(suitePath);
+  const declared = fileOrder(
+    testFunctions(suite).map(([name]) => name),
+    await readFile(suitePath, "utf8"),
+  );
+  if (declared.length === 0) {
+    throw new Error(`${check.suite} exports no test functions`);
+  }
+  const names =
+    check.order === "alphabetical"
+      ? [...declared].sort()
+      : check.order === "reverse"
+        ? [...declared].reverse()
+        : declared;
+  let target = await freshTarget();
+  const failedTests: string[] = [];
+  let error: string | null = null;
+  for (const [index, name] of names.entries()) {
+    if (check.order === "alone" && index > 0) {
+      suite = await freshCopy(suitePath);
+      target = await freshTarget();
+    }
+    target.startTest(name);
+    Math.random = seededRandom(RANDOM_SEED);
+    try {
+      await withTimeout(() => (suite[name] as Check)(target.module));
+    } catch (failure) {
+      failedTests.push(name);
+      error ??= `${name}: ${errorText(failure)}`;
+    }
+  }
+  return {
+    id: check.id,
+    passed: failedTests.length === 0,
+    error,
+    failedTests,
+    sharedInputs: target.shared,
+  };
+}
+
+/**
+ * The test names in the order the file declares them. A module lists its
+ * exports sorted by name, so the order is read from the source.
+ */
+function fileOrder(names: string[], source: string): string[] {
+  const position = (name: string) => {
+    const declaration = new RegExp(
+      String.raw`\b(?:function|const|let|var)\s+${name.replaceAll("$", "\\$")}\b`,
+    );
+    const index = source.search(declaration);
+    if (index === -1) {
+      throw new Error(`cannot find where ${name} is declared`);
+    }
+    return index;
+  };
+  return names
+    .map((name) => ({ name, at: position(name) }))
+    .sort((a, b) => a.at - b.at)
+    .map(({ name }) => name);
 }
 
 let text = "";
@@ -126,7 +217,7 @@ try {
   const optionKeys = Object.keys(checkGroup(modules.proof, "options"));
   const results: CheckResult[] = [];
   for (const check of plan.checks) {
-    results.push(await runCheck(check, modules));
+    results.push(await runCheck(check, modules, plan.modules));
   }
   emit({ proofKeys, optionKeys, results });
 } catch (error) {
