@@ -3,8 +3,10 @@
 Practice finding the hidden bugs in AI-written code, and explaining them the way an interviewer
 expects: how severe the bug is, why, and which test proves it. Turkish and English.
 
-> **Status: before the first release.** The site, the question format, the format checker and
-> the proof gate are here; the questions are being reviewed.
+> **Live:** https://kodprova.pages.dev (released 14 October 2026).
+> `pages.dev` addresses don't open from Turkey without a VPN.
+>
+> How the questions were checked, and what a second AI model found: [case study](CASE_STUDY.md).
 
 ## How it works
 
