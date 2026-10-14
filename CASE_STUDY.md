@@ -2,7 +2,7 @@
 
 Kodprova is a free practice site for junior developers preparing for interviews. Each question shows a task given to an AI, the code it wrote and its confident handoff note; the code hides one or two bugs. You mark the lines, pick a severity, write one sentence on why and choose the test that would catch the bug. Then you see what you found and missed, the fixed code and a sample interview answer.
 
-Live: https://kodprova.pages.dev · Source (MIT): https://github.com/irmaliyusuff/kodprova · Turkish and English · Released 14 October 2026
+Live: https://kodprova.losyef.com · Source (MIT): https://github.com/irmaliyusuff/kodprova · Turkish and English · Released 14 October 2026
 
 ## The problem
 
@@ -51,7 +51,7 @@ The models also disagreed with the key on severity in six places. Rather than pa
 
 ## Limits
 
-- `pages.dev` addresses don't open from Turkey without a VPN; a custom domain is a candidate for the next version.
+- The first address, `kodprova.pages.dev`, didn't open from Turkey without a VPN; since 14 October 2026 the site is served from `kodprova.losyef.com`.
 - No usage data yet. The counter is on; the first review is on 13 November 2026.
 - A blind solve lowers the chance of a remaining bug; it doesn't rule it out. Every result screen links to "Report a problem".
 - The host, Cloudflare, processes IP addresses on its side. The Data page states what is stored and sent; the legal text awaits a lawyer's review.

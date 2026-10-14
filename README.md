@@ -3,8 +3,7 @@
 Practice finding the hidden bugs in AI-written code, and explaining them the way an interviewer
 expects: how severe the bug is, why, and which test proves it. Turkish and English.
 
-> **Live:** https://kodprova.pages.dev (released 14 October 2026).
-> `pages.dev` addresses don't open from Turkey without a VPN.
+> **Live:** https://kodprova.losyef.com (released 14 October 2026).
 >
 > How the questions were checked, and what a second AI model found: [case study](CASE_STUDY.md).
 
